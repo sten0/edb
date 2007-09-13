@@ -1,0 +1,6 @@
+#! /bin/sh -e
+
+## remove info files
+install-info --quiet --remove /usr/share/info/edb.info.gz
+
+#DEBHELPER#

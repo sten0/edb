@@ -1,0 +1,18 @@
+Source: edb
+Section: misc
+Priority: optional
+Maintainer: Jari Aalto <jari.aalto@cante.net>
+Uploaders: Tatsuya Kinoshita <tats@debian.org>
+Build-Depends: debhelper (>= 4), dpatch (>= 2)
+Build-Depends-Indep: texinfo
+Standards-Version: 3.7.2
+
+Package: edb
+Architecture: all
+Depends: emacs22 | emacs21 | emacs-snapshot
+Description: database program for GNU Emacs
+ EDB is a database program for GNU Emacs. It permits you to
+ manipulate structured (or not-so-structured) data within
+ Emacs and provides many of the usual database features.
+ .
+  Homepage: http://www.glug.org/people/ttn/software/edb/

@@ -1,0 +1,145 @@
+edb (1.21-17) unstable; urgency=low
+
+  * [OVERALL]: Converted hand written patch system to dpatch.
+  * debian/*: removed trailing whitespaces from all files.
+  * debian/README.Debian-source: New. Explain what changed after 
+    package adoption.
+  * debian/compat: New file.
+  * debian/control:
+    (Build-Depands): Added dpatch.
+    (Depends): Added emacs22 to the beginning. (Closes: #433974).
+  * debian/copyright: Updated download URL (old one non-existent).
+  * debian/patches/*: One single dpatch to include all
+    previous changes.
+  * debian/patches-original/*: Stores here the original paches including
+    some email messages for historial reference.
+  * debian/rules: Removed DH_COMPAT, use dpatch and *.mk files.
+  * debian/watch: New file.
+
+ -- Jari Aalto <jari.aalto@cante.net>  Thu, 13 Sep 2007 10:11:49 +0300
+
+edb (1.21-16) unstable; urgency=low
+
+  * debian/control: (Section): Change from 'utils' => 'misc'
+    according to ftp-masters message:
+    'package says section is utils, override says misc'.
+
+ -- Jari Aalto <jari.aalto@cante.net>  Sun, 19 Nov 2006 18:43:20 +0200
+
+edb (1.21-15) unstable; urgency=low
+
+  * New maintainer. (Orphaned; Closes: #353629)
+  * Applied patch by Tatsuya Kinoshita <tats@debian.org> to fix
+    debian/control (Build-Depends, Build-Depends-Indep, Depends),
+    debian/copyright (Proper copyright year, author, license),
+    debian/emacsen-install (added "-q" during byte compilation and
+    *.elc cleanup), debian/emacsen-remove (simplified "emacs" treatment),
+    debian/emacsen-startup (better init implementation)
+  * debian/conffiles: File removed. Had entry
+    "/etc/emacs/site-start.d/50edb.el". This is automatically added
+    by debhelper.
+
+ -- Jari Aalto <jari.aalto@cante.net>  Tue, 24 Oct 2006 20:07:51 +0300
+
+edb (1.21-14) unstable; urgency=low
+
+  * debian/control: standards 3.6.2.
+    (Build-Depends): Added version number to debhelper, this fixes lintian
+    warning package-uses-deprecated-debhelper-compat-version
+  * debian/rules: use install(1) and not cp(1) for *.el files.
+  * debian/copyright: improved layout. Added copyright holder.
+
+ -- Jari Aalto <jari.aalto@cante.net>  Tue,  4 Apr 2006 13:08:33 +0300
+
+edb (1.21-13) unstable; urgency=low
+
+  * Removed emacs20 from Depends. (Closes: Bug#232750)
+  * Updated to Standards-Version 3.6.1.
+
+ -- Takao KAWAMURA <kawamura@debian.org>  Tue, 23 Mar 2004 18:28:00 +0900
+
+edb (1.21-12) unstable; urgency=low
+
+  * debian/control: Build-Depends-Indep: Added texinfo. (Closes: Bug#134910)
+
+ -- Takao KAWAMURA <kawamura@debian.org>  Wed,  3 Apr 2002 13:11:16 +0900
+
+edb (1.21-11) unstable; urgency=low
+
+  * 50edb.el was marked as a conffile (Closes: Bug#132165).
+
+ -- Takao KAWAMURA <kawamura@debian.org>  Thu,  7 Feb 2002 11:10:40 +0900
+
+edb (1.21-10) unstable; urgency=low
+
+  * db-time.el: Rename `parse-time-string' to `db-parse-time-string' to
+    work with Gnus 5.8.7-1. (Bug#70890)
+  * emacsen-install: Ignore xemacs21.
+
+ -- Takao KAWAMURA <kawamura@debian.org>  Wed, 20 Sep 2000 11:50:26 +0900
+
+edb (1.21-9) frozen unstable; urgency=high
+
+  * Applied a patch for y2k and other minor fixes written by
+    Phil.Nitschke@caemrad.com.au. (Bug#58153)
+    The y2k fix is so important that this version should go into
+    frozen. (See debian/nitschke.patch)
+
+ -- Takao KAWAMURA <kawamura@debian.org>  Wed, 16 Feb 2000 11:01:03 +0900
+
+edb (1.21-8) unstable; urgency=low
+
+  * FHS-compliant
+
+ -- Takao KAWAMURA <kawamura@debian.org>  Sun, 19 Sep 1999 11:36:09 +0900
+
+edb (1.21-7) unstable; urgency=low
+
+  * Added a variable `inhibit-edb' which if non-nil will load an EDB
+    database file normally rather than as a database by
+    swift@alum.mit.edu. (Bug#43046)
+
+ -- Takao KAWAMURA <kawamura@debian.org>  Mon, 16 Aug 1999 15:49:15 +0900
+
+edb (1.21-6) unstable; urgency=low
+
+  * Included edb-fixes-1.21.el written by swift@alum.mit.edu to fix bugs
+    in EDB v1.21. (Bug#41922)
+
+ -- Takao KAWAMURA <kawamura@debian.org>  Thu, 29 Jul 1999 15:34:04 +0900
+
+edb (1.21-5) unstable; urgency=low
+
+  * Initial Release for Debian (previous versions were uploaded to Debian
+    JP Project).
+  * Changed maintainer's email address.
+  * Updated to Standards-Version 2.5.1.0.
+
+ -- Takao KAWAMURA <kawamura@debian.org>  Sun, 23 May 1999 22:05:34 +0900
+
+edb (1.21-4) unstable-jp; urgency=low
+
+  * Applied a patch by kawamura@debian.or.jp to make edb work with XEmacs.
+
+ -- Takao KAWAMURA <kawamura@debian.or.jp>  Sun, 10 Jan 1999 21:00:02 +0900
+
+edb (1.21-3) frozen-jp unstable-jp; urgency=low
+
+  * Applied a patch by ksakai@netwk.ntt-at.co.jp to make edb work with
+    Emacs 20.3.(Bug#JP/696)
+  * The short description has changed not to start with the package name.(Bug#JP/710)
+
+ -- Takao KAWAMURA <kawamura@debian.or.jp>  Sat, 26 Dec 1998 01:06:37 +0900
+
+edb (1.21-2) frozen-jp; urgency=low
+
+  * (control): Removed XEmacs from the Depends field.
+  * CompilationLog.gz holds the log of byte-compilation.
+
+ -- Takao KAWAMURA <kawamura@debian.or.jp>  Thu, 11 Jun 1998 12:39:51 +0900
+
+edb (1.21-1) unstable-jp; urgency=low
+
+  * Initial Release.
+
+ -- Takao KAWAMURA <kawamura@debian.or.jp>  Sun, 31 May 1998 17:34:21 +0900

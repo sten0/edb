@@ -1,0 +1,56 @@
+;; -*-emacs-lisp-*-
+;;
+;; Emacs startup file for the Debian GNU/Linux edb package
+;;
+;; Originally contributed by Nils Naumann <naumann@unileoben.ac.at>
+;; Modified by Dirk Eddelbuettel <edd@debian.org>
+;; Adapted for dh-make by Jim Van Zandt <jrv@vanzandt.mv.com>
+
+;; The edb package follows the Debian/GNU Linux 'emacsen' policy and
+;; byte-compiles its elisp files for each 'emacs flavor' (emacs19,
+;; xemacs19, emacs20, xemacs20...).  The compiled code is then
+;; installed in a subdirectory of the respective site-lisp directory.
+;; We have to add this to the load-path:
+(let ((package-dir (concat "/usr/share/"
+                           (symbol-name flavor)
+                           "/site-lisp/edb")))
+  ;; If package-dir does not exist, the package must have
+  ;; removed but not purged, and we should skip the setup.
+  (when (file-directory-p package-dir)
+    (if (fboundp 'debian-pkg-add-load-path-item)
+	(debian-pkg-add-load-path-item package-dir)
+      (setq load-path (cons package-dir load-path)))
+    ;;
+
+(setq edb-directory
+      (concat "/usr/share/" (symbol-name debian-emacs-flavor)
+              "/site-lisp/edb"))
+
+(autoload 'db-find-file "database" "EDB database package" t)
+(autoload 'load-database "database" "EDB database package" t)
+(autoload 'byte-compile-database "database" "EDB database package" t)
+
+(add-hook 'find-file-hooks 'edb-after-find-file)
+
+(defvar inhibit-edb nil
+  "*Non-nil means don't automatically parse EDB database files.
+Sometimes a value of t is useful for debugging.")
+
+(defun edb-after-find-file ()
+  "If this is a database file in EDB internal file layout, run EDB.
+To be placed in `find-file-hooks'."
+  ;; When this is called, we are at the beginning of the buffer.
+  (if (and (not inhibit-edb)
+	   (looking-at ";; Database file written by EDB"))
+      (progn
+        (require 'database)
+        (db-this-buffer)
+        ;; db-this-buffer kills the current buffer; and an error results
+        ;; when Emacs tries to switch back to it.  find-file-noselect
+        ;; uses the buf variable to hold the new buffer.
+        (setq buf (buffer-name (current-buffer))))))
+
+(require 'edb-fixes-1.21)
+
+    ;;
+    ))

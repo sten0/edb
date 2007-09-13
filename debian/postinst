@@ -1,0 +1,7 @@
+#! /bin/sh -e
+
+## install info files
+install-info --quiet --section "Emacs" "Edb" \
+             --description="A database program for GNU Emacs." /usr/share/info/edb.info
+
+#DEBHELPER#

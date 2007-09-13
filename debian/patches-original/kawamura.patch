@@ -1,0 +1,29 @@
+--- db-time.el.orig	Wed Sep 20 11:15:37 2000
++++ db-time.el	Wed Sep 20 11:16:02 2000
+@@ -808 +808 @@
+-;;; Functions: 	     parse-time-string, format-time-12, format-time-24
++;;; Functions: 	     db-parse-time-string, format-time-12, format-time-24
+@@ -845 +845 @@
+-;; parse-time-string
++;; db-parse-time-string
+@@ -854 +854 @@
+-  "An array of regexps used by parse-time-string, indexed by the
++  "An array of regexps used by db-parse-time-string, indexed by the
+@@ -858 +858 @@
+-(defun parse-time-string (time-string)
++(defun db-parse-time-string (time-string)
+@@ -891 +891 @@
+-`parse-time-default-function' should return, and `parse-time-string' should
++`parse-time-default-function' should return, and `db-parse-time-string' should
+@@ -895 +895 @@
+-  "Return a default value for `parse-time-string' to use if its input is nil."
++  "Return a default value for `db-parse-time-string' to use if its input is nil."
+@@ -927 +927 @@
+-		(parse-time-string (car times)))
++		(db-parse-time-string (car times)))
+@@ -992 +992 @@
+-  (displayspec-set-display->actual ds (function parse-time-string))
++  (displayspec-set-display->actual ds (function db-parse-time-string))
+@@ -1022 +1022 @@
+-  (recordfieldspec-set-stored->actual rs (function parse-time-string))
++  (recordfieldspec-set-stored->actual rs (function db-parse-time-string))

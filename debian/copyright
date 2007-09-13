@@ -1,0 +1,30 @@
+This package was debianized by Takao KAWAMURA <kawamura@debian.org> on
+Sun, 23 May 1999 21:58:27 +0900.
+
+It was downloaded from http://pag.csail.mit.edu/~mernst/software/edb/
+See also http://www.emacswiki.org/cgi-bin/wiki/EmacsDataBase
+
+Copyright (C) 1991-1995 Michael D. Ernst <mernst@theory.lcs.mit.edu>
+
+EDB is distributed under the same conditions as GNU Emacs.
+
+GNU Emacs is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2, or (at your option)
+any later version.
+
+This package is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with GNU Emacs; see the file COPYING.  If not, write to the
+Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+Boston, MA 02110-1301, USA.
+
+On Debian systems, the complete text of the GNU General Public License,
+version 2, can be found in `/usr/share/common-licenses/GPL-2'.
+
+The Debian packaging is 2006 Jari Aalto <jari.aalto@cante.net> and
+is distributed under the same conditions as the upstream, see above.

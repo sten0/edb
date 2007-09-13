@@ -1,0 +1,37 @@
+edb for Debian Developers
+-------------------------
+
+Dpatch conversion - Jari Aalto
+..............................
+
+  Adopted orphaned package and worked out all the included patches
+  that were in edb_1.21-13.diff.gz as follows. The original patches
+  have been saved to directory debian/patches-original/. The order of
+  these patches were (notice the reverse patch):
+
+    patch < debian/sakai.patch
+    patch -R < debian/nitschke.patch
+    patch < debian/kawamura.patch
+
+  These were converted into single dpatch:
+
+    debian/patches/10_sakai-nitschke-kawamura-combined.dpatch
+
+Previous maintainer's comment
+.............................
+
+  Takao KAWAMURA <kawamura@debian.org>, Sun, 23 May 1999 21:58:27 +0900
+
+  I have applied two patches to this package.  One is written by
+  ksakai@netwk.ntt-at.co.jp to make EDB work with Emacs 20.3.  The other
+  is written by myself to make EDB work with XEmacs.
+
+  I have also incorporated edb-fixes-1.21.el, which is written by
+  swift@alum.mit.edu, into this package to fix some bugs in EDB v1.21.
+
+  In this package, a variable `inhibit-edb' which if non-nil will load
+  an EDB database file normally rather than as a database is added by
+  swift@alum.mit.edu.  This is useful occasionally for debugging
+  purposes.
+
+ -- Jari Aalto <jari.aalto@cante.net>, Thu, 13 Sep 2007 10:24:25 +0300
