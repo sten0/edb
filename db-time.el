@@ -54,8 +54,10 @@
        (let ((day (date-day date))) (or (not day) (zerop day)))))
 
 (defsubst date-year-short (date)
-  "Extract the year and return it modulo 1900."
-  (% (date-year date) 1900))
+  "Extract the year and return it as a two digit value."
+  (let ((yy (date-year date)))
+    (cond ((> yy 1999) (% yy 2000))
+          (t (% yy 1900)))))
 
 (defun date-year-long (date)
   "Extract the year as a four digit value."
@@ -141,7 +143,7 @@ The Gregorian date Sunday, December 31, 1 BC is imaginary."
 ;;; Months
 
 (defconst monthlength-array
-  [0 31 28 31 30 31 30 31 31 30 31 30 31])
+  [0 31 29 31 30 31 30 31 31 30 31 30 31])
 
 ;; I could add a fancy leap year check.
 (defun date-month-day-compatible (date)
@@ -805,7 +807,7 @@ If DATE is nil, return the empty string."
 ;;; Display types:   time, time-12, time-24, time-12-hhmm, time-24-hhmm,
 ;;;		     and time-hhmm.
 ;;; Field Types:     time, time-12, time-24, and time-arb-storage
-;;; Functions: 	     parse-time-string, format-time-12, format-time-24
+;;; Functions: 	     db-parse-time-string, format-time-12, format-time-24
 ;;;		     time->storage-string, storage-string->time,
 ;;;		     time-order, time-merge, time-match-function,
 ;;;		     time-default-constraint
@@ -842,7 +844,7 @@ If DATE is nil, return the empty string."
     (error "Invalid time value.")))
 
 
-;; parse-time-string
+;; db-parse-time-string
 ;;
 ;; State-driven time parser; I converted this from my Perl time parser.
 ;; Alan K. Stebbens, UCSB <aks@hub.ucsb.edu>
@@ -851,11 +853,11 @@ If DATE is nil, return the empty string."
   [ "\\([0-9]?[0-9]\\)\\(:\\| ?[ap]m\\)"
     "\\([0-5][0-9]\\)\\(:\\| ?[ap]m\\|\\Sw\\|$\\)"
     "\\([0-5][0-9]\\)\\( *[ap]m\\|\\Sw\\|$\\)" ]
-  "An array of regexps used by parse-time-string, indexed by the
+  "An array of regexps used by db-parse-time-string, indexed by the
 current parse state to obtain the appropriate regexp.")
 
 
-(defun parse-time-string (time-string)
+(defun db-parse-time-string (time-string)
   "Parse the first occurrence of hh:mm:ss in TIME-STRING; return a time object.
 If \":ss\" is hidden in TIME-STRING, the seconds default to zero.
 If TIME-STRING contains only whitespace, return an empty time object.
@@ -888,11 +890,11 @@ If TIME-STRING is nil, use the result of `parse-time-default-function' instead."
 
 (defvar parse-time-default 'empty
   "One of the symbols 'empty or 'current-time, specifying what time string
-`parse-time-default-function' should return, and `parse-time-string' should
+`parse-time-default-function' should return, and `db-parse-time-string' should
 use when passed a nil argument.")
 
 (defun parse-time-default-function ()
-  "Return a default value for `parse-time-string' to use if its input is nil."
+  "Return a default value for `db-parse-time-string' to use if its input is nil."
   (cond ((eq parse-time-default 'empty)
 	 "")
 	((or (eq parse-time-default 'current-time)
@@ -924,7 +926,7 @@ use when passed a nil argument.")
      (while times
        (message "In = \"%s\" Out = \"%s\" (CR for next)"
 		(car times)
-		(parse-time-string (car times)))
+		(db-parse-time-string (car times)))
        (read-char)
        (setq times (cdr times)))))
 
@@ -989,7 +991,7 @@ of the name \"format-time-TYPE\"."
 (let ((ds (make-displayspec)))
   (displayspec-set-indent ds nil)
   (displayspec-set-actual->display ds (function format-time-12))
-  (displayspec-set-display->actual ds (function parse-time-string))
+  (displayspec-set-display->actual ds (function db-parse-time-string))
   (define-displaytype-from-displayspec 'time ds))
 
 (def-time-disptype "12")		;am/pm time
@@ -1019,7 +1021,7 @@ of the name \"format-time-TYPE\"."
   (define-recordfieldtype-from-recordfieldspec 'time-24 rs))
 
 (let ((rs (copy-recordfieldspec (recordfieldtype->recordfieldspec 'time))))
-  (recordfieldspec-set-stored->actual rs (function parse-time-string))
+  (recordfieldspec-set-stored->actual rs (function db-parse-time-string))
   (define-recordfieldtype-from-recordfieldspec 'time-arb-storage rs))
 
 ;; time-order

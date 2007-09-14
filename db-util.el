@@ -557,7 +557,7 @@ This is more useful than `in-buffer' for window manipulation, as by `scroll-up'.
 	    symbol (car pair)
 	    blv (cdr blv))
       ;; nil and 0 can be bogus local variables; never copy buffer-undo-list
-      (if (not (memq symbol '(0 nil buffer-undo-list)))
+      (if (not (memq symbol '(0 nil buffer-undo-list enable-multibyte-characters)))
 	  (progn
 	    (if (not (symbolp symbol))
 		(error "\"%s\" should be a symbol with value \"%s\""
@@ -688,8 +688,8 @@ but simply a set of forms."
 
 ;; Originally by Joe Wells <jbw@cs.bu.edu>
 (defun db-best-fit-message (text &optional buffer)
-  "Show TEXT in echo area if it fits or in optional BUFFER (default *Message*)."
-  (or buffer (setq buffer "*Message*"))
+  "Show TEXT in echo area if it fits or in optional BUFFER (default *Messages*)."
+  (or buffer (setq buffer "*Messages*"))
   (save-excursion
     (set-buffer (get-buffer-create " temp printing buffer"))
     (erase-buffer)

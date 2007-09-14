@@ -25,7 +25,7 @@ clean: unpatch
 	dh_testroot
 	rm -rf build-stamp $(PKGDIR)
 
-	-$(MAKE) cleandoc
+	$(MAKE) cleandoc
 
 	dh_clean
 

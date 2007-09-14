@@ -434,6 +434,7 @@ Don't set this variable directly; use command `db-toggle-auto-edit-mode'.")
       (define-key database-edit-mode-map [mouse1] 'db-lucid-mouse-jump-to-point)
       (define-key database-edit-mode-map [mouse3] 'database-edit-mode-menu)
 
+      (load "db-summary")
       (define-key database-summary-mode-map [mouse1] 'db-lucid-mouse-jump-to-point)
 
       (defun db-lucid-mouse-jump-to-point (e)

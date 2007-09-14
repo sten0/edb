@@ -65,7 +65,8 @@ This variable is examined only when a data display buffer is being set up.")
 If the text already has a face, that takes precedence.
 This variable is examined only when a data display buffer is being set up.")
 
-(deflocalvar dbf-selected-field-face
+;;; added `nil' to this (unused) variable decln to correct it
+(deflocalvar dbf-selected-field-face nil
   "If non-nil, the face for the field being currently edited.")
 
 
@@ -2445,8 +2446,10 @@ fieldnumbers strictly less than it will be displayed."
     (dbc-update-database-modified-p)
     (buffer-disable-undo (current-buffer))
     (if db-fontification
-	(map-extents (function (lambda (x y) (delete-extent x)))
-		     (current-buffer) (point-min) (point-max) nil))
+	(when (save-match-data 
+		(string-match "\\(Lucid\\|Xemacs\\)" (emacs-version)))
+	  (map-extents (function (lambda (x y) (delete-extent x)))
+		       (current-buffer) (point-min) (point-max) nil)))
     (erase-buffer)
     (while (< field-index dbf-displayspecs-length)
       ;; (db-debug-message "display-record:  field %s" field-index)
@@ -2631,20 +2634,23 @@ fieldnumbers strictly less than it will be displayed."
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Data display buffer fontification
-;;;
+;;; Data display buffer fontification (GNU Emacs version)
+;;; (See original Lucid versions below)
+
+(defun db-inter-field-face-setup ()
+  "Initialise the properties of the variable `db-inter-field-face'.
+Really only a trivial example."
+  (interactive)
+  (copy-face 'default 'db-inter-field-face)
+  (set-face-foreground 'db-inter-field-face "magenta"))
 
 (if db-fontification
     ;; Allowing user to set his own preferences in ~/.Xdefaults
     (progn
-      (or (find-face 'db-inter-field-face)
+      (or (internal-find-face 'db-inter-field-face)
  	  (make-face 'db-inter-field-face))
       (or (face-differs-from-default-p 'db-inter-field-face)
 	  (copy-face 'bold 'db-inter-field-face))))
-
-;; This is a bit of a hack.  Leaving out the white space stops the field
-;; text from occassionally taking on the 'db-inter-field-face'.  If the
-;; user did not use white space the this would evidently not work.
 
 (defun db-fontify (start end)
   "Fontify the region between START and END.  Leave out the leading and
@@ -2657,9 +2663,44 @@ fieldnumbers strictly less than it will be displayed."
       (goto-char end)
       (skip-chars-backward " \t\n")
       (if (< ext-start (point))
-	  (set-extent-face
-	   (make-extent ext-start (point))
-	   'db-inter-field-face)))))
+	  (let (overlay-extent)
+	    (setq overlay-extent (make-overlay ext-start (point)))
+	    (put-text-property (overlay-start overlay-extent)
+			       (overlay-end overlay-extent)
+			       'face 'db-inter-field-face
+			       (overlay-buffer overlay-extent))
+	    (overlay-put overlay-extent 'face 'db-inter-field-face))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Data display buffer fontification (Lucid emacs only)
+;;;;
+
+;(if db-fontification
+;    ;; Allowing user to set his own preferences in ~/.Xdefaults
+;    (progn
+;      (or (find-face 'db-inter-field-face)
+; 	  (make-face 'db-inter-field-face))
+;      (or (face-differs-from-default-p 'db-inter-field-face)
+;	  (copy-face 'bold 'db-inter-field-face))))
+
+;;; This is a bit of a hack.  Leaving out the white space stops the field
+;;; text from occassionally taking on the 'db-inter-field-face'.  If the
+;;; user did not use white space the this would evidently not work.
+
+;(defun db-fontify (start end)
+;  "Fontify the region between START and END.  Leave out the leading and
+;  trailing white space."
+;  (let (ext-start)
+;    (save-excursion
+;      (goto-char start)
+;      (skip-chars-forward " \t\n")
+;      (setq ext-start (point))
+;      (goto-char end)
+;      (skip-chars-backward " \t\n")
+;      (if (< ext-start (point))
+;	  (set-extent-face
+;	   (make-extent ext-start (point))
+;	   'db-inter-field-face)))))
 
 ;;; Old version
 ;; (defun db-fontify (start end)
