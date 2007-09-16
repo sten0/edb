@@ -1,3 +1,12 @@
+edb (1.21-18) unstable; urgency=low
+
+  * debian/copyrigt:
+    - Layout adjusted to match latest dh-make template.
+    - Corrected Copyright from GPL-2 to GPL as this is the right
+      edb license.
+
+ -- Jari Aalto <jari.aalto@cante.net>  Sun, 16 Sep 2007 22:29:34 +0300
+
 edb (1.21-17) unstable; urgency=low
 
   * [OVERALL]: Converted hand written patch system to dpatch.
