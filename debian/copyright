@@ -1,18 +1,20 @@
 This package was debianized by Takao KAWAMURA <kawamura@debian.org> on
-Sun, 23 May 1999 21:58:27 +0900.
+1999-05-23 21:58:27+09 Sun.
 
-It was downloaded from 
+It was downloaded from:
 
-    http://pag.csail.mit.edu/~mernst/software/edb/
+    http://www.gnuvola.org/software/edb/
     See also http://www.emacswiki.org/cgi-bin/wiki/EmacsDataBase
 
 Upstream Authors:
 
-    Michael D. Ernst <mernst@theory.lcs.mit.edu>
+    Thien-Thi Nguyen <ttn@gnuvola.org>
+    Michael D. Ernst <mernst@theory.lcs.mit.edu> (no longer)
 
 Copyright:
 
-    (C) 1991-1995 Michael D. Ernst <mernst@theory.lcs.mit.edu>
+    Copyright (C) 2004-2008 Thien-Thi Nguyen
+    Copyright (C) 1991-1995 Michael D. Ernst <mernst@theory.lcs.mit.edu>
 
 License: GPL
 
@@ -35,12 +37,8 @@ License: GPL
 
 The Debian packaging is licensed under the GPL, see below, and is:
 
-    (C) 2006-2007 Jari Aalto <jari.aalto@cante.net>
-
-Debian packaging is hosted at:
-
-    http://git.debian.org/collab-maint/<project>.git
-    git clone login@git.debian.org:/git/collab-maint/<project>.git
+    Copyright (C) 2006-2007 Jari Aalto <jari.aalto@cante.net>
+    Copyright (C) 1998-2004 Takao KAWAMURA <kawamura@debian.org>
 
 On Debian systems, the complete text of the GNU General
 Public License can be found in `/usr/share/common-licenses/GPL'.
