@@ -1,87 +1,116 @@
-This is the README file for EDB, a database program for GNU Emacs.
-The bulk of the EDB documentation is in the texinfo file database.texi.
-EDB was written by Michael Ernst <mernst@theory.lcs.mit.edu>.
+Welcome!
+========
+
+	This directory contains EDB, the Emacs Database.
+	EDB was written by Michael Ernst <mernst@theory.lcs.mit.edu>,
+	and is being maintained by Thien-Thi Nguyen <ttn@gnuvola.org>.
+
+	EDB homepage: <http://www.gnuvola.org/software/edb/>
 
 
-Files in EDB
+Dependencies
 ============
 
-(In lexographic order)
-
-Makefile	Byte-compile, create documentation, etc., from the shell
-
-README		This file:  manifest and installation instructions
-
-README-example	README file for the separate EDB examples distribution
-
-database.el	The main file; primarily loads other files
-
-db-convert.el	Changing database structure:  add and remove fields, etc.
-
-db-file-io.el	Saving databases to disk, loading databases from disk
-
-db-format.el	Displaying and editing a single database record
-
-db-interfa.el	Keystroke bindings, wrapper functions
-
-db-isbn.el	ISBN type
-
-db-isbntst.el	Test cases for ISBN type
-
-db-rdb.el	Support for RDB databases
-
-db-rep.el	Data abstractions and operations upon them
-
-db-search.el	Searching and matching records
-
-db-sort.el	Sorting records
-
-db-summary.el	Summary buffer with limited info about every database record
-
-db-tagged.el	Support for tagged database files
-
-db-time.el	Definitions of time and date field types
-
-db-two-dbs.el	Operations on two databases:  merging, comparing, etc.
-
-db-types.el	Definitions of useful field types
-
-db-util.el	Useful non-EDB specific utility functions
-
-edb.texi	Texinfo documentation:  user manual
-
-See below for how to get pre-processed copies of the documentation.
+	GNU make that supports VPATH	-- build/install
+	GNU Emacs 22.x or later		-- build/install/run
 
 
 Installation
 ============
 
-See edb-inst.texi for more complete and definitive instructions.
+	To install EDB, unpack the tarball, change into the resulting
+	directory (usually named edb-${VERSION}), and issue the three
+	commands:
 
-In short, place the .el files in your Emacs load path (probably in a
-directory of their own).  You can add a directory to your Emacs lisp load
-path by putting something similar to the following in your .emacs file:
+		./configure
+		make
+		make check	# optional but recommended
+		make install
 
-	(setq load-path (cons (expand-file-name "~/emacs/edb") load-path))
+	This byte-compiles the .el files, and copies .el and .elc files
+	to ${sitelisp}/edb, and edb.info to ${infodir}, creating those
+	directories first if necessary.  Normally, these variables have
+	the values:
 
-In order to autoload EDB, put the following in your .emacs file:
+		${prefix}	/usr/local
+		${datadir}	${prefix}/share
+		${sitelisp}	${datadir}/emacs/site-lisp
+		${infodir}	${prefix}/info
 
-	(autoload 'db-find-file "database" "EDB database package" t)
+	To use DIR instead of "/usr/local" for ${prefix} include the
+	option `--prefix DIR' to the configure script.  To choose an
+	alternate ${sitelisp}, use the option `--with-sitelisp=DIR'.
+	You can use the `--help' option to see full details.
 
-Use M-x db-find-file to start up EDB on a particular database file.
+	For backward-compatibility the normal installation includes some
+	function aliases that can be considered "namespace-polluting".
+	To arrange to not install these, you can use the configure option
+	`--disable-badnames'.  With this option, the files db-nosetf.el
+	and db-oldnames.el are not installed, and neither are the aliases:
+		maprecords
+		define-displaytype-from-displayspec
+		define-recordfieldtype-from-recordfieldspec
+		define-enum-type
+	See the manual for new names to use, instead.
 
-It is recommended that, lest it run very slowly, you byte-compile the code.
-You can do so either by calling function byte-compile-database, or by
-typing "make" to the shell in the EDB directory.
+	By default, the configure script looks for and uses the first
+	"emacs" executable found in a directory named in the PATH env
+	var.  To use another Emacs, you can either change PATH, or you
+	can specify the env var EMACS to name the new executable.  The
+	latter approach overrides the PATH search.  For example:
 
-The texinfo documentation uses version 2 of texinfo, which is available
-from prep.ai.mit.edu.  Earlier versions of texinfo will not properly format
-the manual, either for TeX or for info.  If you don't have a sufficiently
-up-to-date version of texinfo, you can simply get the files edb.dvi,
-edb.ps, edb.info, and edb.info-[123456] (six files) from
-theory.lcs.mit.edu:/pub/emacs/edb/; these are versions of the documentation
-ready for printing and for use in info, respectively.  Likewise, you can
-get edb-inst.{dbi,ps,info}.
+		EMACS=$HOME/emacs-22/src/emacs
+		export EMACS
+		./configure ...
 
-Sample databases can be found in the file examples.tar.Z or the directory
-examples, both in theory.lcs.mit.edu:/pub/emacs/edb/.
+	The specified (or found) Emacs is set in the various makefiles.
+	You can furthermore (at runtime) select another Emacs to use by
+	specifying the `EMACS' variable in the command-line for make.
+	For example:
+
+		make check EMACS=$HOME/picky-emacs/src/emacs
+
+	After installation, the unpacked directory can be deleted.
+
+	Note that installation does not place files directly in the
+	${sitelisp} directory, but rather a subdirectory named "edb".
+	It is assumed there exists the file ${sitelisp}/subdirs.el
+	that is responsible for adding ${sitelisp}/edb to the Emacs
+	`load-path'.  If this is not the case, you can create one to do
+	the job, with contents:
+
+	(if (fboundp 'normal-top-level-add-subdirs-to-load-path)
+	    (normal-top-level-add-subdirs-to-load-path))
+
+	This has been verified to work with GNU Emacs 21.3.
+
+
+Usage
+=====
+
+	To experiment, evaluate in this directory:
+
+	(add-to-list 'load-path default-directory)
+	(require 'database)
+
+	Then you can do Dired in subdirs `examples' and `skram', move
+	point to various data and .edb files, and use the command:
+
+	(defun my-dired-edb-interact ()
+	  (interactive)
+	  (let ((filename (dired-get-filename)))
+	    (if (string-match "[.]edb$" filename)
+	        (edb-interact filename nil)
+	      (db-find-file filename))))
+
+	Full details are in the documentation, highly recommended
+	for both end users and programmers.
+
+
+Reporting Bugs
+==============
+
+	If you find a problem with EDB that is not explained in the
+	documentation, please send a bug report to <ttn@gnuvola.org>.
+	Include EDB version and as concise a test case as possible
+	(that reproduces the problem).

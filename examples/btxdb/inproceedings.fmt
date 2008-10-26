@@ -1,0 +1,25 @@
+//////////////////////////// INPROCEEDINGS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+         Code: \tag,nil-or-string
+................................................................Required
+       Author: \author,author
+        Title: \title,nil-or-string,indent
+    Booktitle: \booktitle,nil-or-string,indent
+         Year: \year,nil-or-string
+................................................................Optional
+       Editor: \editor,author
+       Volume: \volume,nil-or-string
+       Number: \number,nil-or-string
+       Series: \series,nil-or-string,indent
+        Pages: \pages,nil-or-string
+      Address: \address,nil-or-string,indent
+        Month: \month,month
+ Organization: \organization,nil-or-string,indent
+    Publisher: \publisher,nil-or-string,indent
+         Note: \note,nil-or-string,indent
+          Key: \key,nil-or-string
+     Crossref: \crossref,nil-or-string
+.................................................................Ignored
+     Keywords: \keywords,nil-or-string,indent
+      Remarks: \annote,nil-or-string,indent
+      Updated: \updated,nil-or-string
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ INPROCEEDINGS /////////////////////////////

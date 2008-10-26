@@ -1,0 +1,721 @@
+How to use EDB, the Emacs Database and print two column mailing labels
+======================================================================
+
+R. J. Chassell, bob@gnu.ai.mit.edu
+10 March 1993
+
+You need three Emacs Lisp packages: 
+
+  * The Emacs Database program by Michael Ernst  
+
+  * Two Column mode, by Daniel Pfeiffer 
+
+  * The `edb-format-addresses.el' file that I wrote, appended to this message.
+
+This file contains the following files near the end, following line feeds:
+
+    sample.dat                          A sample data file with one record.
+    addresses.fmt                       An addresses formatting file.
+    addresses.lbl                       A formatting file for making labels
+    edb-format-addresses.el             An Emacs Lisp file for
+                                            handling addresses.
+
+EDB and Two Column mode are available from:
+
+    edb (1.09)        20-Jan-1993
+         Michael Ernst, <mernst@theory.lcs.mit.edu>
+         archive.cis.ohio-state.edu:
+            /pub/gnu/emacs/elisp-archive/packages/edb.tar.Z
+         Customizable database program for Emacs; replaces forms editing modes
+
+    two-column        14-May-1991
+         Daniel Pfeiffer, <pfeiffer@irit.fr>
+         archive.cis.ohio-state.edu:
+            /pub/gnu/emacs/elisp-archive/interfaces/two-column.el.Z
+         Support for editing of a two-column text.
+
+Your .emacs file should contain the following: 
+Be sure set your load path and use the right path names; 
+these are for my own site.
+
+;;;;;;;;;;;;;;;; for .emacs ;;;;;;;;;;;;;;;;
+
+;;; Emacs Database, EDB
+;;  from Michael Ernst <mernst@@theory.lcs.mit.edu>
+;;  25 Nov 1991
+
+;; Be sure to specify the right directory for your system.
+(setq load-path (cons (expand-file-name "/u/edb") load-path))
+(setq edb-directory "/u/edb")
+
+(autoload 'db-find-file "database" "EDB database package" t)
+(autoload 'load-database "database"
+          "Load all the files of EDB, the Emacs database." t)
+
+;;; Load EDB Update
+;;  Make it easy to install updates of EDB 
+;; 18 May 1992
+
+(autoload 'edb-update "database" "EDB database package" t)
+
+(autoload 'edb-format-addresses "db-format-addresses"
+          "Address label formatting" t)
+
+;;; Two column mode
+;;  from Daniel Pfeiffer <pfeiffer@cix.cict.fr, @irit.fr>, 
+;;  14 May 1991
+
+(autoload 'two-column "two-column" nil t)
+
+;; Simplify typing the command
+(fset 'two-column 'two-column:split)
+
+;; Set width for two-column mode
+(setq two-column:window-width 50)
+
+;;;;;;;;;;;;;;;; end EDB and Two column entry for .emacs file ;;;;;;;;;;
+
+Three types of EDB file
+=======================
+
+EDB uses three different kinds of file:
+
+  * Data files.  These contain the data and have a `.dat' extension to
+    the file name.
+
+  * Format files.  These have a `.fmt' extension; these specify how the
+    data appears on the screen, or in a summary.
+
+    Usually, the screen display carries more information than a
+    printing label.  For example, the data includes telephone numbers.
+
+  * Label files.  These are also called `report files'.  These contain
+    the formatting commands for generating a printed address list.
+
+    A label file contains only the formatting commands for printing
+    the labels;it does not contain the formatting for displaying the
+    telephone number or other information in the data file.
+
+    Technically, a label file is just another format file, with
+    different formatting commands.
+
+    A label file may have either a `.fmt' extension or else some
+    other extension.  It is best to use `.lbl' so neither person nor
+    machine confuses these files with format files.
+
+
+Using EDB: the basics
+=========
+
+Change to the EDB directory and find a test file using the
+following command:
+
+    M-x db-find-file RET filename.dat RET
+
+For example, the following command finds the sample addresses file:
+
+    M-x db-find-file RET sample.dat RET
+
+EDB will read in the `.dat' data file and format the data for display
+on the screen according to the `.fmt' file of the same filename.  (If
+you don't have a corresponding `.fmt' file, EDB will ask you for the
+name of the format file to use; in this case, the format file is
+`addresses.fmt'.)
+
+   In EDB, in View mode, you can move from one file to another using
+   `n' and `p'.
+
+   View mode is read-only; you cannot edit in View mode.
+
+   Change to Edit mode by typing `TAB'; this moves point into a field.
+
+       Use TAB to move from one field to another.
+
+   Change back to View mode from Edit mode by typing `C-c C-c'.
+
+   In Edit mode, type `M-n', M-p' to go to next, prev record.
+
+   In either mode, type `C-x C-s' to save changes you have made.
+
+   In View mode, type `D' to create a summary.
+
+   In View mode, type `q' to quit EDB temporarily; this command just buries
+                                      the buffer; it does not offer to save.
+                 type `x' to exit EDB, offering to save changes.
+
+   In either mode, type `C-h m' for a list of commands; 
+                 or read the documentation.
+    
+   The sort feature is especially useful; for example, you can sort
+   addresses by zip code, company, department, and name in that order.
+   This means that all the people at one company site are in
+   alphabetical order by name within each department.  The sort
+   feature is described in the documentation.
+
+Display
+=======
+
+Here is the display for an on-screen database entry.  See the 
+`addresses.fmt' file at the end of this message for the actual file.
+Any field in this display can be blank.
+
+    Customer Name                      Mail stop
+    Department name
+    Company name
+    First address line
+    Second address line
+    City, State        Zip code
+    Telephone
+    Date of last order
+    Type (individual, company, university, etc.)
+    Remarks
+
+The summary for this display format shows the following: 
+
+    company name, department, person's name, city, state
+
+The summary file is all on one line (the fields are truncated as necessary).
+
+The mailing labels contain only addresses.  These are specified in the
+`addresses.lbl' format file (see the `addresses.lbl' file at the end of
+this message for the actual file.)
+
+    Customer Name           Mail stop
+    Department name
+    Company name
+    First address line
+    Second address line
+    City, State        Zip code
+
+Each address has seven lines, including the blank line that separates
+an address from the following address.
+
+The `addresses.fmt' and `addresses.lbl' files are appended to this
+file of instructions.
+
+
+The procedure below describes how to remove blank lines from within
+the body of each address and reinsert them at the end of the address.
+This way each printed label looks compact, but each each address
+continues to take exactly seven lines, so the printer prints each
+label in the right place.  (You can adjust the number of lines per
+label.)
+
+A sample session is shown below after these explanations.  The sample
+session spells out all the commands.
+
+How to make a mailing list
+==========================
+
+Read in the database using the `M-x db-find-file' command (if prompted
+for an format file, type the file name, such as `addresses.fmt')
+
+Then type `r' to create a `report' file which contains the address
+labels.  When prompted for a label format file, type the file name,
+for example, `addresses.lbl'.
+
+The `r' command creates a Text mode buffer with every record listed in
+the address label format.  The buffer is called *Database Report* and
+is in Text mode, not EDB mode.  The buffer is not yet a file; it is
+just a buffer.  You have to save it to make it a file.
+
+
+How to remove blank lines from labels
+=====================================
+
+Some addresses lack department names or have blank second address lines.
+You could print address labels with these blank lines, but the labels
+looks better if you remove them.
+
+The `m-x edb-format-addresses' command removes blank lines from the
+interior of an address and tacks them onto the end of the address.
+This way, each address continues to start N lines down, so you can use
+the list for printing sticky address labels
+
+To remove blank lines, visit the buffer containing the addresses list;
+this will be the  *Database Report*  buffer.  If you have been
+following these instructions, you will already be visiting this buffer.
+
+Type 
+
+    M-x edb-format-addresses
+
+This command changes the buffer.  Save the buffer as a file, for
+example, save it as `labels'.  Now you have a single column file of
+addresses.  The next step is to make a two column file, for printing
+on sticky address labels.
+
+(Read the documentation about the `forms-print-format-lines-adjust'
+variable in the `edb-format-addresses.el' file to see how to add blank
+lines to each address so each label takes up more or less space.)
+
+
+Two Column mode in Emacs.  
+========================
+
+Two Column mode is a mode for writing text side by side; it is
+especially useful for people who write in both French and English, but
+it is also useful for creating two column address lists.
+
+
+
+How to make a two column label list from a one column list
+==========================================================
+
+Go to the middle of the `labels' file.  
+
+Type
+
+    C-u 5 M-<
+
+to get to the exact middle of the buffer.
+
+==> The sample data file included in this message contains
+==> only one address; you will need to add more.
+
+Put the cursor on the first line of the closest address.  This address
+is going to end up being the first label in the right hand column.
+The first label in the whole file will end up being the first label in
+the left hand column.
+
+Clip out all the text from point to the end of the buffer, using the
+`C-w' command.  Type:
+
+    C-w
+
+Enter two column mode by typing:
+
+    M-x two-column RET
+
+(If `two-column' is not set with an `fset` command in your .emacs file,
+you will have to type the full name of the function: `two-column:split'.)
+
+Put point into the right hand window, and then yank the latter half of
+your address list buffer into the right hand side by using `C-y'
+command.  Type:
+
+    C-y
+
+Then merge the two columns:
+
+    C-x 6 1
+
+(You should use a 50 column wide window.  If you do not set 50 columns
+in your .emacs file, you can set it with the following command:
+
+    M-x set-variable RET two-column:window-width RET 50 RET
+
+After setting the window width, type `C-x 6 2' to regenerate two
+windows.  You may want to try other widths, too.)
+
+
+Form feeds for printing
+=======================
+
+Each page needs to start with a label at the top of the page.  To do
+this, you need to insert form feeds in the right places.  For seven
+line labels, you need to insert a form feed every 63 lines.  You can
+either use a keyboard macro to do this or use the following elisp:
+
+(defun edb-sixty-three () 
+  "Insert Control-L every 63 lines."
+  (interactive)
+  (goto-char (point-min))
+  (while (not (eobp))
+    (next-line 63)
+    (insert ?\C-l)
+    (insert ?\n)))
+
+This function is in the `edb-format-addresses.el' file, so you should
+be able to run it by typing
+
+    M-x edb-sixty-three
+
+(Note that sixty-three lines is for an address's spacing of either 7
+or 9 lines; set `forms-print-format-lines-adjust' to a different
+number for different spacing.)
+
+Save file and then print it.
+
+================================================================
+
+Here is a Sample session:
+          ==============
+
+After changing to your EDB directory and entering Emacs, 
+read in the database file:
+
+    M-x db-find-file RET sample.dat RET 
+
+(Specify `addresses.fmt' as the format file.)
+
+==> The sample data file included in this message contains
+==> only one address; you will need to add more.
+
+Create a label buffer using addresses format:
+
+    r RET addresses.lbl
+
+Clean up addresses list:
+
+    M-x edb-format-addresses
+
+Go to middle of buffer
+
+    C-u 5 M-<
+
+Set mark on the beginning of the first line of a nearby address, go to
+the end of the buffer, and kill the region:
+
+    C-SPC M-> M-w
+
+Go to beginning of buffer:
+
+    M-<
+
+Start two-column mode:
+
+    M-x two-column RET
+
+Put the cursor into right hand window, go to beginning of that window,
+and yank the latter half of buffer into the right hand window:
+
+    M-<
+    C-y
+
+Merge the two columns:
+
+    C-x 6 1
+
+Insert a form feed every 63 lines 
+
+    M-x edb-sixty-three
+
+Or else, use a macro like this to do the same job:
+
+    M-<
+    C-x (
+    C-u 63 C-n 
+    C-q C-l RET
+    C-x )
+
+    C-u C-u C-x e
+
+Save the file and  print it using `lpr'.
+
+================================================================
+
+How to change the internal layout of a database file
+====================================================
+
+EDB can work with database data files in various internal layouts.  As
+a user, you do not see these internal layouts, unless you choose to
+visit the file using `find-file' rather than `db-find-file'.
+
+You can convert from one layout to another.
+
+  * Internal layout.  EDB works best when a database data file is
+    stored in an an internal layout, in Lisp, that is more efficient
+    than any of the other forms.
+
+  * Regular or Tab-delimited layouts.  Tab-delimited database files
+    are common through out the industry.  This is the layout used to
+    transfer and convert a database from one type of database software
+    to another.  I used this layout to transfer the sample database
+    from the old Forms mode to EDB.  You can use it to transfer
+    databases to and from proprietary databases.
+
+  * Non-regular layouts.  EDB can use non-regular layouts.  For
+    example, EDB can treat a password file, as-is, as a database.  You
+    can create layouts that make it easy to read files without using
+    the database.
+
+
+How to convert 
+from a regular, tab-separated database layout
+to EDB's internal database layout
+=================================
+
+Read in database.
+
+Set the `db-use-internal-rep-p' to `t' by typing: 
+
+    M-x set-variable RET db-use-internal-rep-p RET t RET
+
+and then write the database to a new file name by typing
+
+    C-x C-w new-filename RET
+
+
+How to convert 
+from EDB's internal database layout 
+to a regular, tab-separated database layout
+===========================================
+
+Read in database.
+
+Set the `db-use-internal-rep-p' to `nil' by typing: 
+
+    M-x set-variable RET db-use-internal-rep-p RET nil RET
+
+and then write the database to a new file name by typing
+
+    C-x C-w new-filename RET
+
+
+How to add new fields to database.
+=================================
+
+EDB has a built-in method to add new fields to an existing database, I
+cannot figure it out.  The technique still lacks a friendly user
+interface.  See the `db-convert.el' file.  [Due to these limitations,
+and because no one seems to mind, db-convert.el was removed from EDB
+starting with release 1.27 and later. --ttn 2006-06-05]
+
+Instead, I do the following:
+
+First, convert the database from EDB's internal database layout to a
+regular, tab-separated database layout.
+
+In the tab-separated database layout, you can add new fields by adding
+new tabs in the right places in each record.
+
+For example, the original addresses data file lacked two fields, one
+listing the date of the last order and the other listing the type of
+order.
+
+You can write an elisp function such as the following that adds tabs
+to each record in the data file.
+
+Here is a function that searches for tabs in each record.  It counts
+the number of tabs it finds and inserts new tabs after skipping past
+the appropriate number of exisiting tabs.
+
+;; This  adds two fields to each addresses list record after the tenth
+;; tab in that record.
+(defun add-fields () 
+"Add two fields to database."
+  (interactive)
+  (while (not (eobp))
+    (search-forward "\t" nil nil 10) ; search for ten tabs
+    (insert "\t\t")        ; insert additional tabs just after tenth tab
+    (forward-line 1)
+    ))
+
+The addresses format file is illustrated below.  (See further below
+for the actual `addresses.fmt' file.)  The addresses format file does
+not contain tabs (only the data file does), but the numbers shown
+below mark the location of each tab in the corresponding data file
+record.
+
+The `add-fields' function added the two tabs after tab number `10' to
+create the date and type fields.  (Remember, this illustration is
+based on a format, `.fmt', file.  You add tabs to the data, `.dat',
+file.  After adding tabs to the data file, you need to revise the .fmt
+file to handle the new fields.)
+
+
+    Name..............: \name,width=24     1     Mail Stop: \mail-stop
+    2
+    Dept..............: \dept
+    3
+    Company Name......: \company-name
+    4
+    Address line 1....: \address-line-1
+    5
+    Address line 2....: \address-line-2
+    6
+    City..............: \city,width=24     
+    7
+                 State: \state,width=6  
+    8
+              Zip code: \zip
+    9
+    Telephone.........: \telephone
+    10
+    Date of last order: \order-date
+    11
+    Type (Company, Individual, etc.): \type
+    12
+        Remarks.......: \remarks
+
+
+The two new tabs were inserted before the Remarks field that already
+existed in the database.
+
+
+Here is the `sample.dat' file; this contains only one record:
+
+;; Database file written by EDB; format 0.3
+
+[database "Unnamed Database 4" nil 1 "/u/edb/sample.dat" nil nil nil nil nil 13 [name mail-stop dept company-name address-line-1 address-line-2 city state zip telephone order-date type remarks] ((name . 0) (mail-stop . 1) (dept . 2) (company-name . 3) (address-line-1 . 4) (address-line-2 . 5) (city . 6) (state . 7) (zip . 8) (telephone . 9) (order-date . 10) (type . 11) (remarks . 12)) [string string string string string string string string string string string string string] (((0) (1) (2) (3) (4) (5) (6) (7) (8) (9) (10) (11) (12))) nil [sepinfo nil nil nil "
+" nil nil nil nil nil nil] [sepinfo nil nil nil "	" nil nil nil nil nil nil] [sepinfo nil nil nil nil nil nil nil nil nil nil] nil nil "	" "
+" nil nil nil nil nil nil nil nil]
+(
+
+["John Doe                    " "MS Q007 " "Record keeping" "Alpha-Omega Inc" "Riverside Road" "P.O. Box 27" "Anytown                    " "MA" "01234" "(617) 234-5678" "10 March 1993" "Company" "Traditional Yankee personality."]
+
+)
+
+
+Here is the `addresses.fmt' file:
+
+
+====== U.S. Address list ======
+
+Name..............: \name,width=24 Mail Stop: \mail-stop,width=10
+
+Dept..............: \dept
+
+Company Name......: \company-name
+
+Address line 1....: \address-line-1
+
+Address line 2....: \address-line-2
+
+City..............: \city,width=24 State: \state,width=2 Zip code: \zip
+
+Telephone.........: \telephone
+
+Date of last order: \order-date
+
+Type (Company, Individual, etc.): \type
+
+====== Remarks ======
+
+Remarks.......: \remarks
+
+Local Variables:
+eval: (database-set-fieldnames-to-list database
+	'(name mail-stop
+        dept
+        company-name
+        address-line-1
+        address-line-2
+        city state zip
+        telephone
+        order-date
+        type
+        remarks))
+eval: (dbf-set-summary-format "\\company-name,width=24 \\dept,width=12  \\name,width=12  \\city, \\state")
+End:
+
+
+Here is the `addresses.lbl' file:
+
+\name,width=24\mail-stop,width=10
+\dept
+\company-name
+\address-line-1
+\address-line-2
+\city, \state,width=2 \zip
+
+
+Here is the `edb-format-addresses.el' file:
+
+;;;;;;;;;;;;;;;; edb-format-addresses.el ;;;;;;;;;;;;;;;;
+
+;; R. J Chassell <bob@gnu.ai.mit.edu>
+
+;; Make a list of addresses look neater.
+
+;; Version 0.02
+;; 3 March 1993
+;; Improve documentation string.  Tells how to use `edb-format-addresses'.
+
+;; Version 0.01
+;; 20 July 1992
+
+; The function has two important features: 
+; 
+;   * every address starts N lines down, so you can use it for printing
+;     sticky address labels; 
+; 
+;   * blank lines are moved from the interior of the address to the end,
+;     so each printed address looks better.
+
+(defvar edb-printed-addresses-lines-per-record 7
+  "*Number of lines in address list as originally produced by EDB.")
+
+(defvar edb-printed-addresses-extra-lines 0
+  "*Number of additional blank lines printed in
+address list produced by EDB.")
+
+(defun edb-format-addresses ()
+  "Format addresses more neatly for printing.
+
+Visit buffer containing addresses list.
+Then type `M-x edb-format-addresses'.  This command changes the buffer.
+Save the buffer.
+
+This command removes the blank lines within the body of each address
+and reinserts them at the end of the address.
+
+Each printed address continues to be the same number of lines long, 
+but the blank lines are always at the end of the address field.
+
+The command should work with any EDB *Database Report* buffer
+formatted with six lines of potential text followed by one
+intentionally blank line; however it has only been tested with an EDB
+*Database Report* buffer formatted as follows \(the numbers not part
+of the record; the last line is blank\):
+
+1    Customer Name                           mail stop code
+2    Department name
+3    Company name
+4    First address line
+5    Second address line
+6    City, State        Zip code
+7
+
+Any of the lines and fields in an address may be blank.
+
+The variable `edb-printed-addresses-lines-per-record' specifies the
+number of lines \(including the blank line at the end\) in the address
+as produced by EDB in the *Database Report* buffer.  The default value
+is 7, and fits the format shown above.
+
+The variable `edb-printed-addresses-extra-lines' adds extra blank
+lines after the end of an address.  The default value is 0.  You may
+need extra blank lines to get each address to fit on address labels."
+
+  (interactive)
+  (widen)                               ; Just to be safe.
+  (goto-char (point-min))
+  (let* ((lines-per-record edb-printed-addresses-lines-per-record)
+         (line-number 1)
+          (deleted-lines 0))
+    (while (not (eobp))
+      (if (looking-at "^$\\|^[ \t\n]*$")
+          (progn
+            (delete-region
+             (1- (point))
+             (save-excursion (end-of-line) (point)))
+            (setq deleted-lines (1+ deleted-lines))))
+      (forward-line 1)
+      (setq line-number (1+ line-number))
+      ;; If this is the last line of the record,
+      ;; insert requisit number of deleted lines.
+      (if (zerop (% line-number lines-per-record))
+          (progn
+            (insert-char ?\n deleted-lines)
+            (setq deleted-lines 0)
+            (insert-char ?\n edb-printed-addresses-extra-lines)
+            (forward-line 1)
+            (setq line-number (1+ line-number)))))))
+
+;;; A seven  or nine line label needs to be printed with 63 lines on
+;;; each page.  This does the job:
+
+(defun edb-sixty-three () 
+  "Insert Control-L every 63 lines."
+  (interactive)
+  (goto-char (point-min))
+  (while (not (eobp))
+    (next-line 63)
+    (insert ?\C-l)
+    (insert ?\n)))
+
+;;;;;;;;;;;;;;;; end edb-format-addresses.el ;;;;;;;;;;;;;;;;
+
+================ end how-to-use-EDB ================

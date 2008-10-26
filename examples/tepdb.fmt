@@ -1,0 +1,42 @@
+TEP Alumni Database
+
+\last-name, \first-name, \jr		Nickname: \nickname
+Class year:  \class-year	Initiated: \initiation-date
+Address:  \home-address
+          \home-city, \home-state \home-zip
+Phone:  \home-phone
+
+Business title:  \biz-title
+Company name:  \biz-company-name
+     Address:  \biz-address
+               \biz-city, \biz-state \biz-zip
+       Phone:  \biz-phone
+
+Preferred address: \address-preferred
+Hold address from: \hold-address-from
+Degrees: \degrees	Courses: \degree-courses	 Dates: \degree-dates
+Birthdate: \birthdate
+Computer address: \computer-address
+Married: \married
+Date of death: \death-date
+Type: \type
+Big brother: \big-brother
+
+Old home address:  \old-home-address
+                   \old-home-city, \old-home-state \old-home-zip
+           Phone:  \old-home-phone
+
+Old Business title:  \old-biz-title
+      Company name:  \old-biz-company-name
+           Address:  \old-biz-address
+                     \old-biz-city, \old-biz-state \old-biz-zip
+             Phone:  \old-biz-phone
+
+Parents:  \parents-name
+Address:  \parents-address
+          \parents-city, \parents-state \parents-zip
+  Phone:  \parents-phone
+
+Contact date: \contact-date
+Question-mark:  \question-mark
+Comments: \comments

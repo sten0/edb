@@ -1,0 +1,6 @@
+":"; exec ./ebatch --no-site-file -l $0
+(require 'database)
+(cd (format "%s/skram" (or (getenv "topsrcdir") "..")))
+(shell-command (format "%s sk3" (or (getenv "MAKE") "make")))
+(setq res (shell-command-to-string "diff -Bbw skram.data sk3"))
+(unless (string= "" res) (error "diff showed:\n%S" res))

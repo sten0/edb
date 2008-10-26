@@ -1,0 +1,16 @@
+////////////////////////////// UNPUBLISHED \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+         Code: \tag,nil-or-string
+................................................................Required
+       Author: \author,author
+        Title: \title,nil-or-string,indent
+         Note: \note,nil-or-string,indent
+................................................................Optional
+        Month: \month,month
+         Year: \year,nil-or-string
+          Key: \key,nil-or-string
+     Crossref: \crossref,nil-or-string
+.................................................................Ignored
+     Keywords: \keywords,nil-or-string,indent
+      Remarks: \annote,nil-or-string,indent
+      Updated: \updated,nil-or-string
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ UNPUBLISHED /////////////////////////////

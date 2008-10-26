@@ -1,0 +1,28 @@
+====== Public Domain Software Archive ======
+
+\arch-shortname - \arch-longname
+
+Article: \arch-newsgroup/\arch-article    Issue: \arch-issue    Date: \arch-date
+
+Submitted by: \arch-from
+
+Keywords: \arch-keywords
+
+Parts: \arch-parts
+
+====== Remarks ======
+
+\arch-remarks
+
+Local Variables:
+eval: (database-set-fieldnames-to-list database
+	'(arch-newsgroup arch-volume arch-issue (arch-article . integer)
+	  arch-shortname (arch-parts . integer) arch-from arch-longname
+	  arch-keywords arch-date arch-remarks))
+eval: (setf
+        (database-print-name       database) "Public Domain Software Archive"
+        (database-field-priorities database) '(((arch-shortname)))
+        (database-substitutions    database) '(("\n" . "\C-k")))
+eval: (dbf-set-summary-format
+        "\\arch-shortname - \\arch-longname\n   [\\arch-parts parts]")
+End:

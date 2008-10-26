@@ -1,0 +1,21 @@
+;; Database file written by EDB; format 0.7
+["BibTeX Journal Name Database"
+ [symbol full abbrev]
+ [string string string]
+ nil
+ [nil nil nil "\n" nil nil nil nil nil nil]
+ [nil nil nil "	" nil nil nil nil nil nil]
+ nil nil "	" "\n" nil nil]
+((:format-file . "journals.fmt"))
+["cmc" "Communications in Mathematical Physics" "Comm.~Math.~Phys."]
+["cpc" "Computer Physics Communications" "Comp.~Phys.~Comm."]
+["np" "Nuclear Physics" "Nucl.~Phys"]
+["npbproc" "Nuclear Physics B (Proceedings Supplement)" "Nucl.~Phys.~B (Proc.~Suppl.)"]
+["pl" "Physics Letters" "Phys.~Lett."]
+["prep" "Physics Reports" "Phys.~Rep."]
+["pr" "Physical Review" "Phys.~Rev."]
+["prl" "Physical Review Letters" "Phys.~Rev.~Lett."]
+["sjnp" "Soviet Journal of Nuclear Physics" "Sov.~J.~Nucl.~Phys."]
+["zp" "Zeitschrift f.~Physik" "Z. Phys."]
+["zpa" "Zeitschrift f.~Physik A --- Hadrons and Nuclei" "Z.~Phys.~A"]
+["zpc" "Zeitschrift f.~Physik C --- Particles and Fields" "Z.~Phys.~C"]

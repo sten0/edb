@@ -1,0 +1,147 @@
+:EDB (single) ;;; -*- emacs-lisp -*-
+
+;; Copyright (C) 2005,2008 Thien-Thi Nguyen
+;;
+;; This file is part of EDB.
+;;
+;; EDB is free software; you can redistribute it and/or modify it under
+;; the terms of the GNU General Public License as published by the Free
+;; Software Foundation; either version 3, or (at your option) any later
+;; version.
+;;
+;; EDB is distributed in the hope that it will be useful, but WITHOUT
+;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+;; FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+;; for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with EDB; see the file COPYING.  If not, write to the Free
+;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+;; MA 02110-1301, USA.
+
+;; Define some enumerated types
+
+;; "arch"
+
+(edb-define-enumtype 'arch
+	'("rs6000"			;IBM
+	  "NeXT"			;NeXT
+	  "sun3" "sun4"			;Sun
+	  "mipsel"			;DECstation 5000
+	  "r3000"			;SGI R3000
+	  "r4000"			;SGI R4000
+	  "mac"				;Macintosh
+	  "any"				;any
+	  ) nil)
+
+;; "os"
+
+(edb-define-enumtype 'os
+	'("AIX3.2"
+	  "NeXTOS2.0" "NeXTOS3.0"
+	  "SunOS4.0.3" "SunOS4.1.1" "SunOS4.1.2"
+	  "Solaris2.0" "Solaris2.1"
+	  "Ultrix4.1" "Ultrix4.2"
+	  "IRIX4.1" "IRIX4.2"
+	  "MacOS6.0.5" "MacOS7.0"
+	  "any"				;any
+	  ) nil)
+
+;; "short-string": both a one-line-string and a string-or-nil.
+
+(edb-define-displaytype 'short-string 'one-line-string
+  :actual->display 'db-string-or-nil->string)
+
+(edb-define-recordfieldtype 'short-string 'one-line-string
+  :type           'short-string
+  :order-fn       'db-string-or-nil-order-ci
+  :sort-fn        'db-string-or-nil-lessp-ci
+  :match-function 'db-string-or-nil-match-function)
+
+(require 'edb-t-timedate1)
+
+(edb-define-recordfieldtype 'suredate 'date
+  ;; writing: always YYYY-MM-DD
+  :actual->stored 'edb-t-timedate1:format-date-iso
+  ;; reading: either YYYY-MM-DD or MM/DD/YY
+  :stored->actual 'edb-t-timedate1:parse-date-string)
+
+;; Now define the database fields and overriding attributes
+
+:tagged-setup
+'(:fields
+  (((name	  . short-string)    "NM" "Name of software")
+   ((desc	  . string-or-nil)   "SD" "Software description")
+   ((version      . short-string)    "VR" "Version of software installed")
+   ((arch         . arch)	     "MA" "Machine architecture of installation")
+   ((os	          . os)		     "OS" "Operating System")
+   ((restric      . string-or-nil)   "OR" "Operational restrictions (if any)")
+   ((installdate  . suredate)	     "ID" "Date installed")
+   ((installer    . short-string)    "IR" "Who installed it")
+   ((installnotes . string-or-nil)   "IN" "Installation Notes")
+   ((binpath      . short-string)    "BP" "Path to binaries")
+   ((binlist      . string-or-nil)   "BL" "List of binaries (possibly linked)")
+   ((libpath      . short-string)    "LP" "Path to libraries")
+   ((liblist      . string-or-nil)   "LL" "List of libraries (eg: \"-lX11\")")
+   ((manpath      . short-string)    "MP" "Path to \"man\" pages")
+   ((infopath     . short-string)    "IP" "Path to GNU info file")
+   ((helppath     . short-string)    "HP" "Path to file or command to help user with software")
+   ((source       . short-string)    "SR" "Source location: FTP site, or local filesystem")
+   ((updatedate   . suredate)	     "UD" "Last update date")
+   ((updater      . short-string)    "UR" "Who did the last update")
+   ((updatenotes  . string-or-nil)   "UN" "Notes on last update"))
+  ;; overriding attributes
+  :pre-tag-regexp      ""
+  :tag-chars           "A-Z"
+  :separator-regexp    ":[ \t]*"
+  :separator-output    ":\t"
+  :continuation-regexp "^[ \t]+"
+  :continuation-output "\t")
+
+:name "ECI Software Database"
+:summary-format (mapconcat (lambda (pair)
+                             (format "\\%s,width=%d" (car pair) (cdr pair)))
+                           '((name . 12)
+                             (version . 6)
+                             ("updatedate,date-mmddyy" . 8)
+                             (arch . 10)
+                             (os . 10))
+                           " ")
+
+:record-defaults
+(lambda ()
+  "Provide defaults for new records in the database."
+  (let ((curdate (edb-t-timedate1:parse-date-string (current-time-string)))
+        (curuser (concat (user-login-name) "@" (system-name))))
+    (list 'installdate curdate          ; plist
+          'installer   curuser
+          'updatedate  curdate)))
+
+:display t
+         ECI Software Database
+
+         Name: \name
+  Description: \desc,indent
+      Version: \version
+         Arch: \arch
+           OS: \os
+ Restrictions: \restric,indent
+     Bin Path: \binpath
+  Binary List: \binlist,indent
+ Library Path: \libpath
+ Library List: \liblist,indent
+     Man Path: \manpath
+    Info Path: \infopath
+    Help Path: \helppath
+       Source: \source
+
+    Installed: \installdate,date-iso
+ Installed By: \installer
+Install notes: \installnotes,indent
+
+  Last Update: \updatedate,date-iso
+   Updated By: \updater
+ Update Notes: \updatenotes,indent
+:EOTB
+
+;;; eicsw.edb ends here

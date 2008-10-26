@@ -1,0 +1,286 @@
+% refcard.tex
+%
+% Copyright (C) 2007 Erich W\"alde
+%
+% Permission is granted to make and distribute verbatim copies of
+% this refcard provided the copyright notice and this permission notice
+% are preserved on all copies.
+%
+% Permission is granted to copy and distribute modified versions of
+% this refcard under the conditions for verbatim copying, provided that
+% the entire resulting derived work is distributed under the terms of a
+% permission notice identical to this one.
+%
+% Permission is granted to copy and distribute translations of this
+% manual into another language, under the above conditions for modified
+% versions, except that this permission notice may be stated in a
+% translation approved by the Free Software Foundation.
+
+\documentclass[a4paper,landscape]{article}
+\usepackage[latin1]{inputenc}
+\usepackage[hmargin=8mm,vmarginratio=1:1,top=16mm]{geometry}
+\usepackage{multicol}
+
+\pagestyle{empty}
+\columnsep 14mm
+\columnseprule 0.4pt
+
+\def\author{Erich W\"alde}
+\input refcard.version.tex
+\def\version{\versionnumber\ --- \updated}
+
+
+\def\shortcopyrightnotice{\centerline{\small Copyright \copyright\ \year\ \author}}
+
+\def\copyrightnotice{\vskip 1ex plus 2 fill \shortcopyrightnotice
+
+{\tiny
+Permission is granted to make and distribute verbatim copies of
+this refcard provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of
+this refcard under the conditions for verbatim copying, provided that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Free Software Foundation. \par}}
+
+% we won't be using math mode much, so redefine some of the characters
+% we might want to talk about
+\catcode`\^=12
+\catcode`\_=12
+
+\chardef\\=`\\
+\chardef\{=`\{
+\chardef\}=`\}
+
+\hyphenation{mini-buf-fer}
+
+\parindent 0pt
+%\parskip 1ex plus .5ex minus .5ex
+
+% title - page title.  Argument is title text.
+\outer\def\title#1{{\huge\centerline{\sc{#1}}}\vskip 1ex plus .5ex}
+
+% section - new major section.  Argument is section name.
+\outer\def\section#1{\par\filbreak
+  \vskip 3ex plus 2ex minus 2ex \centerline{\large\bf #1}\mark{#1}%
+  \vskip 2ex plus 1ex minus 1.5ex}
+
+% kbd - argument is characters typed literally.  Like the Texinfo command.
+\def\kbd#1{{\tt#1}\null}	%\null so not an abbrev even if period follows
+
+% key - definition of a key.
+% \key{description of key}{key-name}
+% prints the description left-justified, and the key-name in a \kbd
+% form near the right margin.
+\def\key#1#2{\leavevmode\hbox to \hsize{\vtop
+  {\hsize=.80\hsize\rightskip=1em
+  \relax#1}\kbd{#2}\hfil}}
+
+% prop - control file properties
+\def\prop#1#2{\kbd{#1} {\it#2}\vskip 0mm}
+
+\newbox\metaxbox
+\setbox\metaxbox\hbox{\kbd{M-x }}
+\newdimen\metaxwidth
+\metaxwidth=\wd\metaxbox
+
+% metax - definition of a M-x command.
+% \metax{description of command}{M-x command-name}
+% Tries to justify the beginning of the command name at the same place
+% as \key starts the key name.  (The "M-x " sticks out to the left.)
+\def\metax#1#2{\leavevmode\hbox to \hsize{\hbox to .80\hsize
+  {\relax#1\hfil}%
+  \hskip -\metaxwidth minus 1fil
+  \kbd{#2}\hfil}}
+
+% dsopt - like key and metax for displayspec options
+\def\dsopt#1#2{\leavevmode\hbox to \hsize{\hbox to .45\hsize
+  {\relax\kbd{#1}\hfil}%
+  \hskip -\metaxwidth minus 1fil
+  #2\hfil}}
+
+
+%**end of header
+
+\begin{document}
+\begin{multicols}{3}
+
+\title{EDB Reference Card}
+
+\centerline{(for EDB \version)}
+\shortcopyrightnotice
+
+\small
+
+\section{control file properties}
+
+\prop{:display}{text-block-spec}
+\prop{:fields}{vector}
+\prop{:tagged-setup}{plist}
+\prop{:read-record}{function}
+\prop{:write-record}{function}
+\prop{:record-separator-function}{function}
+\prop{:record-terminator}{string-or-regexp-vector}
+\prop{:record-separator}{string-or-regexp-vector}
+\prop{:field-separator}{string-or-regexp-vector}
+\prop{:substitution-separators}{[fsep rsep]}
+\prop{:substitutions}{vector}
+\prop{:cruft}{[[befrec aftrec] [beffld aftfld]]}
+\prop{:data}{text-block-spec}
+\prop{:choose-display}{function}
+\prop{:before-display}{function}
+\prop{:report}{text-block-spec}
+\prop{:summary-format}{string}
+\prop{:name}{string}
+\prop{:first-change-function}{function}
+\prop{:every-change-function}{function}
+\prop{:field-order}{vector}
+\prop{:locals}{vector}
+\prop{:record-defaults}{function}
+
+
+\section{displayspec options}
+
+\dsopt{width=$N$}{maximum field width (space chars)}
+\dsopt{height=$N$}{maximum field height (lines)}
+\dsopt{right-justify}{pad with spaces on the left}
+\dsopt{reachable}{editable field}
+\dsopt{unreachable}{read-only field}
+
+
+\section{builtin types}
+displayspecs: \kbd{
+integer
+integer-or-nil
+number
+number-or-nil
+yes-no
+string
+one-line-string
+string-or-nil
+nil-or-string
+one-line-string-or-nil
+} \par
+recordfieldtypes: \kbd{
+integer
+integer-or-nil
+number
+number-or-nil
+boolean
+string
+one-line-string
+string-or-nil
+nil-or-string
+one-line-string-or-nil
+} \par
+
+
+\section{entering/leaving database mode}
+
+\metax{connect via control (\kbd{.edb}) file}{M-x edb-interact}
+\metax{read a database file (old way)}{M-x db-find-file}
+\key{save the database file to disk}{C-x C-s}
+\key{save the database file to disk}{C-x C-w}
+\key{quit editing for now (bury buffers)}{q}
+\key{exit edb buffers, prompt to save changes}{x}
+
+
+\section{in view mode}
+
+\key{go to next record}{n}
+\key{go to previous record}{p}
+\key{go to first record}{<, M-<}
+\key{go to last record}{>, M->}
+\key{jump to record {\tt N}}{C-u N j}
+
+\key{go to next screen or record}{SPC}
+\key{go to previous screen or record}{DEL}
+
+\key{go to first field and switch to edit mode}{TAB, C-n, e}
+\key{go to last field and switch to edit mode}{M-TAB, C-p}
+\key{see a summary of all records}{D, H, h}
+\key{invoke sort interface}{S}
+
+\key{commit current record to database}{RET}
+\key{undo all changes since entering the record}{C-x u}
+\key{undo all changes since last saving of database}{C-x r}
+
+\key{add a new record just before current one}{a, i}
+\key{copy current record and go to the copy}{c}
+\key{output current record to another database}{o}
+\key{delete current record}{d, k}
+\key{yank most recently-deleted record}{y}
+
+\key{generate report}{r}
+\key{set summary format}{F}
+\key{toggle {\tt truncate-lines}}{t}
+\key{new data display buffer}{+}
+
+
+\section{in edit mode}
+
+\key{return to view--mode}{C-c C-c}
+\key{undo changes to current field}{C-x U}
+
+\key{go to next field}{TAB}
+\key{go to previous field}{M-TAB}
+\key{go to first field}{M-<}
+\key{go to last field}{M->}
+\key{go to next line or field}{C-n}
+\key{go to previous line or field}{C-p}
+
+\key{display help for current field in echo area}{M-?}
+\key{search for a value in the current field}{M-s}
+
+
+\section{sort interface}
+\metax{enter the sort interface}{M-x db-sort}
+\key{toggle hidden-to-end}{t}
+\key{kill line and add to kill stack}{C-k}
+\key{yank lines from kill stack}{C-y}
+\key{increasing sort order}{i}
+\key{decreasing sort order}{d}
+\key{increase priority of field at point}{M-p}
+\key{decrease priority of field at point}{M-n}
+\key{specify an ordering function}{o}
+\key{specify a sorting function}{s}
+\key{use current ordering, make db default}{RET, C-c C-c}
+\key{use current ordering, make buffer default}{A, U}
+\key{use current ordering for this sort only}{a, u}
+\key{sort according to field at point}{!}
+\key{abort sort}{q}
+\key{clear sort order and exit without sorting}{c}
+
+
+\section{marking and hiding}
+\key{toggle record marked/unmarked}{m}
+\key{toggle record hidden/unhidden}{O}
+\metax{hide all unmarked records, clear marks}{}
+\metax{}{db-hide-unmarked-records}
+\metax{mark all unhidden records, clear hide bits}{}
+\metax{}{db-mark-unhidden-records}
+\metax{clear all marks}{db-unmark-all}
+\metax{clear all hide bits}{db-unhide-all}
+\key{goto next record, even if hidden}{M-n}
+\key{goto previous record, even if hidden}{M-p}
+\key{goto next marked record}{M-C-n}
+\key{goto previous marked record}{M-C-p}
+\metax{enable/disable hiding}{dbc-set-hide-p}
+\key{toggle whether hiding is in effect}{M-o}
+\key{toggle show hidden in summary}{M-C-o}
+
+
+\parindent 5mm
+\vskip 10mm
+\copyrightnotice
+
+\end{multicols}
+\end{document}
+
+% refcard.tex ends here

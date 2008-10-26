@@ -1,0 +1,15 @@
+":"; exec ./ebatch --no-site-file -l $0
+(require 'database)
+(let ((ex (expand-file-name "../examples" (getenv "srcdir"))))
+  (edb-interact (expand-file-name "null.edb" ex)
+                (expand-file-name "null" ex)))
+
+(message "%s" (progn (list-buffers)
+                     (with-current-buffer "*Buffer List*"
+                       (buffer-string))))
+
+(add-to-list 'load-path (expand-file-name "lisp" (car load-path)))
+(require 'edb-meta)
+(edb-meta)
+(message "%s" (buffer-string))
+(kill-buffer nil)

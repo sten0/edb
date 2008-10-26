@@ -1,0 +1,40 @@
+TODO -- some of the things left to do in the BibTeX DataBase
+TODO,v 1.15 1993/05/21 22:30:02 ohl Exp
+
+     * recover from broken entry types more gracefully.
+
+     * Check that the problems with copying among multiple databases
+     have really disappeared in EDB 1.15.
+
+     * Fix the bug that makes EDB unusable on other files, after btxdb
+     has been loaded.
+
+     * Invoke btxdb:initialize less often.  Currently it's called
+     every time a new record is called, because bibtex.fmt is read
+     then.
+
+     * Work-around or fix the bug in EDB that breaks `M-x fill-paragraph'.
+
+     * Make the `journal' displaytype better understandable for
+     someone who hasn't read the code.  Maybe even make an enumerated
+     type.
+
+     * Perform more consistency checks on the data after reading from
+     file and after data-entry.
+
+     * Minimal support for @STRING.
+
+     * Test the parser and support a larger subset of the BibTeX
+     syntax (though we will probably not support every brain-damaged
+     ``feature''). 
+
+     * Maybe move from the completely flat model to something more
+     sophisticated. 
+
+     * Provide hooks for the internal file format (speed).
+
+
+Local Variables:
+mode:indented-text
+auto-fill-hook:do-auto-fill
+End:

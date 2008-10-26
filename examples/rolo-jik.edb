@@ -1,0 +1,191 @@
+:EDB (single) ;;; -*- emacs-lisp -*-
+
+;; Copyright (C) 2005,2008 Thien-Thi Nguyen
+;;
+;; This file is part of EDB.
+;;
+;; EDB is free software; you can redistribute it and/or modify it under
+;; the terms of the GNU General Public License as published by the Free
+;; Software Foundation; either version 3, or (at your option) any later
+;; version.
+;;
+;; EDB is distributed in the hope that it will be useful, but WITHOUT
+;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+;; FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+;; for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with EDB; see the file COPYING.  If not, write to the Free
+;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+;; MA 02110-1301, USA.
+
+:name "Jik's Rolodex"
+
+(setq rolodex-extras '("extra1" "extra2" "extra3" "extra4" "extra5")
+      rolodex-extras-fields (apply 'append
+                                   (mapcar (lambda (x)
+                                             (list
+                                              (intern (concat x "-name"))
+                                              (intern (concat x "-value"))))
+                                           rolodex-extras)))
+
+:fields `[name
+          work-phone home-phone company
+          work-address home-address
+          remarks date
+          (birthday . string-or-nil)
+          (anniversary . string-or-nil)
+          ,@(mapcar (lambda (name)
+                      (cons name 'string-or-nil))
+                    rolodex-extras-fields)]
+
+:record-separator-function
+(defun rolodex-sep-function (last-end)
+  (let (this-end)
+    (if last-end
+	(goto-char (+ last-end 1)))
+    (if (re-search-forward ".*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n\\(.+\n\\)*" nil t)
+	(setq this-end (match-end 0))
+      (error "Error separating rolodex record."))
+    (cons this-end
+	  (if (>= (+ this-end 1) (point-max))
+	      nil
+	    (+ this-end 1)))))
+
+(defun newlines->semis (string)
+  (and string (replace-regexp-in-string "\n" "; " string)))
+
+(defun semis->newlines (string)
+  (and string (replace-regexp-in-string ";[ \t]*" "\n" string)))
+
+(defvar rolo-jik-regexp
+  (concat "\\(.*\\)\n\\(.*\\)\n\\(.*\\)\n\\(.*\\)\n\\(.*\\)\n\\(.*\\)\n"
+          "\\(.*\\)\n\\(.*\\)\n")
+  "Regular expression used by `rolodex-read-record'.")
+
+:read-record
+(defun rolodex-read-record ()
+  (unless (re-search-forward rolo-jik-regexp nil t)
+    (error "Error parsing rolodex record."))
+  (let ((extras rolodex-extras)
+        (name (match-string 1))
+        (work-phone (match-string 2))
+        (home-phone (match-string 3))
+        (company (match-string 4))
+        (work-address (match-string 5))
+        (home-address (match-string 6))
+        (remarks (match-string 7))
+        (date (match-string 8)))
+    (nconc
+     (list 'name (semis->newlines name)
+           'work-phone (semis->newlines work-phone)
+           'home-phone (semis->newlines home-phone)
+           'company (semis->newlines company)
+           'work-address (semis->newlines work-address)
+           'home-address (semis->newlines home-address)
+           'remarks (semis->newlines remarks)
+           'date (semis->newlines date))
+     (let (pl)
+       (flet ((plpush (f v) (setq pl (plist-put
+                                      pl f (semis->newlines v)))))
+         (while (and extras (re-search-forward "\\(.+\\)\n" nil t))
+           (let ((extra (match-string 1)))
+             (cond ((string-match "^Birthday:[ \t]*\\(.*\\)" extra)
+                    (plpush 'birthday (match-string 1 extra)))
+                   ((string-match "^Anniversary:[ \t]*\\(.*\\)" extra)
+                    (plpush 'anniversary (match-string 1 extra)))
+                   ((string-match "^\\([^:]+\\):[ \t]*\\(.*\\)" extra)
+                    (let ((field-name (match-string 1 extra))
+                          (field-value (match-string 2 extra)))
+                      (plpush (intern (concat (car extras) "-name"))
+                              field-name)
+                      (plpush (intern (concat (car extras) "-value"))
+                              field-value)
+                      (setq extras (cdr extras))))
+                   (t
+                    (error "Invalid extra field parsing rolodex record."))))))
+       pl))))
+
+(defun empty-string-or-nil-p (string-or-nil)
+  "Return t if its argument is nil or a zero-length string, nil otherwise."
+  (or (not string-or-nil)
+      (string-equal "" string-or-nil)))
+
+:write-record
+(defun rolodex-write-record ()
+  (insert (newlines->semis name) "\n"
+	  (newlines->semis work-phone) "\n"
+	  (newlines->semis home-phone) "\n"
+	  (newlines->semis company) "\n"
+	  (newlines->semis work-address) "\n"
+	  (newlines->semis home-address) "\n"
+	  (newlines->semis remarks) "\n"
+	  (newlines->semis date) "\n")
+  (unless (empty-string-or-nil-p birthday)
+    (insert "Birthday: " (newlines->semis birthday) "\n"))
+  (unless (empty-string-or-nil-p anniversary)
+    (insert "Anniversary: " (newlines->semis anniversary) "\n"))
+  (let ((extras rolodex-extras-fields))
+    (while extras
+      (let ((name (eval (car extras)))
+	    (value (eval (cadr extras))))
+	(unless (or (empty-string-or-nil-p name)
+                    (empty-string-or-nil-p value))
+          (insert name ": " (newlines->semis value) "\n")))
+      (setq extras (cddr extras)))))
+
+(setq rolodex-min-field-width 13)
+
+:before-display
+(defun rolodex-before-display (extra1-name
+                               extra2-name
+                               extra3-name
+                               extra4-name
+                               extra5-name)
+  (setq tab-width (+ 2 (apply 'max
+                              rolodex-min-field-width
+                              (mapcar 'length
+                                      (list extra1-name
+                                            extra2-name
+                                            extra3-name
+                                            extra4-name
+                                            extra5-name))))))
+
+:every-change-function
+;; I could cache some state in the record so that I only have to
+;; redisplay it if the tab width actually changes but it isn't worth
+;; the effort.
+(defun rolodex-change-function (field old new)
+  (when (memq field '(extra1-name
+                      extra2-name
+                      extra3-name
+                      extra4-name
+                      extra5-name))
+    (setq tab-width (max rolodex-min-field-width (length new))))
+  t)
+
+:first-change-function
+(defun rolodex-change-date (field old new)
+  (dbf-this-record-set-field 'date (current-time-string)))
+
+:display t
+Name:	\name
+Work phone:	\work-phone
+Home phone:	\home-phone
+Company:	\company
+Work address:	\work-address
+Home address:	\home-address
+Remarks:	\remarks
+Birthday:	\birthday
+Anniversary:	\anniversary
+
+\extra1-name:	\extra1-value
+\extra2-name:	\extra2-value
+\extra3-name:	\extra3-value
+\extra4-name:	\extra4-value
+\extra5-name:	\extra5-value
+
+Last modified:	\date,unreachable
+:EOTB
+
+;;; rolo-jik.edb ends here

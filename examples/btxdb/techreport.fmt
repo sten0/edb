@@ -1,0 +1,21 @@
+////////////////////////////// TECHREPORT \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+         Code: \tag,nil-or-string
+................................................................Required
+       Author: \author,author
+        Title: \title,nil-or-string,indent
+  Institution: \institution,nil-or-string,indent
+         Year: \year,nil-or-string
+................................................................Optional
+         Type: \type,nil-or-string,indent
+       Number: \number,nil-or-string
+      Address: \address,nil-or-string,indent
+        Month: \month,month
+         Note: \note,nil-or-string,indent
+          Key: \key,nil-or-string
+     Crossref: \crossref,nil-or-string
+.................................................................Ignored
+       Errata: \errata,nil-or-string,indent
+     Keywords: \keywords,nil-or-string,indent
+      Remarks: \annote,nil-or-string,indent
+      Updated: \updated,nil-or-string
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ TECHREPORT //////////////////////////////

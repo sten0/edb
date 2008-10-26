@@ -1,0 +1,1111 @@
+0	Description of data format
+:Data file for genealogy records.
+:This is a sample file which shows what the data file format should
+:be like.
+:The information in this sample file is believed to be true;
+:William Harris Crawford is a great-great-great-grandfather of the Author.
+:
+:File format:
+:Each record specifies either an individual or a family.
+:Each record has a unique index number.
+:Each record is separated by a blank line.
+:Each line within a record is an item of data (except multi-line, see below).
+:Each item of data consists of a key, a colon, and a payload string.
+:Lines which start with a colon are comment lines.
+:Lines which start with a plus mark (+) are data continuation lines which
+: allow multi-line payload strings.
+:The first line of each record starts with an integer which is
+:the index number for that record.  The rest of that line is ignored.
+:In this file, by convention (not enforced by the software), the first
+:digit of the record number can be used to determine the type of record:
+:  1   Individual
+:  2   Family
+:  3   Address
+:  4   Reference
+:
+:The fields used in this file are described here:
+:T:Type of record:
+:   I for individual, F for family, A for address, R for reference
+:
+:Fields in an individual record:
+:LN:Last (born) name (family name)
+:LN.A:Adopted last name (typically through marriage)
+:FN:First name
+:MN:Middle names
+:NN:Nickname
+:PN:Prefix name (Dr., Lord, King, etc.)
+:SN:Suffix name (Jr., Sr., Esq., R.N., etc.)
+:SX:Sex (M or F)
+:B:Birthdate in the format dd-mmm-yyyy
+:BP:Place of birth
+:D:Date of death in the same format
+:DP:Place of death
+:BUR:Burial place
+:P:Index number of parent's marriage
+:S:List of index numbers of marriages
+:ADDR:record number of addr for this record
+:SOURCE:Source for the information in this record (e.g. reference number)
+:
+:A family record contains information about a marriage and its offsprings.
+:Fields in a family record:
+:N:family name
+:H:Index number of husband
+:W:Index number of wife
+:M:Date of marriage
+:MD:Date of end of marriage
+:MP:Place of marriage
+:MDP:Place of end of marriage
+:C:Index number list of children from this marriage
+:ADDR:record number of addr for this record
+:
+:Fields in an address record:
+:WHO:record number for the I or F record this addr applies to
+:ADDR:The address
+:PHONE:Telephone
+:
+:Fields in a reference record:
+:(not yet defined)
+:
+:General fields:
+:EDITED:date the record was last edited (this field added 26.Oct.87, so
+: records edited last before that date do not have this field)
+:TNOTE:a note which can be output in family trees (may be multi-line)
+:GEN:General information of interest about that person.
+:TGEN:Things which are both TNOTE and GEN.
+:COM:Comments (these do not appear in family pages or trees).
+:
+:first real record follows
+:(the numbers are not consecutive because this database represents
+:only a selected portion of the Author's entire database.)
+
+1297	William Harris Crawford (1772)
+T:I
+LN:Crawford
+FN:William
+MN:Harris
+SX:M
+B:24-Feb-1772
+BP:Amherst Co., VA
+D:15-Sep-1834
+DP:Elberton, Oglethorpe Co., GA
+BUR:Woodlawn (3 miles west of Lexington, GA),
++  near Crawford, Oglethorpe Co., GA
+P:2093
+S:2092
+TNOTE:Moved w father to Edgefield dist. SC in 1779,
++then to Columbia Co., GA in 1783.
++Senator; see encyclopedia
+GEN:Written up in most encyclopedias.
++6th child
+SOURCE:Mary Burgess Burnaugh;Encyclopedia Brittanica
+
+1298	Susanna Gerardin Crawford
+T:I
+LN:Gerardin
+LN.A:Crawford
+FN:Susanna
+SX:F
+S:2092
+TNOTE:Huguenot descent
+GEN:of Huguenot descent
+SOURCE:Mary Burgess Burnaugh
+
+1299	Joel Crawford (1736)
+T:I
+LN:Crawford
+FN:Joel
+SX:M
+B:1736
+BP:Hanover Co., VA
+D:1788
+P:2094
+S:2093
+GEN:6th child
+SOURCE:Mary Burgess Burnaugh
+
+1300	Francis Harris Crawford
+T:I
+LN:Harris
+LN.A:Crawford
+FN:Francis
+NN:Fanny
+SX:F
+S:2093
+P:2099
+SOURCE:Mary Burgess Burnaugh
+
+1301	David Crawford (1697)
+T:I
+LN:Crawford
+FN:David
+SX:M
+B:1697
+BP:Hanover Co., VA
+D:1766
+P:2095
+S:2094
+GEN:5th child
+SOURCE:Mary Burgess Burnaugh
+
+1302	Ann Anderson Crawford (1708)
+T:I
+LN:Anderson
+LN.A:Crawford
+FN:Ann
+SX:F
+B:1708
+D:1803
+S:2094
+SOURCE:Mary Burgess Burnaugh
+
+1303	Capt. David Crawford (1662)
+T:I
+LN:Crawford
+FN:David
+PN:Capt.
+SX:M
+B:1662
+D:1762
+P:2096
+S:2095
+TNOTE:of Amherst Co., VA
+GEN:Lived to be over 100
+SOURCE:Mary Burgess Burnaugh
+
+1304	Elizabeth Smith Crawford (1665)
+T:I
+LN:Smith
+LN.A:Crawford
+FN:Elizabeth
+SX:F
+B:1665
+D:1766
+S:2095
+TNOTE:of Hanover Co., VA
+GEN:Lived to be over 100
+SOURCE:Mary Burgess Burnaugh
+
+1305	David Crawford (1625)
+T:I
+LN:Crawford
+FN:David
+SX:M
+B:1625
+BP:Ayrshire, Scotland
+P:2097
+S:2096
+TNOTE:Imm 1643 from Scotland to VA
+GEN:Immigrated to Virginia from Scotland in 1643
+SOURCE:Mary Burgess Burnaugh
+
+1306	John, Earl of Crawford (1600)
+T:I
+LN:Crawford
+FN:John
+NN:Earl of Crawford
+SX:M
+B:1600
+BP:Ayrshire, Scotland
+D:1676
+S:2097
+TNOTE:Imm 1643 from Scotland to Jamestown, VA
++Died in Bacon Rebellion
+GEN:Immigrated to Jamestown, VA, from Scotland in 1643
++Died fighting in the Bacon Rebellion in Virginia
+SOURCE:Mary Burgess Burnaugh
+
+1311	Maj. Robert Harris
+T:I
+LN:Harris
+FN:Robert
+PN:Maj.
+SX:M
+S:2099
+P:2100
+SOURCE:Mary Burgess Burnaugh
+
+1312	Mouring Glenn
+T:I
+LN.A:Harris
+LN:Glenn
+FN:Mourning
+SX:F
+S:2099
+SOURCE:Mary Burgess Burnaugh (had LN=Glen)
+SOURCE:Genealogy of Virginia Families
+
+1313	William Harris
+T:I
+LN:Harris
+FN:William
+PN:Capt.
+SX:M
+S:2100
+P:2101
+SOURCE:Mary Burgess Burnaugh
+SOURCE:Genealogy of Virginia Families
+
+1314	Temperance Overton Harris
+T:I
+LN.A:Harris
+LN:Overton
+FN:Temperance
+SX:F
+B:1679
+D:1716
+P:2102
+S:2100
+TGEN:of Hanover Co., VA
+SOURCE:Mary Burgess Burnaugh
+SOURCE:Genealogy of Virginia Families (dates)
+
+1315	Maj. Robert Harris
+T:I
+LN:Harris
+FN:Robert
+PN:Maj.
+SX:M
+S:2101
+P:2103
+SOURCE:Mary Burgess Burnaugh
+
+1316	Mary Claiborne Harris
+T:I
+LN.A:Harris
+LN:Claiborne
+FN:Mary
+SX:F
+P:2106
+S:2101
+SOURCE:Mary Burgess Burnaugh
+
+1317	William Overton (1628)
+T:I
+LN:Overton
+FN:William
+SX:M
+B:1628
+BP:England
+P:2114
+S:2102
+TNOTE:prob. a soldier for Bacon
+SOURCE:Mary Burgess Burnaugh
+
+1318	Mary Waters Overton
+T:I
+LN.A:Overton
+LN:Waters
+FN:Mary
+SX:F
+S:2102
+SOURCE:Mary Burgess Burnaugh
+
+1319	Capt. Thomas Harris
+T:I
+LN:Harris
+FN:Thomas
+PN:Capt.
+SX:M
+B:1585 or 6
+D:post 1647
+P:2109
+S:2103
+TNOTE:Imm May-16(11?) in "Prosperous"
+GEN:Immigrated May-16(11?) in the "Prosperous"
++Settled in Henrico Co., VA, 1611
++Wrote a will 2-Jun-1679
++Member Virginia Company, 1609
+SOURCE:(Mary Burgess Burnaugh)
+SOURCE:Genealogy of Virginia Families
+
+1320	Adria Gurganey Harris
+T:I
+LN.A:Harris
+LN:Gurganey
+FN:Adria
+SX:F
+B:1597/8
+S:2103
+TNOTE:Imm Nov-1621 in "Marmaduke"
+GEN:Immigrated Nov-1621 in the "Marmaduke"
+SOURCE:(Mary Burgess Burnaugh said Osborne)
+SOURCE:Genealogy of Virginia Families
+
+1321	Thomas Osborne
+T:I
+LN:Osborne
+FN:Thomas
+SX:M
+S:2104
+D:post 1633
+TNOTE:Imm Nov-1619 in "Bona Nova"
+TNOTE:Immigrated Nov-1619 in the "Bona Nova"
+COM:(Mary says:)Settled in Henrico Co., VA, 1611
+SOURCE:Mary Burgess Burnaugh
+
+1333	Secy. William Claiborne (ca 1600)
+T:I
+LN:Claiborne
+FN:William
+PN:Secy.
+SX:M
+B:baptized 10-Aug-1600
+BP:Crayford, Kent Co., England
+D:ca. 1676
+DP:Virginia
+P:2112
+S:2106
+SOURCE:Genealogy of Virginia Families
+TNOTE:Imm. 1621 to VA w Gov. Sir Frances Wyatt
++Secretary of Virginia; See encyclopedia
+GEN:Immigrated to Virginia in 1621 with Governer Sir Francis Wyatt.
++Appointed Secretary of State of Virginia in 1625.
+
+1334	Elizabeth Butler Claiborne (ca 1610)
+T:I
+LN:Butler
+LN.A:Claiborne
+FN:Elizabeth
+SX:F
+B:pre 1612 (ca. 1610?)
+BP:prob. England
+D:post 1668
+DP:Virginia
+P:2113
+S:2106
+SOURCE:Genealogy of Virginia Families
+
+1335	Lt. Col. William Claiborne (ca. 1636)
+T:I
+LN:Claiborne
+FN:William
+PN:Lt. Col.
+SX:M
+B:ca. 1636
+D:1682
+P:2106
+TGEN:Officer against Bacon's Rebellion
+SOURCE:Genealogies of Virginia Families
+
+1336	Col. Thomas Claiborne
+T:I
+LN:Claiborne
+FN:Thomas
+PN:Col.
+SX:M
+B:17-Aug-1647
+D:7-Oct-1683
+BUR:Romancoke, King William Co., VA
+P:2106
+SOURCE:Genealogy of Virginia Families
+
+1337	William Overton
+T:I
+LN:Overton
+FN:William
+SX:M
+B:1675
+P:2102
+SOURCE:Genealogy of Virginia Families
+
+1338	Capt. James Overton
+T:I
+LN:Overton
+FN:James
+PN:Capt.
+SX:M
+B:1686
+P:2102
+SOURCE:Genealogy of Virginia Families
+
+1339	Benjamin Harris
+T:I
+LN:Harris
+FN:Benjamin
+SX:M
+D:(will probated 1765)
+P:2100
+SOURCE:Genealogy of Virginia Families
+
+1340	Frederick Harris
+T:I
+LN:Harris
+FN:Frederick
+SX:M
+B:1705
+P:2100
+S:2107
+SOURCE:Genealogy of Virginia Families
+
+1341	Keziah Harris Nelson
+T:I
+LN:Harris
+LN.A:Nelson
+FN:Keziah
+SX:F
+P:2107
+S:2108
+SOURCE:Genealogy of Virginia Families
+
+1342	Fanny Overton
+T:I
+LN:Overton
+LN.A:Harris
+SX:F
+S:2107
+SOURCE:Genealogy of Virginia Families
+
+1343	James Nelson
+T:I
+LN:Nelson
+FN:James
+SX:M
+B:1723
+S:2108
+SOURCE:Genealogy of Virginia Families
+
+1344	Lucy Harris
+T:I
+LN:Harris
+FN:Lucy
+SX:F
+P:2099
+SOURCE:Genealogy of Virginia Families
+
+1345	Elizabeth Harris
+T:I
+LN:Harris
+FN:Elizabeth
+SX:F
+P:2100
+SOURCE:Genealogy of Virginia Families
+
+1346	Mary Overton
+T:I
+LN:Overton
+FN:Mary
+SX:F
+D:1735
+P:2102
+SOURCE:Genealogy of Virginia Families
+
+1347	Jane Claiborne
+T:I
+LN:Claiborne
+FN:Jane
+SX:F
+P:2106
+SOURCE:Genealogy of Virginia Families
+
+1348	Mary Harris (1625)
+T:I
+LN:Harris
+FN:Mary
+SX:F
+B:1625
+D:1-Feb-1703(4) (will probated)
+P:2103
+SOURCE:Genealogy of Virginia Families
+
+1349	Thomas Harris
+T:I
+LN:Harris
+FN:Thomas
+SX:M
+D:will written 2-Jun-1679
+P:2103
+SOURCE:Genealogy of Virginia Families
+
+1350	Maj. William Harris
+T:I
+LN:Harris
+FN:William
+PN:Maj.
+SX:M
+D:1677
+P:2103
+TNOTE:"Killed by the Inidians"
+SOURCE:Genealogy of Virginia Families
+
+1351	Sir William Harris
+T:I
+LN:Harris
+FN:William
+PN:Sir
+SX:M
+S:2109
+TNOTE:Desc from Sir Thomas Percy
+GEN:Descended from Sir Thomas Percy
+SOURCE:Genealogy of Virginia Families
+
+1352	Sir Thomas Smith
+T:I
+LN:Smith
+FN:Thomas
+PN:Sir
+SX:M
+P:2110
+TNOTE:Treas. Virginia Co
++Gov. East India Co
+GEN:Treasurer of the Virginia Company
++Governer of the East India Company
+SOURCE:Genealogy of Virginia Families
+
+1353	(?) Smith
+T:I
+LN:Smith
+LN.A:Harris
+SX:F
+P:2110
+S:2109
+SOURCE:Genealogy of Virginia Families
+
+1354	"Customer" Smith
+T:I
+LN:Smith
+FN:"Customer"
+SX:M
+S:2110
+SOURCE:Genealogy of Virginia Families
+
+1355	(?) Judd
+T:I
+LN:Judd
+LN.A:Smith
+SX:F
+P:2111
+S:2110
+SOURCE:Genealogy of Virginia Families
+
+1356	Sir Andrew Judd
+T:I
+LN:Judd
+FN:Andrew
+PN:Sir
+SX:M
+S:2111
+TGEN:Lord Mayor
+SOURCE:Genealogy of Virginia Families
+
+1357	Sarah Harris (1736)
+T:I
+LN:Harris
+FN:Sarah
+SX:F
+B:24-May-1736
+D:31-Jan-1803
+P:2099
+SOURCE:Genealogy of Virginia Families
+
+1358	Mary Crawford (1703)
+T:I
+LN:Crawford
+FN:Mary
+SX:F
+B:Mar-1703
+P:2095
+SOURCE:Genealogy of Virginia Families
+
+1359	Gen. Robert Overton
+T:I
+LN:Overton
+FN:Robert
+PN:Gen.
+SX:M
+S:2114
+TNOTE:of Cromwellian Army
+SOURCE:Genealogy of Virginia Families
+
+1360	Thomas Claiborne (1599)
+T:I
+LN:Claiborne
+FN:Thomas
+SX:M
+B:baptized 25-Jul-1599
+BP:Middlesex, England
+D:1633
+P:2112
+SOURCE:Genealogy of Virginia Families
+
+1361	Sara Claiborne (1601/2)
+T:I
+LN:Claiborne
+FN:Sara
+SX:F
+B:baptized 7-Mar-1601/2
+BP:Crayford, Kent Co., England
+P:2112
+SOURCE:Genealogy of Virginia Families
+
+1362	Katherine Claiborne (1603)
+T:I
+LN:Claiborne
+FN:Katherine
+SX:F
+B:baptized 30-Mar-1603
+BP:Crayford, Kent Co., England
+P:2112
+SOURCE:Genealogy of Virginia Families
+
+1363	Blanche Claiborne (1605)
+T:I
+LN:Claiborne
+FN:Blanche
+SX:F
+B:baptized 5-Sep-1605
+BP:Crayford, Kent Co., England
+P:2112
+SOURCE:Genealogy of Virginia Families
+
+1364	John Butler (1600)
+T:I
+LN:Butler
+FN:John
+PN:Capt.
+SX:M
+B:baptized 7-Dec-1600
+BP:Roxwell, Essex Co., England
+D:will proved 1-Jul-1642
+DP:Maryland
+P:2113
+SOURCE:Genealogy of Virginia Families
+
+1365	Thomas Butler
+T:I
+LN:Butler
+FN:Thomas
+SX:M
+P:2113
+TNOTE:of London
+SOURCE:Genealogy of Virginia Families
+
+1366	Jane Butler
+T:I
+LN:Butler
+FN:Jane
+SX:F
+P:2113
+SOURCE:Genealogy of Virginia Families
+
+1367	Sarah Butler
+T:I
+LN:Butler
+FN:Sarah
+SX:F
+P:2113
+SOURCE:Genealogy of Virginia Families
+
+1368	Cressid Butler
+T:I
+LN:Butler
+FN:Cressid
+SX:F
+B:baptized 25-Jun-1612
+P:2113
+SOURCE:Genealogy of Virginia Families
+
+1369	Martha Butler
+T:I
+LN:Butler
+FN:Martha
+SX:F
+B:post 1612
+P:2113
+SOURCE:Genealogy of Virginia Families
+
+1370	Ursula Butler
+T:I
+LN:Butler
+FN:Ursula
+SX:F
+B:post 1612
+P:2113
+SOURCE:Genealogy of Virginia Families
+
+1371	Jane Elliot (1576)
+T:I
+LN:Elliot
+LN.A:Butler
+FN:Jane
+SX:F
+B:baptized 22-Jun-1576
+BP:Roxwell, Essex Co., England
+P:2116
+S:2113
+SOURCE:Genealogy of Virginia Families
+
+1372	Edward Elliot
+T:I
+LN:Elliot
+FN:Edward
+SX:M
+S:2116
+SOURCE:Genealogy of Virginia Families
+
+1373	John Boteler
+T:I
+LN:Boteler
+FN:John
+SX:M
+P:2115
+S:2113
+TNOTE:of Littell Burch Hall,
++Roxwell, Essex Co., England
+SOURCE:Genealogy of Virginia Families
+
+1374	John Butler
+T:I
+LN:Butler
+FN:John
+SX:M
+D:will proved 20-Jan-1613
+DP:London
+S:2115
+SOURCE:Genealogy of Virginia Families
+
+1375	Cressitt St. John
+T:I
+LN:St. John
+LN.A:Boteler
+FN:Cressitt
+SX:F
+P:2117
+S:2115
+SOURCE:Genealogy of Virginia Families
+
+1376	Sir John St. John
+T:I
+LN:St. John
+FN:John
+PN:Sir
+SX:M
+S:2117
+SOURCE:Genealogy of Virginia Families
+
+1377	Sara Smith
+T:I
+LN:Smith
+LN.A:Claiborne
+FN:Sara
+SX:F
+D:1626
+DP:Surrey, England
+P:2119
+S:2112
+SOURCE:Genealogy of Virginia Families
+
+1378	Thomas Clayborne (1557)
+T:I
+LN:Clayborne
+FN:Thomas
+SX:M
+B:ca. 1557?
+D:buried 10-Sep-1607
+P:2118
+S:2112
+BUR:Crayford, Kent Co., England
+SOURCE:Genealogy of Virginia Families
+
+1379	Dorothy Clayborne
+T:I
+LN:Clayborne
+FN:Dorothy
+SX:F
+D:post 1588
+P:2118
+SOURCE:Genealogy of Virginia Families
+
+1380	Katherine Clayborne
+T:I
+LN:Clayborne
+FN:Katherine
+SX:F
+P:2118
+SOURCE:Genealogy of Virginia Families
+
+1381	Joane Clayborne
+T:I
+LN:Clayborne
+FN:Joane
+SX:F
+P:2118
+B:baptized 24-Jun-1560
+D:buried 29-Sep-1575
+SOURCE:Genealogy of Virginia Families
+
+1382	Thomas Cleyborne (ca. 1525-30)
+T:I
+LN:Cleyborne
+FN:Thomas
+SX:M
+S:2118
+B:ca. 1525-30?
+D:buried 7-Dec-1581
+TNOTE:Mayor of King's Lynn, England
+SOURCE:Genealogy of Virginia Families
+
+1383	John Smith
+T:I
+LN:Smith
+FN:John
+SX:M
+S:2119
+D:will proved 15-Jan-1591/2
+TNOTE:of Southwark, Surrey, England
+SOURCE:Genealogy of Virginia Families
+
+1384	(Katherine) (?) Clayborne
+T:I
+LN.A:Clayborne
+FN:prob. Katherine
+SX:F
+S:2118
+SOURCE:Genealogy of Virginia Families
+
+1385	Leonard Claiborne
+T:I
+LN:Claiborne
+FN:Leonard
+SX:M
+D:1694
+DP:Jamaica
+P:2106
+SOURCE:Genealogy of Virginia Families
+
+2092	William Crawford and Susanna Gerardin (1804)
+T:F
+N:Crawford
+H:1297
+W:1298
+M:28-Apr-1804
+MP:(probably in Georgia)
+GEN:Eight children
+SOURCE:Mary Burgess Burnaugh
+ADDR:3000
+:(bogus ADDR just as an example)
+
+2093	Joel Crawford and Francis Harris (1760)
+T:F
+N:Crawford
+H:1299
+W:1300
+M:1760
+MP:Amherst Co., VA
+C:1297
+GEN:Moved to Edgefield Co., South Carolina, in 1779
++Moved to Columbia, Georgia, in 1783
+SOURCE:Mary Burgess Burnaugh
+
+2094	David Crawford and Ann Anderson (1727)
+T:F
+N:Crawford
+H:1301
+W:1302
+M:1727
+C:1299
+TNOTE:Moved to Amherst Co., VA in 1750
+GEN:Moved to Amherst Co., VA in 1750
+SOURCE:Mary Burgess Burnaugh
+
+2095	Capt. David Crawford and Elizabeth Smith (1695)
+T:F
+N:Crawford
+H:1303
+W:1304
+M:1695
+C:1301,1358
+SOURCE:Mary Burgess Burnaugh
+
+2096	David Crawford and ?? (1654)
+T:F
+N:Crawford
+H:1305
+M:1654
+MP:Virginia
+C:1303
+SOURCE:Mary Burgess Burnaugh
+
+2097	John "Earl of" Crawford and ?? (ca.  1620))
+T:F
+N:Crawford
+H:1306
+C:1305
+SOURCE:Mary Burgess Burnaugh
+
+2099	Maj. Robert Harris and Mourning Glenn
+T:F
+N:Harris
+H:1311
+W:1312
+C:1300,1344,1357
+SOURCE:Mary Burgess Burnaugh
+
+2100	William Harris and Temperance Overton
+T:F
+N:Harris
+H:1313
+W:1314
+M:1695
+C:1311,1339,1340,1345
+SOURCE:Mary Burgess Burnaugh
+SOURCE:Genealogy of Virginia Families (M)
+
+2101	Maj. Robert Harris and Mary Claiborne
+T:F
+N:Harris
+H:1315
+W:1316
+C:1313
+SOURCE:Mary Burgess Burnaugh
+
+2102	William Overton and Mary Waters
+T:F
+N:Overton
+H:1317
+W:1318
+M:1670
+MP:England
+C:1337,1314,1338,1346
+TNOTE:Imm. "soon after" 1670
+SOURCE:Mary Burgess Burnaugh
+SOURCE:Genealogy of Virginia Families
+
+2103	Capt. Thomas Harris and Adria
+T:F
+N:Harris
+H:1319
+W:1320
+C:1349,1350,1315,1348
+TNOTE:Married before immigrating
+SOURCE:Mary Burgess Burnaugh
+
+2104	Thomas Osborne and ??
+T:F
+N:Osborne
+H:1321
+SOURCE:Mary Burgess Burnaugh
+
+2106	William Claiborne and Elizabeth Butler
+T:F
+N:Claiborne
+H:1333
+W:1334
+M:ca. 1635
+MP:England
+C:1335,1336,1316,1347,1385
+SOURCE:Genealogy of Virginia Families
+
+2107	Frederick Harris and Fanny Overton
+T:F
+N:Harris
+H:1340
+W:1342
+C:1341
+SOURCE:Genealogy of Virginia Families
+
+2108	James Nelson and Keziah Harris
+T:F
+N:Nelson
+H:1343
+W:1341
+M:1750
+MP:Hanover Co., VA
+SOURCE:Genealogy of Virginia Families
+
+2109	Sir William Harris and (?) Smith
+T:F
+N:Harris
+H:1351
+W:1353
+C:1319
+SOURCE:Genealogy of Virginia Families
+
+2110	"Customer" Smith and (?) Judd
+T:F
+N:Smith
+H:1354
+W:1355
+C:1352,1353
+SOURCE:Genealogy of Virginia Families
+
+2111	Sir Andrew Judd and (?)
+T:F
+N:Judd
+H:1356
+C:1355
+SOURCE:Genealogy of Virginia Families
+
+2112	Thomas Clayborne and Sara Smith (1598)
+T:F
+N:Claiborne
+H:1378
+W:1377
+M:21-Nov-1598
+MP:Middlesex Co., England
+C:1360,1333,1361,1362,1363
+SOURCE:Genealogy of Virginia Families
+
+2113	John Boteler and Jane Elliot (1599)
+T:F
+N:Butler
+H:1373
+W:1371
+M:27-Dec-1599
+MP:Roxwell, Essex Co., England
+C:1364,1365,1366,1367,1334,1368,1369,1370
+TNOTE:Sometimes "Boteler"
+SOURCE:Genealogy of Virginia Families
+
+2114	Gen. Robert Overton and (?)
+T:F
+N:Overton
+H:1359
+C:1317
+SOURCE:Genealogy of Virginia Families
+
+2115	John Butler and Cressitt St. John
+T:F
+N:Boteler
+H:1374
+W:1375
+C:1373
+SOURCE:Genealogy of Virginia Families
+
+2116	Edward Elliot and (?)
+T:F
+N:Elliot
+H:1372
+C:1371
+SOURCE:Genealogy of Virginia Families
+
+2117	Sir John St. John and (?)
+T:F
+N:St. John
+H:1376
+C:1375
+SOURCE:Genealogy of Virginia Families
+
+2118	Thomas Cleyborne and Katherine (?)
+T:F
+N:Clayborne
+H:1382
+W:1384
+C:1378,1379,1380,1381
+SOURCE:Genealogy of Virginia Families
+
+2119	John Smith and (?)
+T:F
+N:Smith
+H:1383
+C:1377
+SOURCE:Genealogy of Virginia Families
+
+3000	sample (bogus) address
+T:A
+WHO:2092
+ADDR:Woodlawn
++Lexington, Georgia
+PHONE:(101)555-1212
+
+0
+:end of file

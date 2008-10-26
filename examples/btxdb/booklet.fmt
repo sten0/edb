@@ -1,0 +1,18 @@
+//////////////////////////////// BOOKLET \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+         Code: \tag,nil-or-string
+................................................................Required
+        Title: \title,nil-or-string,indent
+................................................................Optional
+       Author: \author,author
+ Howpublished: \howpublished,nil-or-string,indent
+      Address: \address,nil-or-string,indent
+        Month: \month,month
+         Year: \year,nil-or-string
+         Note: \note,nil-or-string,indent
+          Key: \key,nil-or-string
+     Crossref: \crossref,nil-or-string
+.................................................................Ignored
+     Keywords: \keywords,nil-or-string,indent
+      Remarks: \annote,nil-or-string,indent
+      Updated: \updated,nil-or-string
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ BOOKLET ///////////////////////////////

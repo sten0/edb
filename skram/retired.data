@@ -1,0 +1,384 @@
+1.28defconstdb-dsym(vector (concat "\\(" (concat "\\\\" db-symbol-regexp) "\\)" (concat "\\(" (aref db-fopt 0) "\\)*") "\\(\\\\ \\)?") 2 1 0 1)Dropped fine-grained regexp-based parsing of displayspecs.1.28defconstdb-dtrx(concat ",\\(" db-symbol-regexp "\\|" "#\\|\\$\\|\"\\|'\\|\\[[^]]+\\]" "\\)")Dropped fine-grained regexp-based parsing of displayspecs.1.28defconstdb-fopt(vector (concat db-dtrx "\\(=\\(" "[-<>a-zA-Z0-9]+" "\\)\\)?") 1 3)Dropped fine-grained regexp-based parsing of displayspecs.1.28defconstdb-symbol-regexp"[a-zA-Z][-<>a-zA-Z0-9]*"Dropped fine-grained regexp-based parsing of displayspecs.1.28defsubstdatabase-empty-pIncorporated into callers.1.28defundatabase-recordfieldspecReturn the recordfieldspec of DB corresponding to SEL.
+If SEL is a number, it is taken as the record index.
+If it is a symbol, it names a field in the record.
+Dereferences any symbol found in the recordfieldspecs slot of DATABASE.
+Dropped non-slice access to a db's recordfieldspecs.1.28defundatabase-recordfieldspec-typeReturn the type of the recordfieldspec of DB corresponding to IDX,
+a record index.Incorporated into unique caller.1.28defundatabase-set-recordfieldspecSet the recordfieldspec of DB corresponding to SEL to RS.
+If SEL Is a number, it is taken as the record index.
+If it is a symbol, it names a field in the record.
+Use this to redefine, on a per-field basis, subfields of the recordfieldspec.
+Incorporated into callers.1.28defundb-string->displaytypeReturn the displaytype (a symbol) corresponding to string S.
+Non-strings are returned unchanged.
+This doesn't work yet for multichar alternatives.
+Dropped "abbreviation" displayspecs.
+Converted callers to use `intern'.1.28defundbf-fill-summary-buffer-and-move-to-proper-recordConverted callers to use `dbf-fill-summary-buffer' with non-nil MOVEP.1.28defunedb--field-nm2noIncorporated into callers.1.27defaliasdb-commit-recordUnused.  Alias target `db-accept-record' still provided.1.27defaliasrecord-fieldReplaced by `db-record-field'.1.27defaliasrecord-set-fieldReplaced by `db-record-set-field'.1.27defconstedb-t-timedate1:format-date-mmddyy-separator"/"A string used to separate the components of the MMDDYY date format.Converted callers to use optional arg SEPARATOR.1.27defconstedb-t-timedate1:format-date-yymmdd-separator""A string used to separate the components of the DDMMYY date format.Converted callers to use optional arg SEPARATOR.1.27defconstedb-t-timedate1:format-date-yyyymmdd-separator"/"A string used to separate the components of the YYYY/MM/DD date format.Converted callers to use optional arg SEPARATOR.1.27deflocalvardbf-reset-on-edit-listnilAn alist of (variable-name . default-value) pairs.
+Every time Database Edit mode is entered, these buffer-local variables are
+reset to their default values.  This is good for making sure that something
+only happens once each time a record is edited.Unused.  Similar functionality can be arranged through `db-edit-mode-hooks'.1.27defmacrodeflocalvarLike defvar, but defines a buffer-local variable.Unused.  Variables that were declared w/ this form are
+now declared w/ `defvar' and made buffer-local at runtime.1.27defsubstdb-tagged-helpIncorporated into unique caller.1.27defsubstdb-tagged-nameIncorporated into unique caller.1.27defsubstdb-tagged-tagIncorporated into unique caller.1.27defsubstedb--TUnused.1.27defsubstedb--T!Unused.1.27defsubstmake-recordReplaced by `db-make-record'.1.27defundb-convertConvert DB's field structure according to FCREATE-SPECS.
+This function rearranges the field order, converts fields from one type to
+another, adds or removes fields, and so forth.  Note that this does not
+create a new database; it destructively changes the format of DATABASE.
+
+FCREATE-SPECS is a list of two-element lists of the form:
+  (fieldnames creation-method)
+If creation-method would be nil, then fieldname alone
+may be used in place of the two-element list.Unused.1.27defundb-tagged-rrfrConverted unique caller to use `db-tagged-read'.1.27defundb-tagged-wrfrConverted unique caller to use `db-tagged-write'.1.27defundefine-displaytype-from-optstringDefine a displaytype named NAME according to OPTSTRING.
+NAME is a symbol or string and OPTSTRING is the optional parameters
+part of a display specification string.Unused.1.27defundefine-one-char-enum-displaytypeNot yet implemented.Unused.  Also, unimplemented.1.27defundefine-type-aliasMake ALIAS refer to the same displaytype and recordfieldtype as TYPE.
+ALIAS is a symbol.Unused.1.27defvaredb-t-timedate1:format-date-ddmmmyy-separator" "A string used to separate the components of the DD MMM YY date format.Converted callers to use optional arg SEPARATOR.1.27defvaredb-t-timedate1:format-date-ddmmyy-separator"."A string used to separate the components of the DDMMYY date format.Converted callers to use optional arg SEPARATOR.1.26defconstdb-dsrx(concat "\\(" (concat "\\\\" db-symbol-regexp) "\\)" (concat "\\(" db-foptrx "\\)*") "\\(\\\\ \\)?")Converted refs to use `db-dsym'.1.26defconstdb-dsrx-content-beginningdb-dsrx-fieldnameConverted refs to use `db-dsym'.1.26defconstdb-dsrx-content-end0Converted refs to use `db-dsym'.1.26defconstdb-dsrx-content-end-altdb-dsrx-fieldnameConverted refs to use `db-dsym'.1.26defconstdb-dsrx-fieldname1Converted refs to use `db-dsym'.1.26defconstdb-dsrx-fieldoptions2Converted refs to use `db-dsym'.1.26defconstdb-foptrx(concat db-dtrx "\\(=\\(" "[-<>a-zA-Z0-9]+" "\\)\\)?")Converted refs to use `db-fopt'.1.26defconstdb-foptrx-equals3Converted refs to use `db-fopt'.1.26defconstdb-foptrx-symbol1Converted refs to use `db-fopt'.1.26defconstedb-date"@EDB-DATE@"Incorporated value into function `edb-version'.1.26defconstedb-essential-file-names'("db-rep" "db-format" "db-file-io" "db-interfa" "db-types" "db-summary")Dropped runtime byte-compilation support.1.26deflocalvardb-for-outputnilDefault database to which to output records.Converted to :db-for-output.1.26deflocalvardbc-database-modified-pnilT if the database has been modified, nil otherwise.
+Mirrors the value of the modified-p slot of the database.
+This has to be a real variable so it can go in mode-line-format.
+Set it using `dbc-set-database-modified-p'.Converted to :dbmodp.1.26deflocalvardbc-hide-pnilNon-nil if hiding is in effect, nil otherwise.
+Use function `dbc-set-hide-p', which works in either a data display buffer or
+a summary buffer and sets the variable's value in both, instead of setting
+this directly.
+Setting this to nil is cheaper than changing the hide function to the empty
+one, since no hide bits are recomputed.
+This variable is automatically set by the hiding functions.Converted to :hide-p.1.26deflocalvardbc-indexnilThe index of the record currently being displayed (and of its link), or nil.
+Use `dbc-set-index' to set this value unless you know what you are doing.Converted to :index.1.26deflocalvardbc-index-fractionnilA string of the form dbc-index/database-no-of-records.
+Variables with numeric values aren't allowed in mode-line-format.
+An asterisk (*) precedes dbc-index if the current record is marked.
+The fraction is surrounded by square brackets if the current record is
+hidden.  This variable should only be set by calling `dbc-set-index'.Converted to :index-fraction.1.26deflocalvardbc-linknilThe link of the record currently being displayed, or nil.Converted callers to use the record directly.1.26deflocalvardbc-wraparound-p'delayValue t, nil, or 'delay determines whether going forward from the last
+record (or backward from the first) wraps, is prohibited, or denies on the
+first attempt only and then wraps.Converted to :wraparound-p.  (Starting with 1.27, :wraparound-p
+was renamed to :wraparound, since it can have three valid values.)1.26deflocalvardbf-after-display-record-hooknilHooks called after a record is displayed.
+The hooks are called in the data display buffer.
+Call `dbf-displayed-record' to get the just-displayed record.Unused.
+Converted unique caller to no longer run the hook.
+Face customization et al will probably return later.1.26deflocalvardbf-always-formsnilForms executed every time that the format is selected.
+These forms are only executed when a different format is replaced,
+not every time that a record is displayed (or even every time that
+`db-change-format' is called).
+See also `dbf-before-display-record-function'.Converted to :always-forms.1.26deflocalvardbf-change-functionsnilA vector of one function (or nil) per record field (not display field).
+The functions take the fieldname and the old and new values as arguments,
+and return t if the record should be redisplayed.
+Use `dbf-set-change-function' to set the fields of this vector.Converted to :change-functions.1.26deflocalvardbf-default-field-facenilIf non-nil, the face for fields in data display buffers.
+If the text already has a face, that takes precedence.
+This variable is examined only when a data display buffer is being set up.Unused.1.26deflocalvardbf-default-inter-field-facenilIf non-nil, the face for uneditable text in data display buffers.
+If the text already has a face, that takes precedence.
+This variable is examined only when a data display buffer is being set up.Unused.1.26deflocalvardbf-displayspecs-lengthnilThe number of displayspecs in the current format.Converted callers to use `(length dbf-displayspecs)' directly.1.26deflocalvardbf-field-boundary-action'errorControls action when point attempts to leave a field.
+One of nil, 'message, 'beep, 'ding, 'error.
+'beep and 'ding are identical and also show a message.
+Having a variable is overkill, but I don't yet know what the Right Thing is.Dropped customizable handling of move-out-of-field condition.
+This may return later.1.26deflocalvardbf-field-prioritiesnilList of field priorities for this database in this data display buffer.
+If non-nil, overrides the database's field-priorities slot.Converted to :field-priorities.
+No scadenza: Not used in any examples.1.26deflocalvardbf-field-search-defaultsnilVector of defaults for field search.
+It is one element longer than the number of fields; the element indexed by
+dbf-displayspecs-length is the default for a search over all fields.Converted to :search-defaults.1.26deflocalvardbf-fields-displayednilA vector of one string, the displayed text for that field, per displayspec.Converted to :shown.1.26deflocalvardbf-format-filenilThe format file from which the current format was built.Converted to :format-file.1.26deflocalvardbf-format-file-spec-alistnilAssociation list of file names and format file specifiers.
+A format file specifier is a list of values for format variables.
+Don't set this variable; use `dbf-format-name-spec-alist' instead.Converted to :fmtspec-stash.1.26deflocalvardbf-format-namenilThis buffer-local string names the format currently in use.
+This should not be set by the user.Converted to :format-name.1.26deflocalvardbf-hidden-to-end-pnilThe default, local to this data display buffer, for the hidden-to-end-p
+bit.  Only used if a local value of field priorities is used.Dropped support for noninteractive specification.1.26deflocalvardbf-inter-field-textnilA vector with one string, the constant text that precedes that field in
+the display, per displayspec, plus a final slot for trailing text.Converted to :iftxt.1.26deflocalvardbf-recordindex-displayspecno-vectornilVector used to translate displayspec index to field index.Converted to :fidx2dsidx.1.26deflocalvardbf-selected-field-facenilIf non-nil, the face for the field being currently edited.Unused.1.26deflocalvardbf-stay-in-edit-mode-pt*Whether edit mode is preserved when switching records in EDB.
+Automatically becomes local to the current buffer when set in any fashion.
+Only has an effect when set in an EDB data display buffer.Converted to :stay-in-edit-mode-p.1.26deflocalvardbf-summary-buffernilThe summary buffer associated with this format.Converted to :sumbuf.1.26deflocalvardbf-summary-formatnilA string in the same format as the format-file.
+Use `dbf-set-summary-format' to set it.Converted to :sumfmt.1.26deflocalvardbf-summary-functionnilFunction which inserts summary information for a single record in
+the summary buffer; it takes the record as its argument.Converted to :sumfun.1.26deflocalvardbf-summary-recompute-all-pnilT if every record summary in this buffer should be recomputed.Converted callers to use :summaries.1.26deflocalvardbf-summary-show-hidden-records-ptNil if hidden records should be hidden from the summary, t otherwise.Converted to :invisible-hidden-p.1.26deflocalvardbf-this-displayspecnilThe displayspec currently being operated upon, or nil.Converted to :this-ds.1.26deflocalvardbf-this-field-beginning-posnilA position, the beginning of the current field.Converted to :fbeg.1.26deflocalvardbf-this-field-end-marker(make-marker)A mark one character past the end of the current field,
+or nil if current field extends to end of buffer.Converted to :fend.1.26deflocalvardbf-this-field-indexnilThe index in `dbf-displayspecs' of the current displayspec, or nil.Converted to :this-fidx.1.26deflocalvardbf-this-recordnilThe record currently displayed and edited.  This is an honest-to-goodness
+record whose slots are filled from `:original' if it's modified.
+The variable's value should never be set except by `db-copy-r2r'; its slots
+may be freely modified, however.  This is only used if `:utkmodp' is t.Converted to :under.1.26deflocalvardbf-this-record-modified-pnilT if the current record has been modified, nil otherwise.
+This determines which record is returned by `dbf-displayed-record':
+if non-nil, then `dbf-this-record-original' has been copied to `dbf-this-record'.
+It's best to use `dbf-set-this-record-modified-p' to set this variable.Converted to :utkmodp.1.26deflocalvardbf-this-record-originalnilThe original of `dbf-this-record'; a pointer to some poor unsuspecting
+record that shouldn't be modified until everything has been checked out.
+That is, when the user is setting fields, this record remains unchanged
+and `dbf-this-record', a copy of the original, is munged instead.Converted to :original.1.26deflocalvardbfs-linesnilThe (constant) number of screen lines occupied by each record summary.
+This variable is computed automatically from the summary format.
+It has a value in both the summary and data display buffers.Converted to :sum1lines in global hash.1.26deflocalvardbs-data-display-buffernilThe buffer of the format for which this buffer is a summary.Converted to :data-display-buffer.1.26deflocalvardbs-indexnilThe index of the record summary at point.
+Used in determining whether the data display buffer and its summary
+are in synch.  Don't set this variable directly; use `dbs-set-index'
+instead.Converted to :index.1.26deflocalvardbs-index-fractionnilLike `dbc-index-fraction', for the benefit of the mode line.Converted callers to use `dbc-index-fraction'.1.26deflocalvardbs-no-of-recordsnilThe number of records in the database when this summary was made.Converted to :nrecords.1.26deflocalvardbs-pointnilThe beginning of the current record.Converted to :point.1.26deflocalvardbs-recompute-pnilT if some summary information is out of date, nil otherwise.
+This is usually set to t when some link-summary is set to nil.Converted to :recompute-p.1.26deflocalvardbsi-data-display-buffernilConverted to :ddb.1.26deflocalvardbsi-databasenilConverted callers to use `dbc-database'.1.26deflocalvardbsi-hidden-to-end-pnilThe hidden-to-end slot of the database will be set from this variable.Converted to :hendp.1.26deflocalvardbsi-killed-fieldsnilConverted to :killed.1.26deflocalvardbsi-nonsig-fieldsnilConverted to :non.1.26deflocalvardbsi-sig-fieldsnilConverted to :sig.1.26defmacrodb-actual->display-callConverted callers to use `db-callconvert'.1.26defmacrodb-display->actual-callConverted callers to use `db-callconvert'.1.26defmacrodb-lmap-breakCause the db-lmap loop to quit after executing the current iteration.
+This is not a nonlocal exit!  It sets a flag which prevents future iterations.
+(Actually, it sets variable `db-lmap-link'.)Unused.  Dropped support for breaking out of `maprecords'.1.26defmacrodb-lmap-macroExecute LMAP-BODY for each link in DATABASE, and return nil.
+If optional third arg HIDE is non-nil, execute LMAP-BODY only for unhidden links.
+If optional fourth arg MESSAGE is non-nil, it should be a format string
+containing one numeric (%d) specifier.  That message will be issued every
+`db-inform-interval' links.
+
+In the body, variable `db-lmap-link' is bound to the link being operated upon,
+and `db-lmap-index' is bound to its index.
+The loop may be short-circuited (aborted) by calling `db-lmap-break'.
+Speed demons should call this instead of `db-lmap' to avoid a function call
+overhead per link.Unused.1.26defmacrodb-vararg-callApply FUNC to NARGS1 (an integer), then (if that fails), to NARGS2
+of the ARGS.  -1 means all arguments.  This macro lets you deal with
+functions expecting different numbers of arguments in a uniform way.
+Since this is a macro, don't supply something of the form (function foo)
+as its first argument; just supply foo itself.Unused.1.26defmacrodb-with-pcPC is previous-cons.Dropped separate "killed fields" data structure.1.26defmacrodb-with-pc-and-tiPC is previous-cons; TI is this-item.Dropped separate "killed fields" data structure.1.26defmacrodbf-in-summary-bufferExecute BODY in the summary buffer, if it exists.Converted callers to use `with-current-buffer' or `db-in-buffer'.1.26defmacrodbs-in-data-display-bufferExecute BODY in the data display buffer (which always exists).Converted callers to use `with-current-buffer' or `db-in-buffer'.1.26defstructedb--v1-linkUnused.1.26defsubstdatabase-set-alternative-sepinfoExplicit setter for `alternative-sepinfo' in `edb--v1-monolithic-mess'.Unused.  Also deleted: `alternative-sepinfo' slot.
+Added handling for 0.6 to 0.7 "internal format" edits.1.26defsubstdatabase-set-aux-fileExplicit setter for `aux-file' in `edb--v1-monolithic-mess'.Unused.  Also deleted: `aux-file' slot.
+Added handling for 0.6 to 0.7 "internal format" edits.1.26defsubstdatabase-set-data-display-buffersExplicit setter for `data-display-buffers' in `edb--v1-monolithic-mess'.Unused.  Also deleted: `data-display-buffers' slot.
+Converted to :ddbufs in global hash.
+Added handling for 0.6 to 0.7 "internal format" edits.1.26defsubstdatabase-set-default-format-fileExplicit setter for `default-format-file' in `edb--v1-monolithic-mess'.Unused.  Also deleted: `default-format-file' slot.
+Added handling for 0.6 to 0.7 "internal format" edits.1.26defsubstdatabase-set-field-sepinfoExplicit setter for `field-sepinfo' in `edb--v1-monolithic-mess'.Unused.  Slot is read-only.1.26defsubstdatabase-set-fieldname-alistExplicit setter for `fieldname-alist' in `edb--v1-monolithic-mess'.Unused.  Also deleted: `fieldname-alist' slot.
+Added handling for 0.6 to 0.7 "internal format" edits.1.26defsubstdatabase-set-fileExplicit setter for `file' in `edb--v1-monolithic-mess'.Unused.  Also deleted: `file' slot.
+Converted to :file in global hash.
+Added handling for 0.6 to 0.7 "internal format" edits.1.26defsubstdatabase-set-file-local-variablesExplicit setter for `file-local-variables' in `edb--v1-monolithic-mess'.Unused.  Also deleted: `file-local-variables' slot.
+Added handling for 0.6 to 0.7 "internal format" edits.1.26defsubstdatabase-set-first-linkExplicit setter for `first-link' in `edb--v1-monolithic-mess'.Unused.  Also deleted: `first-link' slot.
+Converted callers to use :vov in global hash.
+Added handling for 0.6 to 0.7 "internal format" edits.1.26defsubstdatabase-set-hidden-to-end-pExplicit setter for `hidden-to-end-p' in `edb--v1-monolithic-mess'.Unused.  Also deleted: `hidden-to-end-p' slot.
+Converted to :hendp in global hash.
+Added handling for 0.6 to 0.7 "internal format" edits.1.26defsubstdatabase-set-hide-functionsExplicit setter for `hide-functions' in `edb--v1-monolithic-mess'.Unused.  Also deleted: `hide-functions' slot.
+Added handling for 0.6 to 0.7 "internal format" edits.1.26defsubstdatabase-set-internal-file-layout-pExplicit setter for `internal-file-layout-p' in `edb--v1-monolithic-mess'.Unused.  Also deleted: `internal-file-layout-p' slot.
+Converted to :togp in global hash.
+Added handling for 0.6 to 0.7 "internal format" edits.1.26defsubstdatabase-set-modifiable-pExplicit setter for `modifiable-p' in `edb--v1-monolithic-mess'.Unused.  Also deleted: `modifiable-p' slot.
+Converted to :modifiable-p in global hash.
+Added handling for 0.6 to 0.7 "internal format" edits.1.26defsubstdatabase-set-no-of-fieldsExplicit setter for `no-of-fields' in `edb--v1-monolithic-mess'.Unused.  Also deleted: `hide-functions' slot.
+Converted callers to use field count directly.
+Added handling for 0.6 to 0.7 "internal format" edits.1.26defsubstdatabase-set-no-of-recordsExplicit setter for `no-of-records' in `edb--v1-monolithic-mess'.Unused.  Also deleted: `no-of-records' slot.
+Converted to :nrecords in global hash.
+Added handling for 0.6 to 0.7 "internal format" edits.1.26defsubstdatabase-set-record-sepinfoExplicit setter for `record-sepinfo' in `edb--v1-monolithic-mess'.Unused.  Slot is read-only.1.26defsubstdb-confls-fieldsep-bad-pConverted callers to use `db-conftup-bad-fsep'.1.26defsubstdb-confls-no-of-recordsConverted callers to use `db-conftup-reccount'.1.26defsubstdb-confls-recordsep-bad-pConverted callers to use `db-conftup-bad-rsep'.1.26defsubstdb-data-display-bufferReturn the database data display buffer associated with the current buffer,
+which must be either a summary buffer or a data display buffer.Converted unique caller to use :data-display-buffer.1.26defsubstdb-rdb-pNon-nil if DB is in RDB file layout.Incorporated into callers.1.26defsubstdb-select-last-recordSelect last record.  Does no display.
+If hiding is in effect, select the last unhidden record, unless
+optional argument IGNORE-HIDING is non-nil.Unused.1.26defsubstdb-select-prev-recordAdvance to the ARGth previous record.  Does no display.Unused.1.26defsubstdb-skip-regexp-backwardIf point is after regexp RX, move past it and return point;
+otherwise return nil.
+Incorporated into unique caller.1.26defsubstdb-summary-bufferReturn the database summary buffer associated with the current buffer,
+which must be either a summary buffer (which is returned) or a data
+display buffer.  Return nil if there is no associated summary buffer.Converted to :sumbuf.1.26defsubstdb-tagged-pNon-nil if DATABASE is in tagged file layout.Incorporated into callers.1.26defsubstdbc-set-database-modified-pConverted callers to use :modp in global hash.1.26defsubstdbc-update-database-modified-pConverted callers to use :modp in global hash.1.26defsubstdbf-point-minConverted callers to use `point-min'.1.26defsubstdbf-summary-bufferConverted callers to use :sumbuf.1.26defsubstdbf-this-field-beginning-posUnused.1.26defsubstdisplayspec-set-actual->displayExplicit setter for `actual->display' in `edb--v1-ds'.Unused.1.26defsubstdisplayspec-set-display->actualExplicit setter for `display->actual' in `edb--v1-ds'.Unused.1.26defsubstdisplayspec-set-indentExplicit setter for `indent' in `edb--v1-ds'.Unused.1.26defsubstdisplayspec-set-match-actual->displayExplicit setter for `match-actual->display' in `edb--v1-ds'.Unused.1.26defsubstdisplayspec-set-match-display->actualExplicit setter for `match-display->actual' in `edb--v1-ds'.Unused.1.26defsubstdisplayspec-set-max-bytesExplicit setter for `max-bytes' in `edb--v1-ds'.Unused.1.26defsubstdisplayspec-set-max-heightExplicit setter for `max-height' in `edb--v1-ds'.Unused.1.26defsubstdisplayspec-set-max-widthExplicit setter for `max-width' in `edb--v1-ds'.Unused.1.26defsubstdisplayspec-set-min-bytesExplicit setter for `min-bytes' in `edb--v1-ds'.Unused.1.26defsubstdisplayspec-set-min-heightExplicit setter for `min-height' in `edb--v1-ds'.Unused.1.26defsubstdisplayspec-set-min-widthExplicit setter for `min-width' in `edb--v1-ds'.Unused.1.26defsubstdisplayspec-set-padding-actionExplicit setter for `padding-action' in `edb--v1-ds'.Unused.1.26defsubstdisplayspec-set-reachablepExplicit setter for `reachablep' in `edb--v1-ds'.Unused.1.26defsubstdisplayspec-set-record-indexExplicit setter for `record-index' in `edb--v1-ds'.Unused.1.26defsubstdisplayspec-set-truncation-display-actionExplicit setter for `truncation-display-action' in `edb--v1-ds'.Unused.1.26defsubstdisplayspec-set-truncation-editing-actionExplicit setter for `truncation-editing-action' in `edb--v1-ds'.Unused.1.26defsubstfieldname->fieldnumberGiven a FIELDNAME and DATABASE, return a record fieldnumber.
+Do not be fooled into thinking this is a format fieldnumber.Converted callers to use `edb--field-nm2no'.1.26defsubstlink-set-hiddenpExplicit setter for `hiddenp' in `edb--v1-link'.Unused.  Also deleted: `hiddenp' slot.
+Converted callers to use :hiddenp tag.1.26defsubstlink-set-markedpExplicit setter for `markedp' in `edb--v1-link'.Unused.  Also deleted: `markedp' slot.
+Converted callers to use :markedp tag.1.26defsubstlink-set-nextExplicit setter for `next' in `edb--v1-link'.Unused.  Also deleted: `next' slot.
+Converted callers to use :vov.1.26defsubstlink-set-prevExplicit setter for `prev' in `edb--v1-link'.Unused.  Also deleted: `prev' slot.
+Converted callers to use :vov.1.26defsubstlink-set-recordExplicit setter for `record' in `edb--v1-link'.Incorporated into callers.1.26defsubstlink-set-summaryExplicit setter for `summary' in `edb--v1-link'.Unused.  Also deleted: `summary' slot.
+Converted callers to use :summaries, :nrecords, :recompute-p and :point.1.26defsubstrecord-field-from-indexReturn from RECORD the value of the FIELDNOth field.Converted callers to use `aref'.1.26defsubstrecord-set-field-from-indexSet, in RECORD, the FIELDNOth field to VALUE.
+Checks field constraints first if DATABASE is non-nil.Converted callers to use `aset' and `db-check-constraint'.1.26defsubstrecordfieldspec-set-actual->storedExplicit setter for `actual->stored' in `edb--v1-rs'.Unused.1.26defsubstrecordfieldspec-set-change-hookExplicit setter for `change-hook' in `edb--v1-rs'.Unused.  Also deleted: `change-hook' slot.1.26defsubstrecordfieldspec-set-common-form-functionExplicit setter for `common-form-function' in `edb--v1-rs'.Unused.1.26defsubstrecordfieldspec-set-constraint-functionExplicit setter for `constraint-function' in `edb--v1-rs'.Unused.1.26defsubstrecordfieldspec-set-default-valueExplicit setter for `default-value' in `edb--v1-rs'.Unused.1.26defsubstrecordfieldspec-set-help-infoExplicit setter for `help-info' in `edb--v1-rs'.Unused.1.26defsubstrecordfieldspec-set-match-functionExplicit setter for `match-function' in `edb--v1-rs'.Unused.1.26defsubstrecordfieldspec-set-merge-functionExplicit setter for `merge-function' in `edb--v1-rs'.Unused.1.26defsubstrecordfieldspec-set-order-fnExplicit setter for `order-fn' in `edb--v1-rs'.Unused.1.26defsubstrecordfieldspec-set-order-functionExplicit setter for `order-fn' (sic) in `edb--v1-rs'.Unused.1.26defsubstrecordfieldspec-set-sort-fnExplicit setter for `sort-fn' in `edb--v1-rs'.Unused.1.26defsubstrecordfieldspec-set-sort-functionExplicit setter for `sort-fn' (sic) in `edb--v1-rs'.Unused.1.26defsubstrecordfieldspec-set-stored->actualExplicit setter for `stored->actual' in `edb--v1-rs'.Unused.1.26defsubstrecordfieldspec-set-typeExplicit setter for `type' in `edb--v1-rs'.Unused.1.26defundatabase-check-sepinfoIncorporated into unique caller.1.26defundatabase-clean-data-display-buffersRemove killed buffers from DATABASE's data-display-buffers slot.
+Return a list of the remaining data display buffers.
+If there are none, kill DATABASE as well.Converted callers to use :ddbufs in global hash.
+Dropped re-entrant buffer-killing mechanism.1.26defundatabase-delete-pre-and-postModify current buffer according to DATABASE.
+Remove pre-first-record- and post-last-record strings or regexps, then
+add a field separator to the end so that every record is terminated by one.Incorporated into unique caller.1.26defundatabase-set-links-from-listTake a list of links, set `database-first-link' to the first one and
+set `link-next' and `link-prev' of each such that all the links are
+arranged in a doubly-linked list in the order of the list.
+Converted callers to use `edb--snap!'.1.26defundatabase-substitute-for-readIncorporated into unique caller.1.26defundatabase-substitute-for-writeIncorporated into unique caller.1.26defundb-best-fit-messageShow TEXT in echo area if it fits or in optional BUF (default *Message*).Converted callers to use `message'.1.26defundb-canonicalize-creation-methodIncorporated into unique caller.1.26defundb-convert-compute-field-valueIncorporated into unique caller.1.26defundb-convert-recordCreate and return a new record from RECORD using METHODS, a list
+of canonical creation methods.  Optional argument NO-OF-FIELDS gives the
+length of METHODS and the number of fields in the result record.
+Dynamically binds db-computed-functions.
+Incorporated into unique caller.1.26defundb-file->format-fileReturn a format file or nil.Incorporated into unique caller.1.26defundb-funcall-maybeIf FUN is non-nil, apply it to ARGS.  Otherwise return second argument,
+which would have been the first argument to which FUN was applied.
+FUN should be a funcallable object or nil.
+Incorporated into callers.1.26defundb-join-linksPlace LINK1 and LINK2 in a prev-next relationship.Unused.1.26defundb-kill-buffersKill this buffer, and the associated summary or data display buffer, if any.
+If its last data display buffer is killed, the database is killed too.
+Does not offer to save changes to the database or to this record; use `db-exit'
+with optional argument to do so.Dropped re-entrant buffer-killing mechanism.1.26defundb-new-linkUnused.1.26defundb-next-link-and-indexArguments DATABASE LINK IDX N HIDEP MARKP WRAPAROUNDP.
+Return a list of (link index) for Nth successor of LINK, whose index in
+the database is IDX.  N may be negative.  If MARKEDP is non-nil, find the
+Nth marked successor of LINK.  If HIDEP is non-nil, skip hidden links.
+If WRAPAROUNDP is nil, stop at the first or last candidate link (ie,
+properly marked and/or non-hidden, or LINK itself if no such
+encountered); if the end of the database stops the search in this way,
+the returned list also contains a third element, the number of elements
+yet to go.
+Incorporated into unique caller.1.26defundb-save-database-helperIncorporated into unique caller.1.26defundbf-fieldname->displayspecnoUnused.1.26defundbf-make-format-specIncorporated into unique caller.1.26defundbf-make-summary-makerIncorporated into unique caller.1.26defundbsi-killed-fields-to-end-maybeConverted callers to use `dbsi-ordering<-buffer'.1.26defundbsi-prev-consDropped separate "killed fields" data structure.1.26defunedb-byte-compile-allDropped runtime byte-compilation support.1.26defvardatabases-made0Converted to :databases-made property of symbol `edb'.1.26defvardb-computed-functionsnilWas used dynamically.
+Retired along with `db-convert-compute-field-value'.1.26defvardb-databasesnilAssoc list of database names and databases.Converted to :1singles in EDB hash.1.26defvardb-displaytypes(make-hash-table)Hash associating type names (symbols) and displayspecs.Converted to :1displaytypes in EDB hash.1.26defvardb-dt-leading-comma-optionalnilNon-nil if symbolic displaytypes may immediately follow a fieldname.
+Nil if a comma must come between the fieldname and the displaytype symbol.
+Displaytype symbols include # $ \" '.
+When this is non-nil, then sometimes Emacs 19 searches are intolerably slow.Incorporated value as-is.1.26defvardb-io-error-pnilNon-nil if there has been an error while reading or writing the database.Converted to :io-error-p in EDB hash.1.26defvardb-kill-buffer-hook-inhibit-pnilNon-nil if `db-kill-buffer-hook' shouldn't do anything.Dropped re-entrant buffer-killing mechanism.1.26defvardb-lmap-linkThe current link in a call to `db-lmap' or `db-lmap-macro'.Unused.1.26defvardb-load-hooksnilFunction or list of functions run after loading EDB.
+You can use this to load extensions, redefine EDB functions,
+customize key bindings, etc.Dropped special-cased load-hooks handling.1.26defvardb-mention-filename-on-save-ptNon-nil if a database's print-name or filename should
+be mentioned when it is saved to disk.Incorporated value as-is, eliding conditional at ref site.
+Perhaps this kind of customization will return later in a
+different form w/ message catalog extraction.
+1.26defvardb-rdb-converted-pnilNon-nil if `database-stored->actual' has already been run.Converted to :rdb-converted-p.1.26defvardb-rdb-field-defsnilSet to the field definitions computed from the programmer-supplied
+field definitions and the RDB header field definitions.Converted to :rdb-field-defs.1.26defvardb-rdb-field-name-charset"a-zA-Z0-9_"The characters allowed in an RDB field name
+(using regexp format sans "[]").Incorporated value as-is.1.26defvardb-rdb-file-typenilSet to 'list or 'table by rdb-read-fields according to the type
+of the file.  This is a database-local variable.Converted to :file-type.1.26defvardb-rdb-header-fieldsnilSet to the list of header fields parsed by `db-rdb-read-fields'.Converted to :header-fields.1.26defvardb-rdb-header-stringnilSet to the header string, for either List or Table RDB files.
+This is used to rewrite the header when the database is updated.Converted to :header-string.1.26defvardb-rdb-list-continuation-outputnilA computed string used to identify and align continuation data.Converted to :list-continuation-output.1.26defvardb-rdb-list-continuation-regexp"^[ \t]*|[ \t]+"A regexp which matches the beginning of a List-format entry
+continuation.Converted to :list-continuation-regexp.1.26defvardb-rdb-list-entry-regexp(concat "[ \t]*\\([" db-rdb-field-name-charset "]*\\)" (regexp-quote db-rdb-list-separator-string) "[ \t]*")A regexp which matches the beginning of a List-format field
+entry, grouping the field name as \1.Converted to :list-entry-regexp.1.26defvardb-rdb-list-separator-string" | "The string that separates field names from values.Incorporated value as-is.1.26defvardb-rdb-rrfr-hooksnilHooks run on each database record before RDB parse.Converted to :pre-parse-thunk.1.26defvardb-rdb-wrfr-after-hooksnilHooks run after each RDB write of a database record.
+The record is bound to the dynamic variable `record', and point
+is immediately after the file representation of the record.Converted to :post-write-function.1.26defvardb-rdb-wrfr-before-hooksnilHooks run before each RDB write of a database record.
+The record is bound to the dynamic variable `record', and
+point is where the record will be inserted in the buffer.Converted to :pre-write-function.1.26defvardb-recordfieldtypes(make-hash-table)Hash associating type names (symbols) and recordfieldspecs.Converted to :1recordfieldtypes in EDB hash.1.26defvardb-substitution-no-no-stringnilGlobal; hope we only write/read one database at a time.
+It should be reset before starting to read/write a database.Converted to :substitution-no-no in global hash.1.26defvardb-tagged-continuation"\t"The string that marks (the beginning of) a continuation line.
+Used only if `db-tagged-continuation-regexp' or `db-tagged-continuation-output'
+is nil (depending on whether the record is being read or written).Converted to :continuation.1.26defvardb-tagged-continuation-outputnilThe fixed string to use (before) continuing values on output.Converted to :continuation-output.1.26defvardb-tagged-continuation-regexp"[ \t]+"A regexp for a continuation line in a value when parsing.Converted to :continuation-regexp.1.26defvardb-tagged-converted-pnilNon-nil if `database-stored->actual' has already been run.Converted to :tagged-converted-p.1.26defvardb-tagged-default-fieldnilA fieldname (symbol) for the field indicated by an illegal or empty tag.
+(For instance, you might set it to 'comments.)
+Nil if those values should be discarded.Converted to :default-field.1.26defvardb-tagged-pre-tag""The string that precedes each tag.
+Used only if `db-tagged-pre-tag-regexp' or `db-tagged-pre-tag-output'
+is nil (depending on whether the record is being read or written).Converted to :pre-tag.1.26defvardb-tagged-pre-tag-outputnilThe fixed string to place before each tag on output.Converted to :pre-tag-output.1.26defvardb-tagged-pre-tag-regexpnilA regexp for what precedes each tag on its line when parsing.
+It must NOT contain any grouping constructs.Converted to :pre-tag-regexp.1.26defvardb-tagged-rrfr-hooksnilHooks run on each database record before tagged parse.Converted to :pre-parse-thunk.1.26defvardb-tagged-separator":"The string that separates field names from values.
+Used only if `db-tagged-separator-regexp' or `db-tagged-separator-output' is
+nil (depending on whether the record is being read or written).Converted to :separator.1.26defvardb-tagged-separator-outputnilThe separator between field names and values on output.Converted to :separator-output.1.26defvardb-tagged-separator-regexpnilA regexp for the separator between field names and values when parsing.Converted to :separator-regexp.1.26defvardb-tagged-tag-chars"-_A-Za-z"The characters that are allowed in field tags, in a form
+suitable for placing inside [] in a regular expression.Converted to :tag-chars.1.26defvardb-tagged-wrfr-after-hooksnilHooks run after each tagged write of a database record.
+The record is bound to the dynamic variable  record, and point
+is immediately after the file representation of the record.Converted to :post-write-function.1.26defvardb-tagged-wrfr-before-hooksnilHooks run before each tagged write of a database record.
+The record is bound to the dynamic variable  record, and
+point is where the record will be inserted in the buffer.Converted to :pre-write-function.1.26defvardbc-deleted-recordnilThe record most recently deleted by `db-delete-record'.Converted to :deleted-record in global hash.1.26defvardbf-default-summary-formatnilConverted to :default-sumfmt.1.26defvardbf-minor-modenilA symbol, either 'view or 'edit.Dropped implementation of View vs Edit as minor modes.1.26defvardbf-minor-mode-namenil"View" or "Edit".Dropped implementation of View vs Edit as minor modes.1.26defvardbf-moving-mark(make-marker)Converted to :1moving-mark in EDB hash.1.26defvardbm-string-regexp-prefix"^[ \t]*\\(/\\|regexp[ \t]+\\)"Incorporate value as-is.1.26defvardbm-string-regexp-prefix-string"/"Incorporate value as-is.1.26fsetmaprecords-breakdb-lmap-breakUnused.  Dropped support for breaking out of `maprecords'.1.25defaliasdb-string->number-defaultdb-string->integer-defaultUnused.1.25defaliasrecordfieldspec-order-functiondb-rs-ordfuncAnnounced scadenza.1.25defaliasrecordfieldspec-sort-functiondb-rs-sortfuncAnnounced scadenza.1.25defmacromaprecords-macroExecute MAPRECORDS-BODY for each record in DATABASE, and return nil.
+If optional third arg HIDE is non-nil, execute MAPRECORDS-BODY only for
+unhidden records.
+If optional fourth arg MESSAGE is non-nil, it should be a format string
+containing one numeric (%d) specifier.  That message will be issued every
+`db-inform-interval' links.
+
+In the body, variable `maprecords-record' is bound to the record
+being operated upon.  The loop may be short-circuited (aborted) by
+calling `maprecords-break'.
+
+See also `maprecords'.Unused.1.25defsubstcopy-recordReturn a copy of RECORD.Unused.1.25defundb-string->integer-defaultIf string S represents an integer, return it; otherwise return DEFAULT.Incorporated into unique caller.1.25defunmake-displayspec-from-stringCreate a displayspec from specification string S.
+Second argument is DATABASE.Unused.1.24defconstdb-elt-separator-regexpIncorporated value as-is.1.24defconstdisplaytype-nonsymbol-regexp"#\\|\\$\\|\"\\|'\\|\\[[^]]+\\]"Incorporated value as-is.1.24defconstdoubled-backslash-regexp"\\(\\\\\\\\\\)*"Regular expression which matches any number of pairs of backslashes.
+Usually used in conjunction with other regexps.Incorporated value as-is.1.24defconstedb-autoloaded-file-names'("db-convert" "db-isbn" "db-rdb" "db-search" "db-sort" "db-summary" "db-tagged" "db-two-dbs")List of EDB source files loaded by `autoload', sans extensions.Incorporated value as-is.1.24defconstedb-file-names(append edb-required-file-names edb-essential-file-names edb-autoloaded-file-names)List of all EDB source files, sans extensions.
+Does not include "database", the top-level file.Incorporated value as-is.1.24defconstedb-required-file-names'("db-util")List of EDB source files loaded by `require', sans extensions.Incorporated value as-is.1.24defconstedb-source-file-names(mapcar (lambda (file-name) (concat file-name ".el")) edb-file-names)Incorporated value as-is.1.24defconstfieldname-regexp(concat "\\\\" symbol-regexp)Incorporated value as-is.1.24defconstfieldoptions-regexp(concat "\\(" fieldoption-regexp "\\)*")Incorporated value as-is.1.24defconstfull-year-regexpIncorporated value as-is.1.24defconstmonthday-regexpIncorporated value as-is.1.24defconstmonthday-regexp-two-charIncorporated value as-is.1.24defconstmonthlength-arrayIncorporated value as-is.1.24defconstmonthname-regexpIncorporated value as-is.1.24defconstmonthnumber-regexpIncorporated value as-is.1.24defconstmonthnumber-regexp-two-charIncorporated value as-is.1.24defconstnon-backslash-character-regexp"\\(^\\|[^\\]\\)"Incorporated value as-is.1.24defconstshort-year-regexpIncorporated value as-is.1.24defconstsymbol-or-number-regexp"[-<>a-zA-Z0-9]+"Incorporated value as-is.1.24defconstweekday-alistIncorporated value as-is.1.24defconstweekday-arrayIncorporated value as-is.1.24defconstweekday-regexpIncorporated value as-is.1.24defconstyear-regexpIncorporated value as-is.1.24deflocalvardbf-wraparound-ptValue t, nil, or 'delay determines whether going forward from the last
+field (or backward from the first) wraps, is prohibited, or delays.
+'delay has the effect of prohibiting such movement the first time, but if
+the user immediately makes a second attempt, that one is successful.
+Somewhat analogous to dbc-wraparound-p.Unused.1.24defmacrodb-debugExecute BODY if `db-debug-p' is non-nil.
+See also variable `db-disable-debugging-support'.Dropped special debugging support altogether.1.24defmacrodb-debug-logUnused.1.24defmacrodb-debug-messageConverted callers to no longer output debugging messages.1.24defmacromapfieldsApply FUNC to each field in RECORD, with variable `mapfields-index' bound.
+Third argument is DATABASE.Dropped support for mapping over fields.1.24defmacromapfields-macroExecute BODY for each field of RECORD, a record of DATABASE,
+with variables `mapfields-field' and `mapfields-index' bound.Dropped support for mapping over fields.1.24defmacrowith-electric-help-maybeSimilar to `with-electric-help' if `use-electric-help-p' is non-nil;
+otherwise like `with-output-to-temp-buffer' with the "*Help*" buffer.
+Ehelp is loaded if necessary.
+BODY is not a thunk (a function of no arguments),
+as with `with-electric-help', but simply a set of forms.Converted unique caller to use `with-output-to-temp-buffer'.1.24defsubstcountrypThis kind of information may return later as
+part of some type library (edb-t-FOO.el file).1.24defsubstcreation-method-literal-pIncorporated into callers.1.24defsubstdata-display-buffer-databaseUnused.1.24defsubstdatabase-index-in-rangeIncorporated into unique caller.1.24defsubstdatabase-normalize-indexMake INDEX be in the range 1 to (database-no-of-records database).Incorporated into unique caller.1.24defsubstdatabase-unnamed-pIncorporated into unique caller.1.24defsubstdate->weekday-abbrevIncorporated into unique caller.1.24defsubstdb-if-file-readable-pReturn FILENAME if the file is readable, nil otherwise.Converted callers to use `locate-file'.1.24defsubstdb-x-jump-to-pointMove to the field or record nearest the mouse position.
+See `db-jump-to-point' for more details.Was for Emacs 18 support.
+Also deleted: associated keybindings.1.24defsubstdbf-set-this-field-indexIncorporated into unique caller.1.24defsubstdbf-this-record-fieldReturn the value of the field with name FIELDNAME from `dbf-this-record'.
+You may want to use `dbf-displayed-record-field' instead.Unused.1.24defsubstdisplay-current-recordUnused.1.24defsubstdisplayspec-set-reachableUnused.1.24defsubstinteger->monthabbrevIncorporated into unique caller.1.24defsubstinteger->monthnameIncorporated into callers.1.24defsubstinteger->weekdayIncorporated into unique caller.1.24defsubstmonthname->integerIncorporated into unique caller.1.24defsubstopspectinfo-param-nameUnused.1.24defsubstoptspecinfo-param->valueIncorporated into unique caller.1.24defsubstoptspecinfo-settorIncorporated into unique caller.1.24defunbyte-compile-databaseCompile source (.el) files in EDB, the Emacs database, which need it.
+If optional prefix argument ALL is non-nil, every source file is recompiled.
+You are likely to want unconditional recompilation if you have tried to
+compile any of the files by hand and want to replace the (possibly incorrect)
+results.Incorporated into unique caller.1.24defuncomma-delimited-string->listUnused.1.24defundatabase-check-all-sepinfosIncorporated into unique caller.1.24defundatabase-delete-linkIncorporated into unique caller.1.24defundatabase-delete-record-at-indexUnused.1.24defundatabase-no-identical-keys-pReturn t if no two elements of DATABASE have the same ordering keys,
+or if user says to proceed even though identical keys have been found.
+DATABASE should be ordered when this is called.
+Optional argument ORDERER is used as the ordering function.Unused.1.24defundatabase-set-modified-p-internalUnused.1.24defundatabase-set-temp-delimitersUnused.1.24defundatabase-stored->actual-internalDo the real work of `database-stored->actual'.Incorporated into unique caller.1.24defundate-month-day-compatibleIncorporated into unique caller.1.24defundate-order-within-yearIncorporated into unique caller.1.24defundate-year-shortIncorporated into unique caller.1.24defundb-buffer-substituteMake replacements in the current buffer according to SUBSTITUTIONS.
+SUBSTITUTIONS is list of pairs of strings; the cdr of each pair will be
+substituted for the car, in order, unless optional argument BACKWARD is
+non-nil, in which case the car is substituted for the cdr and the
+substitutions are done in reverse order.
+
+If optional third argument CHECK is non-nil, the user is warned if any of
+the substituted-in strings already appears in the buffer; such a situation
+would make substitution, then unsubstitution, not yield a result identical
+to the original buffer, since all instances of the substituted-in string
+will be assumed on the reverse substitution to have been the result of
+replacing a substituted-for string.
+
+Return nil if CHECK is nil or there were no ambiguities; otherwise
+return a list of replacements creating ambiguity."Incorporated into unique caller.1.24defundb-buryBury the data display and summary buffers.
+Spare either or both of these buffers by specifying
+optional arguments NOT-DATA-DISPLAY and NOT-SUMMARY.Incorporated into unique caller.1.24defundb-canonicalize-creation-methodsIncorporated into unique caller.1.24defundb-choose-valueIncorporated into unique caller.1.24defundb-count-arrayReturn the number of times that ITEM appears in ARRAY; test with `equal'.Converted callers to use `db-count-newlines'.1.24defundb-create-summary-bufferIncorporated into unique caller.1.24defundb-ds-displayedIncorporated into unique caller.1.24defundb-enum-do-completionsGiven a string INPUT-REP and an enum TYPE, return INPUT-REP if it is a
+valid input representation, otherwise see if it completes to a valid one,
+and show the possible completions.Incorporated into unique caller.1.24defundb-enum-make-actual->displayReturn a function appropriate for a displayspec's actual->display slot.Incorporated into unique caller.1.24defundb-enum-make-actual->storedReturn nil or a function appropriate for a displayspec's actual->stored slot.Incorporated into unique caller.1.24defundb-enum-make-display->actualReturn a function appropriate for a displayspec's display->actual slot.
+The input string is converted into one of the alternatives of TYPE, and
+if ambiguities exist, they are resolved interactively.Incorporated into unique caller.1.24defundb-enum-make-help-infoReturn a string listing the input representations of TYPE.Incorporated into unique caller.1.24defundb-enum-process-alternativesTake an alternatives list of the form accepted by `define-enum-type'.
+Return a list of three alists appropriate for use by display->actual,
+actual->display, and actual->stored (also stored->actual) functions.Incorporated into unique caller.1.24defundb-filename-sans-extensionConverted callers to use `file-name-sans-extension'.1.24defundb-fontifyFontify the region between START and END.
+Leave out the leading and trailing white space.Unused.  Fontification and such will probably return later.1.24defundb-hide-recordsUnused.1.24defundb-locate-file-on-pathReturn the full path of a file named FILENAME located
+in the current directory or on PATH, which is a list of
+directories (strings) or nil for the current directory.Converted callers to use `locate-file'.1.24defundb-locate-file-with-extensionsReturn the name of a readable file starting with FILENAME or
+FILENAME's basename and ending with a string in EXTENSIONS,
+which is a list.  EXTENSIONS may be nil, in which case FILENAME
+is searched for as is.Converted callers to use `locate-file'.1.24defundb-locate-file-with-extensions-on-pathReturn the name of a readable file starting with FILENAME or
+FILENAME's basename and ending with a string in EXTENSIONS,
+which is a list.  PATH is a list of strings representing
+directories to be searched in order after the current one; they
+may be relative directories.  Nil means the current directory.Converted callers to use `locate-file'.1.24defundb-logPostpend STRING to buffer *Database-Log*.Incorporated into unique caller.1.24defundb-merge-internalReturn a third database.Incorporated into unique caller.1.24defundb-operate-on-local-variablesApply REGION-FUNCTION to the local-variables region of the buffer.
+Return t if a local-variables region was found; REGION-FUNCTION should
+act by side effect.Incorporated into unique caller.1.24defundb-parse-match-objectIncorporated into unique caller.1.24defundb-prepare-to-debugPrepare to debug EDB.
+Set variables `debug-on-error',
+`db-disable-debugging-support', and `db-debug-p'.
+Also load uncompiled EDB source.Dropped special debugging support altogether.1.24defundb-print-match-objectIncorporated into unique caller.1.24defundb-rdb-format-to-typeGiven FORMAT from an RDB field definition,
+return an EDB record field TYPE.Incorporated into unique caller.1.24defundb-rdb-lookup-fieldLookup FIELD-TAG in the RDB database field list,
+returning its associated NAME (a symbol).Incorporated into unique caller.1.24defundb-rdb-read-list-field-defsPositioned at the blank line preceeding the field definitions in an
+RDB List file, read the field definitions and return them as an
+association list: ((FIELD-NAME FIELD-DEF FIELD-HELP)...).Incorporated into unique caller.1.24defundb-rdb-read-table-field-defsPositioned at the field name line in an RDB Table file, read the
+field definitions and setup EDB for regular-file format.  Leave the
+buffer positioned before the first record, if any.Incorporated into unique caller.1.24defundb-rdb-setup-internalInternal function to do the real work of `db-rdb-setup', without
+certain safety checks.  This function should only be called once per
+database.  Argument is the FIELD-SPECS (see db-rdb-setup).Incorporated into unique caller.1.24defundb-read-fieldvalue-from-minibufferIncorporated into unique caller.1.24defundb-save-database-no-bufferIncorporated into unique caller.1.24defundb-set-auto-edit-modeSet `db-auto-edit-mode' to ARG.Unused.1.24defundb-set-field-helpInstall a help string for a given field.  Construct a new type by
+copying the current one, changing help string, and installing the new
+type.Unused.
+This will return later in some form or another.1.24defundb-set-field-variablesIncorporated into unique caller.1.24defundb-string-replace-regexp-2Converted unique caller to use `replace-regexp-in-string'.1.24defundb-string-substituteSubstitute NEWCHAR for instances of OLDCHAR in STRING.
+NEWCHAR and OLDCHAR are characters.Converted unique caller to use `subst-char-in-string'.1.24defundb-string-substitute-optConverted unique caller to use `subst-char-in-string'.1.24defundb-string-substitute-substring-general-caseConverted callers to use `replace-regexp-in-string'.1.24defundb-tagged-lookup-fieldIncorporated into unique caller.1.24defundb-tagged-setup-internalDo the real work of `db-tagged-setup'.
+This function should only be called once per database.Incorporated into unique caller.1.24defundb-this-bufferRun EDB on the file corresponding to the current buffer.
+The current buffer is killed first.Unused.1.24defundb-toggle-auto-edit-modeChange whether cursor movement in view mode causes edit mode to be entered.
+See variable `db-auto-edit-mode'.
+With a nonzero prefix argument, set  db-auto-edit-mode to t.
+With a zero prefix argument, set  db-auto-edit-mode to nil.Unused.1.24defundbf-check-if-before-fieldIncorporated into unique caller.1.24defundbf-check-if-beyond-fieldIncorporated into unique caller.1.24defundbf-format-name->specReturn a format file specifier (a list of values for format variables).Unused.1.24defundbf-goto-fieldUnused.1.24defundbf-in-indentation-pIncorporated into unique caller.1.24defundbf-install-format-file-specIncorporated into unique caller.1.24defundbf-install-format-name-and-specUnused.1.24defundbf-install-format-specIncorporated into unique caller.1.24defundbf-kill-summaryKill this data display buffer's associated database summary buffer.Incorporated into unique caller.1.24defundbf-make-format-file-specIncorporated into unique caller.1.24defundbf-process-fieldIncorporated into unique caller.1.24defundbf-set-buffer-local-variablesIncorporated into unique caller.1.24defundbf-set-field-textUnused.1.24defundbf-summarize-linkUnused.1.24defundbf-this-field-text-unrectIncorporated into unique caller.1.24defundbf-this-record-set-field-and-redisplaySet field with name FIELDNAME in `dbf-this-record' to VALUE.
+Causes the entire record to be redisplayed immediately.
+You may want to use `dbf-displayed-record-set-field-and-redisplay' instead.Unused.  Also deleted: associated `make-obsolete' form.1.24defundef-date-disptype???Converted callers to use `define-displaytype-from-displayspec' directly.1.24defundef-time-disptype???Converted callers to use `define-displaytype-from-displayspec' directly.1.24defunformat-spec-format-fileIncorporated into unique caller.1.24defuninteger->weekday-abbrevUnused.1.24defunload-databaseLoad all the files of EDB, the Emacs database.
+With prefix argument, load source, not compiled, code; run EDB interpreted.Incorporated into unique caller.1.24defunload-db-aux-fileIncorporated into unique caller.1.24defunmake-default-recordIncorporated into unique caller.1.24defunmake-enum-member-ordererReturn an ordering function for the enum type TYPE.Incorporated into unique caller.1.24defunmake-enum-member-orderer-internalGiven an enum type TYPE, create an ordering function which compares two
+items in the enum type's alternatives list.  The resulting function returns
+LESS-VALUE if its first argument precedes its second argument in the
+alternative list, EQUAL-VALUE if they're equal or neither appears, and
+GREATER-VALUE if the first follows the second.
+
+If one of the arguments doesn't appear in the alternatives list, the other
+is considered to precede it.Incorporated into unique caller.1.24defunmake-enum-member-sorterReturn a sorting function for the enum type TYPE.Incorporated into unique caller.1.24defunmake-format-printerIncorporated into unique caller.1.24defunmake-linkUnused.  Also deleted: associated `make-obsolete' form.1.24defunmake-similar-databaseReturn a database similar to ORIGINAL.Incorporated into unique caller.1.24defunmap-data-display-buffersApply FUNCTION to each data display buffer of DATABASE.Incorporated into unique caller.1.24defunordinary-truncation-functionIncorporated into unique caller.1.24defunprint-compare-recordsIncorporated into unique caller.1.24defunprint-databaseUnused.1.24defunprint-recordIncorporated into unique caller.1.24defunread-sep-itemsUnused.1.24defunrecord-sep-lines-functionUnused.1.24defunrecordfieldspecs-compatibleReturn t if the databases' recordfieldspecs have the same types.Incorporated into unique caller.1.24defunrecordfieldtype-pConverted unique caller to consult hash table directly.1.24defunreturn-right-justify-padding-functionUnused.1.24defunright-justify-padding-functionUnused.1.24defunright-justify-slotsetter-functionIncorporated into unique caller.1.24defunSFf-isbn-check-sumFrom _Numbers, Groups and Codes_ by J.F. Humphreys and
+M. Y. Prest, Cambridge University Press, Avon: 1989. page 233.
+Example: A well-known example of error-correction is provided by
+the ISBN (International Standard Book Number) of published
+books. This is a sequence of nine digits a1a2...a9, where each ai
+is one of the numbers 0,1,...,9, together with a check digit which
+is one of the symbols 0,1,2,3,4,5,6,7,8,9, or X (with X
+representing 10). This last digit is included so as to give a
+check that the previous 9 digits have been correctly transcribed,
+and is calculated as follows.  Form the integer 10a1 + 9a2 + 8a3
++... +2a9 and reduce this modulo 11 to obtain an integer b
+between 1 and 11 inclusive. The check digit is obtained by
+subtracting b from 11.Incorporated into unique caller.1.24defunstring-is-yn-pUnused.1.24defunstring-or-nil->number-or-nilIncorporated into unique caller.1.24defunstring-to-number-trimThis was to support a bug in Emacs 19.28 whereby
+`isfloat_string' failed when its argument had trailing spaces,
+so that (string-to-number "5.4") => 5.4 (correct)
+    but (string-to-number "5.4 ") => 5 (incorrect).Callers were moved into a new test/choice scope evaluated at load-time,
+and changed to use the correct variant.1.24defunupdate-displayspec-from-optspec-and-valueIncorporated into unique caller.1.24defunwrite-sep-itemsUnused.1.24defunzero-or-empty-date-pIncorporated into unique caller.1.24defvaractual->display-error-string"<ERROR>"String displayed when the actual->display function doesn't return a string.Incorporated value as-is.1.24defvarcountry-list'("Canada" "Israel" "Switzerland" "Japan" "West Germany" "United States" "Zambia")List of country names.  Far from complete.This kind of information may return later as
+part of some type library (edb-t-FOO.el file).1.24defvardatabase-mode-line-formatIncorporated value as-is.1.24defvardb-auto-edit-modetnil if movement around the data display buffer is permitted in view mode.
+When this variable is non-nil (it defaults to t), mousing and most
+movement commands cause edit mode to be entered on the appropriate field.
+Don't set this variable directly; use command `db-toggle-auto-edit-mode'.Unused.1.24defvardb-debug-pnil*Non-nil if database debugging is enabled.  Defaults to nil.
+Has no effect on code compiled with `db-disable-debugging-support' set.Dropped special debugging support altogether.1.24defvardb-delete-record-modifies-database-ptNon-nil if deleting a record should mark the database as modified.Incorporated value as-is.1.24defvardb-disable-debugging-supporttIf non-nil, then debugging calls will be compiled out of the source and the
+variable `db-debug-p' will have no effect.  Setting this variable at run-time
+has no effect if you are running EDB compiled; you must set it when you compile
+EDB, or run EDB interpreted.  Defaults to t.Dropped special debugging support altogether.1.24defvardb-filename-extension-regexp"[^.]\\(\\.\\([-a-z]*\\)\\)$"Submatch 1 is the extension with leading period; submatch 2 is without.Unused.1.24defvardb-fontificationdb-running-lucid-emacsNon-nil if uneditable text in data display buffers should use a special font.
+Don't set this unless you are running Lucid GNU Emacs!Fontification and such will probably return later.1.24defvardb-mouse-buffer-switch-moves-point-pUnused.1.24defvardb-running-lucid-emacs(string-match "Lucid" emacs-version)Converted refs to check the property `edb-running-lemacs'
+of symbol `emacs-version'.1.24defvardb-running-lucid-emacs(string-match "Lucid" emacs-version)Support for Lucid Emacs moved to db-lemacs.el.
+1.24defvardb-use-completing-readt*Non-nil if EDB should use `completing-read' when reading enumerated types.
+Otherwise, on erroneous enumeration input, EDB shows the possible completions
+but doesn't correct the input.Incorporated value as-is.1.24defvardbf-fieldabbrevsnilDatabase-format-specific alist of fieldabbrevs and displayspecs.Incorporated value as-is.1.24defvardbm-<-prefix"^<"Incorporated value as-is.1.24defvardbm-=-prefix"^="Incorporated value as-is.1.24defvardbm->-prefix"^>"Incorporated value as-is.1.24defvardbm-and-connective"[ \t]+and[ \t]+"Incorporated value as-is.1.24defvardbm-not-prefix"^[ \t]*not[ \t]+"Incorporated value as-is.1.24defvardbm-or-connective"[ \t]+or[ \t]+"Incorporated value as-is.1.24defvaredb-directorynilA string, the name of the directory containing the EDB source files.Converted unique caller to use default directory.1.24defvarmapfields-fieldnilThe current field value in a call to `mapfields-macro'.Dropped support for mapping over fields.1.24defvarmapfields-indexnilThe current field index in a call to `mapfields' or `mapfields-macro'.Dropped support for mapping over fields.1.24defvarmode-motion-hooknilUnused.  Perhaps for Lucid Emacs support?1.24defvarspace-maybe-regexp-limit8Emacs 19's regexp routines fix bugs in the Emacs 18 and Lucid Emacs
+versions, but are sometimes much slower.  For deeply indented fields,
+this can result in very slow editing.  We disable some error-checking
+and correction (which oughtn't ever be invoked anyway) for fields
+indented more than `space-maybe-regexp-limit' characters.
+Eventually EDB will use a completely different approach to indented fields.Incorporated value as-is.1.24defvaruse-electric-help-pnil*Non-nil if Emacs programs should use electric help where possible.
+Don't set this to a non-nil value unless the ehelp package is available.Unused.1.24fsetdb-warndb-warningUnused.1.24fsetdefine-displaytype-aliasdefine-displaytype-from-displayspecThis was also marked with `make-obsolete'.1.24fsetdefine-recordfieldtype-aliasdefine-recordfieldtype-from-recordfieldspecThis was also marked with `make-obsolete'.1.23deflocalvardb-default-field-type'stringThe type to use for record fields whose type is not explicitly specified.Incorporated value as-is.  Converted type system
+machinery to default to `string' automatically.1.23deflocalvardbf-displayspec-begin-markersnilAn array of markers, one for the beginning
+of each field of the display format.Unused.1.23defmacroin-buffer-simpleExecute, in BUFFER, forms of BODY.
+BODY shouldn't move point in a buffer displayed in a non-selected window.Converted callers to use `with-current-buffer'.
+Also deleted: attendant `put' forms.1.23defmacroin-windowExecute, in WINDOW, forms of BODY.
+This is more useful than `in-buffer' for window manipulation,
+as by `scroll-up'.Converted callers to use `with-selected-window'.
+Also deleted: attendant `put' forms.1.23defmacromake-optspecinfoargs: PARAM-NAME SETTOR-OR-ACCESSOR VALUE-FN.
+SETTOR-OR-ACCESSOR is either a settor function, a slotname, or a list of
+slotnames.  In the latter two cases, it's first converted into a settor.Incorporated into unique caller.1.23defsubstdatabase-last-linkIncorporated into unique caller.1.23defsubstdatabase-linkReturn the link of DATABASE at index N.
+The first link is numbered 1.Converted unique caller to use `next-link-and-index' directly.1.23defsubstdatabase-link-and-indexReturn a cons of (link . index) for the link of DATABASE with index N.
+If HIDEP is non-nil, then hidden links are skipped.
+If MARKEDP is non-nil, only marked links count.
+
+This shouldn't be used for going to fixed points in the
+database (like the last record), both because hiding may
+change its semantics and because, in that case, just using
+`(link-prev (database-first-link database))' and 
+`(database-no-of-records database)' is more efficient.Converted unique caller to use `next-link-and-index' directly.1.23defsubstdb-functionpReturn t if OBJECT is a function (is funcallable), nil otherwise.Converted callers to use `functionp'.1.23defunbob-visible-pConverted unique caller to use `window-start' and `point-min'.1.23defundatabase-buffer-pT if this buffer is a database data display buffer
+or database summary buffer.Incorporated into unique caller.1.23defundatabase-list-of-linksIncorporated into unique caller.1.23defundatabase-set-modified-p-internalUnused.1.23defundb-file-resolve-symlinkReturn the non-link FILE eventually points to, or FILE if
+it's not a symbolic link.  This gets in an infinite loop
+if FILE points into a circular list of symlinks.Converted unique caller to use `file-chase-links'.1.23defundb-insertConspirator in the bletcherous `insert' override.1.23defundb-insert-file-contentsIncorporated into unique caller.1.23defundb-match-stringReturn the string matched by parentheses number N.
+If there is a SOURCE string, return the substring of that string;
+else, return substring of the current buffer.Converted callers to use `match-string'.1.23defundb-match-string-maybeLike `db-match-string', but return nil
+if there was no match for parenthesis N.Converted callers to use `match-string'.1.23defundb-rassocReturn non-nil if ELT is the cdr of an element of LIST.
+Comparison done with  `equal'.  The value is actually the
+element of LIST whose cdr is ELT.Converted callers to use `rassoc'.1.23defundb-set-fieldname-varsSet variables and slots of DATABASE that can be set
+from optional argument FIELDNAMES-LIST or, if it is nil,
+from the fieldnames slot of the database.Incorporated into unique caller.1.23defundb-symbol-appendUnused.1.23defundbc-compute-indexIncorporated into unique caller.1.23defunedb-updateInstall the EDB update found in the current buffer after point.
+EDB is assumed to be in the directory specified by `edb-directory'.
+(If that variable is not set, the user is prompted for the location of
+the files.)
+
+If you have trouble with this command, it is likely that your version of
+EDB is not exactly the same as the last release.  You might have an old
+release, or you might have a pre-release.No longer relevant; EDB is no longer distributed via patches.1.23defuneob-visible-pConverted unique caller to use `window-end' and `point-max'.1.23defunfirstnReturn a copy of the first N elements of LIST.Converted unique caller to use `subseq'.1.23defunindentify-absoluteUnused?1.23defunmake-summary-indentationUnused.1.23defunmake-summary-initial-indentationUnused.1.23defunorder->sortGiven an ORDER function, return a sort function.Incorporated into unique caller.1.23defunrecord->link-and-indexReturn a list `(link index)' for the link containing RECORD in DATABASE.
+Return nil if there is no such link.Unused.1.23defunsort->orderGiven a SORT function, return an order function.Incorporated into unique caller.1.23defvardb-loggednilT if logging has been done recently
+(since the user was last shown the log).Unused.  Unique set site deleted.1.23fsetdb-old-insertinsertOriginal value of `insert' before override.This practice is dangerous because it has a high probability
+of breaking other code.  The call sites were converted to use
+`insert' directly.1.23fsetdb-old-save-some-bufferssave-some-buffersOriginal value of `save-some-buffers' before override.This practice is dangerous because it has a high probability
+of breaking other code.  The call site was converted to use
+`save-some-buffers' directly, anyway.1.23funcdb-insert-funcarg: STRING-OR-CHARConspirator in the bletcherous `insert' override.

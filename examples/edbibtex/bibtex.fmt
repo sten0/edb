@@ -1,0 +1,42 @@
+******************************* UNKNOWN ********************************
+        Class: \BibTeX-entry-type
+         Code: \BibTeX-tag
+................................................................Required
+................................................................Optional
+.................................................................Ignored
+       Author: \author
+       Editor: \editor
+        Title: \title
+      Journal: \journal
+       Series: \series
+         Year: \year
+        Month: \month
+       Volume: \volume
+       Number: \number
+        Pages: \pages
+      Chapter: \chapter
+    Publisher: \publisher
+    Booktitle: \booktitle
+      Edition: \edition
+       School: \school
+  Institution: \institution
+ Organization: \organization
+      Address: \address
+         Type: \type
+ Howpublished: \howpublished
+         Note: \note
+          Key: \key
+     Crossref: \crossref
+         ISBN: \isbn
+         ISSN: \issn
+     LCNumber: \lcnum
+       Errata: \errata
+     Keywords: \keywords
+     Language: \language
+      Remarks: \annote
+      Updated: \updated
+     Warnings: \warnings
+******************************* UNKNOWN ********************************
+Local variables:
+eval: (load-file "bibtex.dba")
+End:

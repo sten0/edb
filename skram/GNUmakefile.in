@@ -1,0 +1,86 @@
+# GNUmakefile
+
+# Copyright (C) 2004,2005,2006,2007,2008 Thien-Thi Nguyen
+#
+# This file is part of EDB.
+#
+# EDB is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free
+# Software Foundation; either version 3, or (at your option) any later
+# version.
+#
+# EDB is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with EDB; see the file COPYING.  If not, write to the Free
+# Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+# MA 02110-1301, USA.
+
+EMACS = @EMACS@
+topdir = @abs_top_srcdir@
+
+EXTRABATCHOPTS = --no-site-file --eval '(setq vc-handled-backends nil)'
+
+elisp = \
+  $(patsubst %, $(topdir)/lisp/%.el, system state connection \
+                                     edb-1int-to-single) \
+  $(wildcard $(topdir)/lisp/d*.el) \
+  $(wildcard $(topdir)/lisp/edb-*.el)
+
+all: hacksup.el skram.data sk3 sk4
+	: note the difference !
+	diff skram.data sk3 || true
+
+ebatch = $(EMACS) -batch $(EXTRABATCHOPTS) 
+
+hacksup.el: $(elisp)
+	$(ebatch) --load make-hacksup.el $^
+
+skram.data: $(elisp)
+	$(ebatch) --load make-skram.el -f make-skram $^
+
+# Emacs from CVS has a fixed lisp/startup.el that supports the following:
+#+ wily-emacs = $(ebatch) -L $(topdir) \
+#+		--eval '(require (quote database))'
+#
+# Until that change is distributed, here is a workaround:
+wily-emacs = $(ebatch) \
+  --eval '(add-to-list (quote load-path) (expand-file-name "$(topdir)"))' \
+  --eval '(require (quote database))'
+
+sk2: skram.data
+	$(wily-emacs) \
+	  --eval '(db-find-file "$<")' \
+	  --eval '(db-toggle-internal-file-layout 1)' \
+	  --eval '(setf (database-print-name dbc-database) "SKRAM 2")' \
+	  --eval '(db-write-database-file "$@")'
+	test -L sk2.fmt || ln -s skram.fmt sk2.fmt
+
+sk3: sk2
+	$(wily-emacs) \
+	  --eval '(db-find-file "$<")' \
+	  --eval '(db-toggle-internal-file-layout 0)' \
+	  --eval '(setf (database-print-name dbc-database) "SKRAM 3")' \
+	  --eval '(db-write-database-file "$@")'
+	test -L sk3.fmt || ln -s skram.fmt sk3.fmt
+
+sk4: sk2
+	sed '/"db-oldnames.el"/d;/"db-nosetf.el"/d' $< > $<.TMP
+	$(wily-emacs) \
+	  --eval '(db-find-file "$<.TMP")' \
+	  --eval '(db-toggle-internal-file-layout 1)' \
+	  --eval '(setf (database-print-name dbc-database) "SKRAM 4")' \
+	  --eval '(db-write-database-file "$@")'
+	rm -f $<.TMP
+	test -L sk4.fmt || ln -s skram.fmt sk4.fmt
+
+clean:
+	rm -f sk2 sk3 sk4 *~
+
+realclean: clean
+	rm -f skram.data hacksup.el
+
+# GNUmakefile ends here

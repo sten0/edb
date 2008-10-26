@@ -1,0 +1,49 @@
+This table lists functions (defmacro, defalias, fset, defun and defsubst),
+variables (defvar and deflocalvar), and structs that appear in one release but
+not the next, thus explicitly excluding those elements added and then deleted
+prior to release (experimental munging).
+
+The display format is like so:
+
+  THING (KIND) DEFAULT-VALUE
+  SINCE
+  ---------------------------
+  COMMENTS
+  ---------------------------
+  DOCUMENTATION
+
+All fields are strings.  DEFAULT-VALUE and DOCUMENTATION may be empty.
+SINCE is the first EDB version in which THING no longer appears.
+COMMENTS is one or more sentences describing the particulars of THING's
+retirement, perhaps w/ rationale.  Common sentences (and their meanings):
+
+  Unused.
+    Perhaps THING was useful before but it is no longer so.  It's also
+    possible that THING was never useful, a heretofore forgotten doodle.
+
+  Converted to KEYWORD [PLACE].
+    THING is some kind of variable, or an explicit setter associated w/
+    a structure slot.  The value to be stored is now stored in a hash table
+    (:test 'eq) under key KEYWORD.  If PLACE is omitted, the hash table is
+    "local" in some (unspecified) sense, otherwise PLACE is typically "in
+    global hash" or "tag".  Note that storage is not reduced.
+
+  Converted callers to use KEYWORD [PLACE].
+    Similar to the previous sentence, but the value to be stored is now
+    derived (or derivable) from other sources.
+
+  Converted callers to use FUNCTION.
+    THING (either a variable or function) is now computed using FUNCTION.
+
+  Incorporated into [callers | unique caller].
+    THING is a some kind of function that was inlined into its caller(s).
+    We distinguish the case of a "unique caller" for surveying purposes.
+
+  Incorporated value as-is.
+    THING is some kind of variable.
+
+  Dropped ASPECT altogether.
+    THING is part of some ASPECT, which was entirely removed from EDB
+    design or implementation.
+
+There are also variations on these common sentences.

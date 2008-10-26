@@ -1,0 +1,151 @@
+(setq rolodex-extras '("extra1" "extra2" "extra3" "extra4" "extra5"))
+
+(setq rolodex-fields
+      '(name work-phone home-phone company work-address home-address remarks
+	     date (birthday . string-or-nil) (anniversary . string-or-nil)))
+
+(let ((extras rolodex-extras))
+  (while extras
+    (setq rolodex-fields
+	  (append rolodex-fields (list (cons (intern
+					      (concat (car extras) "-name"))
+					     'string-or-nil)
+				       (cons (intern
+					      (concat (car extras) "-value"))
+					     'string-or-nil))))
+    (setq extras (cdr extras))))
+
+(database-set-fieldnames-to-list database rolodex-fields)
+
+(setf (database-print-name database)
+      "Jik's Rolodex"
+
+      (sepinfo-sep-function (database-record-sepinfo database))
+      'rolodex-sep-function)
+
+(defun rolodex-sep-function (last-end)
+  (let (this-end)
+    (if last-end
+	(goto-char (+ last-end 1)))
+    (if (re-search-forward ".*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n\\(.+\n\\)*" nil t)
+	(setq this-end (match-end 0))
+      (error "Error separating rolodex record."))
+    (cons this-end
+	  (if (>= (+ this-end 1) (point-max))
+	      nil
+	    (+ this-end 1)))))
+
+(setf (database-read-record-from-region database) 'rolodex-rrfr)
+
+(defun newlines->semis (string)
+  (and string (replace-regexp-in-string "\n" "; " string)))
+
+(defun semis->newlines (string)
+  (and string (replace-regexp-in-string ";[ \t]*" "\n" string)))
+
+(defun rolodex-rrfr ()
+  (unless (re-search-forward
+	 "\\(.*\\)\n\\(.*\\)\n\\(.*\\)\n\\(.*\\)\n\\(.*\\)\n\\(.*\\)
+\\(.*\\)\n\\(.*\\)\n" nil t)
+    (error "Error parsing rolodex record."))
+  (let ((extras rolodex-extras)
+        (name (match-string 1))
+	      (work-phone (match-string 2))
+	      (home-phone (match-string 3))
+	      (company (match-string 4))
+	      (work-address (match-string 5))
+	      (home-address (match-string 6))
+	      (remarks (match-string 7))
+	      (date (match-string 8)))
+    (nconc
+     (list 'name (semis->newlines name)
+           'work-phone (semis->newlines work-phone)
+           'home-phone (semis->newlines home-phone)
+           'company (semis->newlines company)
+           'work-address (semis->newlines work-address)
+           'home-address (semis->newlines home-address)
+           'remarks (semis->newlines remarks)
+           'date (semis->newlines date))
+     (let (pl)
+       (flet ((plpush (f v) (setq pl (plist-put
+                                      pl f (semis->newlines v)))))
+         (while (and extras (re-search-forward "\\(.+\\)\n" nil t))
+           (let ((extra (match-string 1)))
+             (cond ((string-match "^Birthday:[ \t]*\\(.*\\)" extra)
+                    (plpush 'birthday (match-string 1 extra)))
+                   ((string-match "^Anniversary:[ \t]*\\(.*\\)" extra)
+                    (plpush 'anniversary (match-string 1 extra)))
+                   ((string-match "^\\([^:]+\\):[ \t]*\\(.*\\)" extra)
+                    (let ((field-name (match-string 1 extra))
+                          (field-value (match-string 2 extra)))
+                      (plpush (intern (concat (car extras) "-name"))
+                              field-name)
+                      (plpush (intern (concat (car extras) "-value"))
+                              field-value)
+                      (setq extras (cdr extras))))
+                   (t
+                    (error "Invalid extra field parsing rolodex record."))))))
+       pl))))
+
+(setf (database-write-region-from-record database) 'rolodex-wrfr)
+
+(defun empty-string-or-nil-p (string-or-nil)
+  "Return t if its argument is nil or a zero-length string, nil otherwise."
+  (or (not string-or-nil)
+      (string-equal "" string-or-nil)))
+
+(defun rolodex-wrfr (record)
+  (insert (newlines->semis (db-record-field record 'name)) "\n"
+	  (newlines->semis (db-record-field record 'work-phone)) "\n"
+	  (newlines->semis (db-record-field record 'home-phone)) "\n"
+	  (newlines->semis (db-record-field record 'company)) "\n"
+	  (newlines->semis (db-record-field record 'work-address)) "\n"
+	  (newlines->semis (db-record-field record 'home-address)) "\n"
+	  (newlines->semis (db-record-field record 'remarks)) "\n"
+	  (newlines->semis (db-record-field record 'date)) "\n")
+  (let ((extras rolodex-extras)
+	(birthday (db-record-field record 'birthday))
+	(anniversary (db-record-field record 'anniversary)))
+    (if (not (empty-string-or-nil-p birthday)) (insert "Birthday: "
+			 (newlines->semis birthday) "\n"))
+    (if (not (empty-string-or-nil-p anniversary)) (insert "Anniversary: "
+			    (newlines->semis anniversary) "\n"))
+    (while extras
+      (let ((extra-name (db-record-field record (intern (concat (car extras)
+							     "-name"))))
+	    (extra-value (db-record-field record (intern (concat (car extras)
+							      "-value")))))
+	(if (not (and (empty-string-or-nil-p extra-name)
+		      (empty-string-or-nil-p extra-value)))
+	    (insert extra-name ": " (newlines->semis extra-value) "\n")))
+      (setq extras (cdr extras)))))
+
+(defun rolodex-before-display (&optional record)
+  (let ((width rolodex-min-field-width)
+	(extras rolodex-extras))
+    (while extras
+      (let ((name (db-record-field (or record t)
+                                   (intern (concat (car extras) "-name")))))
+	(if (and (not (empty-string-or-nil-p name))
+		 (> (length name) width))
+	    (setq width (length name))))
+      (setq extras (cdr extras)))
+    (setq tab-width (+ width 2))))
+
+(setq dbf-before-display-record-function 'rolodex-before-display)
+
+; I could cache some state in the record so that I only have to
+; redisplay it if the tab width actually changes, or only if the field
+; being changed is one of the extra fields' names, but it isn't worth
+; the effort.
+
+(defun rolodex-change-function (field old new)
+  (rolodex-before-display)
+  t)
+
+(setq dbf-every-change-function 'rolodex-change-function)
+
+(defun rolodex-change-date (field old new)
+  (dbf-this-record-set-field 'date (current-time-string)))
+
+(setq dbf-first-change-function 'rolodex-change-date)

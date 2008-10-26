@@ -1,0 +1,21 @@
+/////////////////////////////// ARTICLE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+         Code: \tag,nil-or-string
+................................................................Required
+       Author: \author,author
+        Title: \title,nil-or-string,indent
+      Journal: \journal,journal
+         Year: \year,nil-or-string
+................................................................Optional
+       Volume: \volume,nil-or-string
+       Number: \number,nil-or-string
+        Pages: \pages,nil-or-string
+        Month: \month,month
+         Note: \note,nil-or-string,indent
+          Key: \key,nil-or-string
+     Crossref: \crossref,nil-or-string
+.................................................................Ignored
+       Errata: \errata,nil-or-string,indent
+     Keywords: \keywords,nil-or-string,indent
+      Remarks: \annote,nil-or-string,indent
+      Updated: \updated,nil-or-string
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ ARTICLE ////////////////////////////////

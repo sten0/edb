@@ -1,0 +1,540 @@
+BUGS known to infest EDB (at some point).
+
+Please send bug reports not covered in this file to <ttn@gnuvola.org>.
+
+Include version (from `M-x edb-version'), a snapshot of the *Database Log*
+and *Backtrace* buffers (if available), the smallest possible set of files
+to reproduce the bug, a description of the precise actions that triggered
+the bug (starting from "emacs -q"), your observations of the actual events,
+and a description of what you expected to see.
+
+The following is to remind the EDB maintainer what means what (ignorable):
+
+ HEADER                MEANING
+ Id                    serial number of the bug
+ Summary               one-line description of the buggy behavior
+ Status                one of: unresolved, fix-applied, resolved
+ Reported-Version      released version of EDB that demonstrates this bug
+ Reported-By           either "ttn" or the someone's email address
+ Reported-Date         when reported (and hopefully entered into BUGS :-)
+ Fix-Applied-Summary   one-line description of the fix
+ Fix-Applied-Date      when status changed to fix-applied
+ Fix-Applied-Version   version at and after which no longer demonstrate the bug
+ Resolved-Date         when status changed to resolved
+
+Here is an example record:
+
+ Id: 0
+ Summary: No BUGS file
+ Status: resolved
+ Reported-Version: 1.23
+ Reported-By: ttn
+ Reported-Date: 2004-10-12
+ Fix-Applied-Summary: Write a BUGS file
+ Fix-Applied-Date: 2004-10-12
+ Fix-Applied-Version: 1.24
+ Resolved-Date: 2004-10-12
+
+ It's unknown whether projects w/ a BUGS file accumulate more or less bugs
+ than those w/o.  EDB can be used to fan these speculative embers -- cool!
+
+
+Id: 1
+Summary: EDB cannot manipulate the BUGS file as a database
+Status: resolved
+Reported-Version: 1.24
+Reported-By: ttn
+Reported-Date: 2004-10-13
+Fix-Applied-Summary: Stash regexp-matched text on read for later write.
+Fix-Applied-Date: 2007-12-27
+Fix-Applied-Version: 1.28p2
+Resolved-Date: 2007-12-27
+
+2004-10-13
+At the moment, everything is missing: schema, display format(s),
+integration w/ maintenance methodology (e.g., "make check"), etc.
+
+2007-05-28
+Looks like BUGS.edb works for reading.  Writing still loses.
+Also, no way to update ChangeLog, no "make check" integration, etc.
+
+2007-12-27
+Writing succeeds (if the file is writeable :-).
+
+
+Id: 2
+Summary: Function and variable names conflict w/ the rest of Emacs
+Status: unresolved
+Reported-Version: 1.24
+Reported-By: ttn
+Reported-Date: 2004-10-13
+
+Most things have been pushed into `db-', `database-' or `db[a-z]*-'.
+However, there are still quite a few exceptions, notably functions
+and vars in db-time.el (e.g., `parse-time-string') and in db-types.el
+(e.g., `abbreviate-state').  The latter is more of a latent conflict
+than an immediately pressing one.
+
+[Insert standard Emacs-single-namespace-is-a-PITA lament, here.]
+
+
+Id: 3
+Summary: Build failure
+Status: resolved
+Reported-Version: 1.23
+Reported-By: jsbien@mimuw.edu.pl
+Reported-Date: 2004-09-25
+Fix-Applied-Summary: Use `default-directory' in `load-path' when compiling
+Fix-Applied-Date: 2004-10-13
+Fix-Applied-Version: 1.24
+Resolved-Date: 2008-01-16
+
+The bug report said that db-nosetf.el was not able to be loaded.
+
+Now function `edb-byte-compile-all' unconditionally
+adds `default-directory' to `load-path'.
+
+2008-01-16 ttn sez: no further activity, marking "resolved".
+
+
+Id: 4
+Summary: Invoking `db-next-field' in data display buffer throws error
+Status: unresolved
+Reported-Version: 1.24
+Reported-By: ttn
+Reported-Date: 2004-10-13
+
+In the data display buffer, command `M-x db-next-field' throws a "Wrong type
+argument: integer-or-marker-p, nil" error since "current-field" state has not
+yet been initialized (by calling `db-first-field', typically bound to TAB).
+
+This bug is just one of many in a family.  The whole current-field tracking
+and attributes-setting is extremely cumbersome; too many independent variables
+requiring too much stylized access/mutation.  Fix requires rethought/redesign
+using a more scalable approach based on model-view-controller and some kind of
+observer protocol.
+
+A kludge that was tried, and subsequently reverted, was to add:
+
+  (unless dbf-this-field-beginning-pos
+    (db-first-field)
+    (setq arg 0))
+
+to the beginning of `db-next-field'.  This worked for a bit but resulted in
+other errors later for other commands and then also later for `db-next-field'
+itself.
+
+
+Id: 5
+Summary: Command db-save-database signals "Wrong type argument" error
+Status: resolved
+Reported-Version: 1.24
+Reported-By: nr-tkz@nifty.com
+Reported-Date: 2004-11-20
+Fix-Applied-Summary: Fix typo in db-rep.el introduced in EDB 1.23
+Fix-Applied-Date: 2005-01-12
+Fix-Applied-Version: 1.25
+Resolved-Date: 2008-01-16
+
+> EDB 1.24 fails to save database when I execute db-save-database for
+> the first time after modifying it. But when I execute db-save-database
+> again, no error occurs and EDB successfully saves the database. The
+> error message reads as follows:
+>
+> database-set-modified-p: Wrong type argument: arrayp, nil
+>
+> The problem seems to be the argument passed to
+> database-clean-data-display-buffers in database-set-modified-p, but I
+> am unable to further look into the problem.
+>
+> EDB 1.23 does not cause this error. I send you sample database and
+> format files. I am using GNU Emacs 21.3.50.1 (i386-mingw-nt5.0.2195)
+> of 2004-11-02 on MS Windows.
+
+ttn:
+> there was a typo in db-rep.el introduced in all the mad refactoring.
+> the following patch fixes it.
+>
+> diff -w -b -B -u --unified=1 -r1.58 -r1.60
+> --- db-rep.el	13 Oct 2004 16:27:34 -0000	1.58
+> +++ db-rep.el	12 Jan 2005 01:56:05 -0000	1.60
+> @@ -101,3 +100,3 @@
+>                (force-mode-line-update)))
+> -          (database-clean-data-display-buffers database))))
+> +          (database-clean-data-display-buffers db))))
+
+2008-01-16 ttn: no further activity, marking "resolved".
+
+
+Id: 6
+Summary: Data file coding system not autodetected
+Status: resolved
+Reported-Version: 1.24
+Reported-By: nr-tkz@nifty.com
+Reported-Date: 2004-11-19
+Fix-Applied-Summary: Honor new buffer-local var `edb-coding-system'
+Fix-Applied-Date: 2005-01-14
+Fix-Applied-Version: 1.25
+Resolved-Date: 2008-01-16
+
+> I am using EDB 1.24 but it fails to read some database files properly
+> showing the following message: Database file is improperly formatted:
+> try to read it anyway? If I answer yes, it reads database but all
+> records get garbled. This happens when I deal with database files
+> encoded in utf-16le which apparently have no problem.
+>
+> Since Emacs fails to autodetect the coding system of these files when
+> I let it read them using the find-file command without specifying the
+> coding system, it looks like EDB simply fails to autodetect the coding
+> system when showing the above message.
+>
+> I wonder if there is some way to specify the coding system of database
+> files when I execute the db-find-file command. I tried the
+> universal-coding-system-argument command but it did not work.
+>
+> I send you sample database and format files (the database file
+> contains some Japanese and French accented characters) along with the
+> database log. I am using GNU Emacs 21.3.50.1 (i386-mingw-nt5.0.2195)
+> of 2004-11-02 on MS Windows.
+
+ttn:
+> a temporary workaround:
+>
+>  (add-to-list 'auto-coding-alist '(".../sample.dat" . utf-16le))
+>  (db-find-file ".../sample.dat")
+
+ttn 2005-01-14 00:29:30:
+> i've added support (and slight documentation) for new buffer-local var
+> `edb-coding-system'.  1.x compatability constrains this support,
+> however, so that it does not work for all internal layout data files
+> (further discussion in bug #7).
+
+ttn 2008-01-16 15:14:20:
+no further activity, marking "resolved".
+
+
+Id: 7
+Summary: Internal layout data w/ unrecognized encoding causes problems
+Status: unresolved
+Reported-Version: 1.25
+Reported-By: ttn
+Reported-Date: 2005-01-14
+
+if we have the following scenario:
+- data file is in internal layout format (schema and data together); and
+- data file encoding is not automatically recognized by Emacs;
+
+then the conventional method of using `universal-coding-system-argument'
+(C-x RET c) before the I/O operation (in this case `db-find-file') only
+works in cases where either:
+- there is no format file (very uncommon in the above scenario); or
+- the format file encoding is the same as for the data file.
+
+a large part of the problem lies in function `db-read-database-file' which
+does not properly modularize (i.e., kludgily special cases) internal layout
+format data file reading.  unfortunately, the precise sequence of events
+required for database access and EDB state init has been documented as part of
+the public interface and thus is not fungible, if EDB 1.x compatability is to
+be taken as an uncompromising requirement.
+
+matters are complicated by the fact that multiple I/O operations are done,
+proving the "internal" format not so well encapsulated as one might prefer.
+
+
+Id: 8
+Summary: Sorting in reverse incorrectly handles (eq obj1 obj2)
+Status: resolved
+Reported-Version: 1.21
+Reported-By: ew.ng116837@online.de
+Reported-Date: 2005-01-15
+Fix-Applied-Summary: Maintain arg order and invert the result
+Fix-Applied-Date: 2005-01-17
+Fix-Applied-Version: 1.25
+Resolved-Date: 2005-01-24
+
+When obj1 and obj2 are not "equal", to effect "reverse sort" it is enough to
+invert the order of the arguments to the ordering function.  However, this
+fails when obj1 and obj2 are "equal"; in that case, the return value does not
+indicate "reverse" (loses the inversion property).
+
+WRONG: (lambda (obj1 obj2) (funcall ORDFUNC obj2 obj1))
+TESTS: assume ORDFUNC is `<'
+       obj1 obj2  result
+          1    2     nil  OK
+          2    1       t  OK
+          3    3     nil  WRONG
+
+The fix is to invert the result of the ordering function unconditionally,
+and take care to not disturb the order of the args passed to the ordering
+function.
+
+RIGHT: (lambda (obj1 obj2) (not (funcall ORDFUNC obj1 obj2)))
+TESTS: assume ORDFUNC is `<'
+       obj1 obj2  result
+          1    2     nil  OK
+          2    1       t  OK
+          3    3       t  OK
+
+Incidentally, this bugfix was part of some "EDB 1.21 Fixes" micro package
+floating around tHe net, necessitated by many years of EDB maintainer
+unresponsiveness.
+
+
+Id: 9
+Summary: Creation method canonicalization inconsistent
+Status: resolved
+Reported-Version: 1.21
+Reported-By: ew.ng116837@online.de
+Reported-Date: 2005-01-15
+Fix-Applied-Summary: Make db-canonicalize-creation-method return a list
+Fix-Applied-Date: 2005-01-17
+Fix-Applied-Version: 1.25
+Resolved-Date: 2005-01-24
+
+Caller expects a list, callee used to return a cons.  (Pretty ironic for a
+function w/ "canonicalize" in its name.)  It now returns a list.
+
+Incidentally, this bugfix was part of some "EDB 1.21 Fixes" micro package
+floating around the net, necessitated by many years of EDB maintainer
+unresponsiveness.
+
+
+Id: 10
+Summary: Function `locate-file' not defined
+Status: resolved
+Reported-Version: 1.24
+Reported-By: ew.ng116837@online.de
+Reported-Date: 2005-01-15
+Fix-Applied-Summary: Raise caller abstraction and rewrite to not use it
+Fix-Applied-Date: 2005-01-18
+Fix-Applied-Version: 1.25
+Resolved-Date: 2005-01-24
+
+The function `locate-file' is provided in GNU Emacs in cvs, and is thus not
+widely available.  The fix is to raise the abstraction level for callers to
+new func `db-locate-readable-file-prefer-cwd'.
+
+This bug was introduced in EDB 1.24 during the mad refactoring.
+
+Light testing was done on stock install of GNU Emacs 21.2, which does not
+provide `locate-file'.
+
+
+Id: 11
+Summary: Missing support for "make edb.dvi"
+Status: resolved
+Reported-Version: 1.24
+Reported-By: ew.ng116837@online.de
+Reported-Date: 2005-01-18
+Fix-Applied-Summary: Add it back
+Fix-Applied-Date: 2005-01-19
+Fix-Applied-Version: 1.25
+Resolved-Date: 2005-01-24
+
+This support was dropped in the re-org for EDB versions 1.22 through 1.24.
+Sorry about that. --ttn
+
+
+Id: 12
+Summary: Displayspec with multiple options mis-handled
+Status: resolved
+Reported-Version: 1.27
+Reported-By: ttn
+Reported-Date: 2007-04-28
+Fix-Applied-Summary: Make displayspec parsing more robust
+Fix-Applied-Date: 2007-04-30
+Fix-Applied-Version: 1.27p2
+Resolved-Date: 2007-04-30
+
+The displayspec `\id,width=5,right-justify' renders the field `id'
+without any padding whatsoever.
+
+This is due to two bugs: (1) handling of right-justify does not set a
+proper "padding action" function; (2) parsing recognizes only the last
+option when given multiple options.
+
+To fix (1), a new (revived old) func `db-pad-left' was created and the
+entry for `right-justify' in `db-optspec-list' modified to return it.
+
+For (2), the following analysis illustrates the underlying problem:
+
+  (defun test (rx)
+    (let ((s "\\x,y,z"))
+      (when (string-match rx s)
+        (mapcar (lambda (n)
+                  (cons n (match-string n s)))
+                '(0 1)))))
+
+  (test "\\\\x\\(,y,z\\)")                ; A
+  ((0 . "\\x,y,z")
+   (1 . ",y,z"))
+
+  (test "\\\\x\\(,[yz],[yz]\\)")          ; B
+  ((0 . "\\x,y,z")
+   (1 . ",y,z"))
+
+  (test "\\\\x\\(,[yz],[yz]\\)*")         ; C
+  ((0 . "\\x,y,z")
+   (1 . ",y,z"))
+
+  (test "\\\\x\\(,[yz]\\)*")              ; D
+  ((0 . "\\x,y,z")
+   (1 . ",z"))
+
+We see that all matches [A-D]0 yield the entire input string.  Fine.
+However, matches [ABC]1 all yield ",y,z" but match D1, which happens
+to be the approach used in the parsing code, does not.
+
+To fix (2), we rework the regexp to be, essentially, "\\\\[xyz,]*";
+that is, combining the initial element w/ the options and including
+the delimiter (comma).  Then `split-string' on "," does the rest.
+
+Fixes have been tested w/ the BUGS.edb in the distribution.
+
+
+Id: 13
+Summary: Single-field records trigger warning on read
+Status: resolved
+Reported-Version: 1.28
+Reported-By: ttn
+Reported-Date: 2007-12-11
+Fix-Applied-Summary: Special-case apparent-records computation for 1-field tuples
+Fix-Applied-Date: 2007-12-12
+Fix-Applied-Version: 1.28p1
+Resolved-Date: 2008-01-16
+
+2007-12-11 <ttn> sez:
+
+In developing examples/www-links{,edb}, `edb-interact'
+would trigger some warning messages and eventually query:
+"Bad file format; try reading anyway?".  Answering "yes"
+would successfully read in the data (anyway).
+
+2007-12-12 <ttn> sez:
+
+Looks like `db-confirm-seps' computes `apparent-records'
+by dividing the number of visible record separators by the
+number of visible field separators, when both are the same.
+The boundary condition where there is only one field thus
+results in apparent-records being 1.
+
+Fix is to special-case that computation to take `apparent-records'
+to be directly the count of rsep matches.
+
+
+Id: 14
+Summary: There is no command to add a record after the current one
+Status: fix-applied
+Reported-Version: 1.22
+Reported-By: bob@newell.net
+Reported-Date: 2003-12-10
+Fix-Applied-Summary: Make db-add-record accept prefix arg and append if non-nil
+Fix-Applied-Date: 2008-01-16
+Fix-Applied-Version: 1.29
+Resolved-Date: 2008-05-24
+
+<bob@newell.net> sez (in elip.el func elip-import):
+
+;; it probably makes the most sense to insert at the very end of
+;; the file this is not easy at all since all inserts are
+;; insert-before!  so what we do is put in all the new records,
+;; save position, go to end delete the last record, go back, and
+;; yank it in front of all the new records.  ugga-bugga.
+
+2008-01-16 <ttn> sez:
+
+that's ugly!  looks like `database-add-record' supports append
+(using optional arg ENDP).  we just need to bubble that up to the
+user-command.  we can either extend `db-add-record' or add a new
+one.  let's try the extension first and see how that goes...
+
+2008-05-24 <ttn> sez:
+
+extending `db-add-record' has been tested w/ ELIP.
+seems to work fine.  marking this "resolved".
+
+
+Id: 15
+Summary: Compilation fails under Windoze
+Status: fix-applied
+Reported-Version: 1.29
+Reported-By: phillip.lord@newcastle.ac.uk
+Reported-Date: 2008-03-25
+Fix-Applied-Summary: Use `call-process-region' instead of pipes
+Fix-Applied-Date: 2008-04-28
+Fix-Applied-Version: 1.30
+
+2008-03-25 <phillip.lord@newcastle.ac.uk> sez (EDB is the
+"database dependency"):
+
+> [...] the emacs database dependency doesn't compile properly on
+> windows (using cygwin make). It works fine on linux.
+
+For EDB 1.29, build process uses GNU make to mine runtime values
+out of GNUmakefile (see lisp/bfuncs `edb-bfunc-get-GNUmakefile'),
+using a shell command that includes a pipe:
+
+echo ... | make -f -
+
+For EDB 1.30, we use `call-process-region' instead, which is
+better supported under Windoze.
+
+
+Id: 16
+Summary: Sometimes deleting a record gives `args-out-of-range' error
+Status: fix-applied
+Reported-Version: 1.29
+Reported-By: phillip.lord@newcastle.ac.uk
+Reported-Date: 2008-03-31
+Fix-Applied-Summary: Fix OBOE in `db-delete-record'
+Fix-Applied-Date: 2008-05-25
+Fix-Applied-Version: 1.30
+
+2008-03-31 <phillip.lord@newcastle.ac.uk> describes error.
+
+2008-04-03 <phillip.lord@newcastle.ac.uk> sends file that
+manifests the error (in ELIP).
+
+Analysis:
+
+For EDB 1.26 (2005-12-31), the internals were revamped to use a "vov"
+(vector of vectors) instead of a doubly-linked circular list.  Thus
+deletion implementation changed from "remove element, join neighbor
+links" to "shift higher-indexed elements down".
+
+The "shift" is an iterative assignment to a vector index N the element
+found at index N+1, starting from the index of the removed element.
+
+The bug is in the computation of the shift's end index: for vector of
+length L, it was erronously computed to be (- L 1), whereas the correct
+value is (- L 2).
+
+Three more implementation details should be noted to understand how this
+bug has gone unnoticed for so long.
+
+- EDB keeps track of "number of records", NR, i.e., the count of how
+  many elements (starting from index 0) in the vov are valid.  Deletion
+  does not change vov length; it simply decrements number of records.
+
+- Initial allocation of the vov is 10 plus the number of original
+  records (see lisp/db-file-io.el `edb--snap!').  The intent of the
+  extra space is so that immediate small additions do not incur a
+  realloc.  (Likewise, on realloc, another extra 10 slots are added.)
+
+- On deletion end-index computation actually uses NR for "L".
+
+So, for 91% of the deletions on average (10 times out of 11), the
+incorrect end-index does not result in any out-of-range access.
+
+Another (latent) bug is visible upon inspection: The vov's highest
+index, where the "hole" is moved to after the shift, is not being
+cleared, so continued reference to that slot's record may cause problems
+later.
+
+Resolution:
+- Bugfix: Compute end-index correctly.
+- Ancillary bugfix: Reset highest index (hole).
+- New test: b00.test
+
+
+BUGS database ends here.

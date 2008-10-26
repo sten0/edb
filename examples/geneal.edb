@@ -1,0 +1,895 @@
+:EDB (single) ;;; -*- emacs-lisp -*-
+
+;; Copyright (C) 2006,2008 Thien-Thi Nguyen
+;;
+;; This file is part of EDB.
+;;
+;; EDB is free software; you can redistribute it and/or modify it under
+;; the terms of the GNU General Public License as published by the Free
+;; Software Foundation; either version 3, or (at your option) any later
+;; version.
+;;
+;; EDB is distributed in the hope that it will be useful, but WITHOUT
+;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+;; FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+;; for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with EDB; see the file COPYING.  If not, write to the Free
+;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+;; MA 02110-1301, USA.
+
+;;; Commentary:
+
+;; This was written based on files in the genealogy package
+;; by Michael A. Patton <MAP@lcs.mit.edu>, and is able to handle
+;; the file geneal.dat (taken unabridged from that package), with
+;; some caveats:
+;;
+;; - There are two records with index 0 (zero) in geneal.dat!
+;;   Strict checking would reject this, but we're not strict...
+;;
+;; - The `record-description' field (tag DESC) is redundant but
+;;   not completely replaceable by `geneal-set-description'.
+;;
+;; - To avoid using `db-view-mode-hooks', which will probably go
+;;   away in the future, you need to call `geneal-install-keymap'
+;;   manually one time (at most).  Presently, there is no way
+;;   to undo its effect (i.e., no "geneal-uninstall-keymap").
+;;
+;; - (Style Note) The display formats have been tweaked only
+;;   slightly from those found in the original package.  They
+;;   probably could use a little redesign/cleanup.
+;;
+;; - Adding and deleting records has not yet been tested.
+
+;;; Code:
+
+(require 'cl)
+(require 'db-tagged)
+(require 'edb-t-timedate1)
+
+(defconst geneal-tags
+  '(((index . record-index)       "INDEX" "The identifying index for this record")
+    (record-description           "DESC" "A short summary of the record")
+    ((type . geneal-record-type)  "T" "Record type, one of: IFAR")
+    ;; Name specification
+    (name                         "N" "Name")
+    (prefix-name                  "PN" "Prefix name (e.g. \"Dr.\")")
+    (first-name                   "FN" "First Name")
+    (middle-name                  "MN" "Middle name")
+    (nickname                     "NN" "Nickname")
+    (last-name                    "LN" "Last Name")
+    (last-name-a                  "LN.A" "Adopted last name (i.e. by marriage)")
+    (suffix-name                  "SN" "Suffix name (e.g. K.B.E.)")
+    ;; landmarks...
+    (date-of-birth                "B" "Date of Birth")
+    (birth-place                  "BP" "Place of Birth")
+    ((sex . sex)                  "SX" "Sex, either F or M")
+    (date-of-death                "D" "Date of death")
+    (place-of-death               "DP" "Place of death")
+    (buried                       "BUR" "Location of burial")
+    (date-married                 "M" "Date married")
+    (place-married                "MP" "Place married")
+    (marriage-end-date            "MD" "Date marriage ended (e.g. by divorce)")
+    (marriage-end-place           "MDP" "Place marriage ended")
+    ;; Cross references
+    ((parents . record-ref)       "P" "Parent family record")
+    ((husband . record-ref)       "H" "Husband of the marriage")
+    ((wife . record-ref)          "W" "Wife of the marriage")
+    ((children . record-ref-list) "C" "List of children of this marriage")
+    ((marriage . record-ref-list) "S" "Marriage record(s)")
+    ;; Miscellaneous typed data
+    ;;((addr . string) "ADDR"
+    ;; "Used both for pointer to A type record and as the actual address")
+    (addr                         "ADDR" "Used both for pointer to A type record and as the actual address")
+    ((addr-ptr . record-ref)      nil "Reference to A record with address")
+    (phone                        "PHONE" "")
+    ((who . record-ref-list)      "WHO" "Who this address belongs to")
+    ;; Fields to hold additional descriptive text
+    (gen                          "GEN" "General info??")
+    (com                          "COM" "Comment")
+    (comments                     "" "Comments")
+    (tgen                         "TGEN" "Some kind of general notes")
+    (tnote                        "TNOTE" "Some kind of notes")
+    ;; Administrative fields
+    (source                       "SOURCE" "Source of the info in this record")
+    ((edited . date)              "EDITED" "When the record was last edited")))
+
+(defvar geneal-mode-map nil
+  "Keymap for Genealogy Database mode.")
+
+:tagged-setup
+`(:fields              ,geneal-tags
+
+  ;; Set formatting for geneal databases...
+
+  :tag-chars           "A-Z."
+  :separator-regexp    ":"
+  :separator-output    ":"
+  :continuation-regexp "\\+"
+  :continuation-output "+"
+
+  ;; Indexing.
+
+  :index-function
+  (lambda (database)                    ; compute index/graph
+    (let ((ht (database-get-local 'quick database)))
+      ;; index
+      (db-maprecords
+       (lambda (record)
+         (puthash (db-record-field record 'index) record ht)))
+      ;; graph
+      (let ((fields (delq nil (mapcar (lambda (spec)
+                                        (and (consp (car spec))
+                                             (memq (cdar spec)
+                                                   '(record-ref-list
+                                                     record-ref))
+                                             (caar spec)))
+                                      geneal-tags)))
+            v d)
+        (db-maprecords
+         (lambda (record)
+           (dolist (field fields)
+             (setq v (db-record-field record field)
+                   d (if (consp v)
+                         (mapcar 'geneal-deref v)
+                       (geneal-deref v)))
+             (db-record-set-field record field d)))))))
+
+  ;; Special hooks to handle the initial line.
+
+  :pre-parse-thunk
+  (lambda ()                            ; make fake INDEX/DESC
+    (save-excursion
+      (insert "INDEX:")
+      (skip-chars-forward "0-9")
+      (delete-horizontal-space)
+      (insert "\nDESC:")))
+
+  :pre-write-function
+  (lambda (record)                      ; remember start of record
+    (database-set-local 'io-state database (point)))
+
+  :post-write-function
+  (lambda (record)                      ; revert INDEX/DESC
+    (goto-char (database-get-local 'io-state database))
+    (delete-char 6)
+    (when (< 0 (length (db-record-field record 'record-description)))
+      (end-of-line)
+      (insert "\t")
+      (delete-char 6))
+    (goto-char (point-max))))
+
+:summary-format
+"\\index\t\t\\record-description"
+
+:choose-display
+(lambda (type addr addr-ptr)
+  ;; Automatically choose the appropriate format for the current record.
+  ;; Hackishly, we also cross set some fields...
+  (flet ((upd () (when (and (null addr-ptr) (< 0 (length addr)))
+                   (dbf-this-record-set-field
+                    'addr-ptr (db-string->integer addr)))))
+    (case type
+      (individual (upd) "individual")
+      (family (upd) "family")
+      (address "address")
+      (reference "reference")
+      (t "geneal"))))
+
+:first-change-function
+(lambda (&rest ignored)
+  (dbf-this-record-set-field
+   'edited (let ((edb-t-timedate1:parse-date-default 'current-date))
+             (edb-t-timedate1:parse-date-string nil))))
+
+:locals
+[(quick (make-hash-table :size 511 :test 'eq))
+ io-state]
+
+
+;;; Displays
+
+:display (:name "individual")
+=== Genealogy database ===      Record type:   \type    Record # \index
+       [\record-description]
+
+Name: \prefix-name \first-name \middle-name (\nickname) \last-name \last-name-a, \suffix-name    (Sex: \sex)
+
+Born: \date-of-birth in \birth-place
+Died: \date-of-death in \place-of-death (buried in \buried)
+
+Parents: \parents       \parents,record-ref-name
+
+Marriage(s): \marriage
+
+Address: \addr-ptr
+    \addr-ptr,record-ref-addr
+
+TNOTE: \tnote
+  GEN: \gen
+ TGEN: \tgen
+  COM: \com
+
+-------------------------------------------------------------------------------
+Source(s) of information in this record:
+        \source
+
+Record last edited: \edited,date-iso,unreachable
+
+Comments:
+
+\comments
+:EOTB
+
+:display (:name "address")
+=== Genealogy database ===      Record type:   \type    Record # \index
+       [\record-description]
+
+Whose address is this: \who
+
+\addr
+
+
+Phone: \phone
+
+-------------------------------------------------------------------------------
+Source(s) of information in this record:
+        \source
+
+Record last edited: \edited,date-iso
+
+Comments:
+
+\comments
+:EOTB
+
+:display (:name "family")
+=== Genealogy database ===      Record type:   \type    Record # \index
+       [\record-description]
+
+Husband: \husband       \husband,record-ref-name
+Wife:    \wife  \wife,record-ref-name
+
+Married \date-married in \place-married     (ended \marriage-end-date in \marriage-end-place)
+
+Children:  \children
+
+Address: \addr-ptr
+    \addr-ptr,record-ref-addr
+
+-------------------------------------------------------------------------------
+Source(s) of information in this record:
+        \source
+
+Record last edited: \edited,date-iso,unreachable
+
+Comments:
+
+\comments
+:EOTB
+
+:display (:name "reference")
+=== Genealogy database ===      Record type:   \type    Record # \index
+       [\record-description]
+
+[  I haven't quite figured out what "R" records are for, so this is just a    ]
+[  generic display format...                                                  ]
+
+--------------(Note that this display is designed for "I" records)-------------
+
+Name: \prefix-name \first-name \middle-name (\nickname) \last-name \last-name-a, \suffix-name    (Sex: \sex)
+
+Born: \date-of-birth in \birth-place
+Died: \date-of-death in \place-of-death (buried in \buried)
+
+Parents: \parents       \parents,record-ref-name
+
+Marriages: \marriage
+
+TNOTE: \tnote
+  GEN: \gen
+ TGEN: \tgen
+  COM: \com
+
+--------------(Note that this display is designed for "F" records)-------------
+
+Husband: \husband       \husband,record-ref-name
+Wife:    \wife  \wife,record-ref-name
+
+Married \date-married in \place-married     (ended \marriage-end-date in \marriage-end-place)
+
+Children:  \children
+
+--------------(Note that this display is designed for "A" records)-------------
+
+Whose address is this: \who
+
+\addr
+
+
+Phone: \phone
+
+-------------------------------------------------------------------------------
+Source of information in this record:
+        \source
+
+Record last edited: \edited,date-iso
+
+Comments:
+
+\comments
+:EOTB
+
+:display (:name "geneal")
+=== Genealogy database ===      Record type:   \type    Record # \index
+       [\record-description]
+
+[  This display was used because the type of data in this record is unknown.  ]
+[  The sections below show the information in the various fields that might   ]
+[  appear in certain types of records.                                        ]
+
+Comments appearing in the record:
+
+\comments
+
+
+Source(s) of information in this record:
+        \source
+
+Record last edited: \edited,date-iso,unreachable
+
+--------------(Note that this display is designed for "I" records)-------------
+
+Name: \prefix-name \first-name \middle-name (\nickname) \last-name \last-name-a, \suffix-name    (Sex: \sex)
+Born: \date-of-birth in \birth-place    Died: \date-of-death in \place-of-death (buried in \buried)
+Parents: \parents               Marriage(s): \marriage
+
+TNOTE: \tnote
+  GEN: \gen
+ TGEN: \tgen
+  COM: \com
+
+--------------(Note that this display is designed for "F" records)-------------
+
+Husband: \husband       \husband,record-ref-name
+Wife:    \wife  \wife,record-ref-name
+        Married \date-married in \place-married     (ended \marriage-end-date in \marriage-end-place)
+Children:  \children
+
+--------------(Note that this display is designed for "A" records)-------------
+
+Whose address is this: \who
+
+\addr
+
+Phone: \phone
+:EOTB
+
+
+;;; Support functions
+
+(defun geneal-deref (ref &optional quick)
+  "Return the record associated with REF, or nil if not found.
+If REF is either nil or a record, return it straight away.
+REF can also be a string (for now -- this will go away Real Soon Now)."
+  (unless quick
+    (setq quick (database-get-local 'quick dbc-database)))
+  (if (or (null ref) (vectorp ref))
+      ref
+    (let* ((not-found (list (list)))
+           (index (if (integerp ref)
+                      ref
+                    (unless (stringp ref)
+                      (error "Invalid genealogy reference type: %S" ref))
+                    (string-to-number ref)))
+           (rv (gethash index quick not-found)))
+      (unless (eq rv not-found)
+        rv))))
+
+
+;;; General function to follow a reference
+
+(defun geneal-follow-reference (code inv typ arg)
+  "Follow the reference from the current record in field CODE.
+If a new record is made to be the target of the reference, the
+back pointer should be in the field INV and the record should be
+of type TYP.  Fourth argument ARG is interactive prefix arg from
+original command, nil (normal) means never create a new record,
+also used to indicate which element of a list reference should be
+followed (1 based).
+
+Return t if a new record was created, nil otherwise.  This is so
+that the caller can know to fill in fields that can be deduced."
+  (let ((r (dbf-displayed-record-field code))
+        (ridx (dbf-displayed-record-field 'index)))
+    (cond ((null r)
+           (when (null arg)
+             (error "Reference not given in this record."))
+           ;; Make a new record of the right type
+           (let* ((quick (database-get-local 'quick dbc-database))
+                  (idx (1+ (dbf-displayed-record-field 'index)))
+                  plist)
+             ;; Ensure index does not collide.
+             (while (geneal-deref idx quick)
+               (setq idx (1+ idx)))
+             (setq r (db-make-record
+                      dbc-database
+                      (list
+                       ;; Use the right type.
+                       'type typ
+                       ;; Pick an index ...
+                       'index idx
+                       ;; ... and the inverse pointer.  Don't use
+                       ;; `r' directly because that may be a modified,
+                       ;; but not yet committed, record.
+                       inv (geneal-deref ridx quick))))
+             ;; Set the pointer we were going to follow
+             (dbf-displayed-record-set-field code r)
+             ;; Now install it in DB
+             (puthash idx r quick)
+             (database-add-record r dbc-database '1+)
+             (db-jump-to-record r)
+             t))
+          ((listp r)
+           (when (and (null arg) (= (length r) 1))
+             (setq arg 1))
+           (unless arg
+             (error "Reference is a list, must give arg..."))
+           (when (listp arg)
+             (setq arg (car arg)))
+           ;;user arg one based...nth is zero based
+           (setq r (nth (1- arg) r))
+           (when (integerp r)
+             (error "Referenced record not in database."))
+           (unless r
+             (error "Not that many references in list."))
+           (db-jump-to-record r)
+           nil)
+          ((integerp r) (error "Referenced record not in database."))
+          (t
+           (db-jump-to-record r)
+           nil))))
+
+
+;;; Special commands...
+
+(defun geneal-goto-parent (arg)
+  "Show parent's marriage entry."
+  (interactive "P")
+  (geneal-follow-reference 'parents 'children 'family arg))
+
+(defun geneal-goto-husband (arg)
+  "Show husband."
+  (interactive "P")
+  (when (geneal-follow-reference 'husband 'marriage 'individual arg)
+    (dbf-displayed-record-set-field 'sex 'male))
+  (dbf-redisplay-entire-record-maybe))
+
+(defun geneal-goto-wife (arg)
+  "Show wife."
+  (interactive "P")
+  (when (geneal-follow-reference 'wife 'marriage 'individual arg)
+    (dbf-displayed-record-set-field 'sex 'female))
+  (dbf-redisplay-entire-record-maybe))
+
+(defun geneal-goto-marriage (arg)
+  "Show marriage."
+  (interactive "P")
+  (geneal-follow-reference 'marriage
+                           (if (eq (dbf-displayed-record-field 'sex) 'male)
+                               'wife 'husband)
+                           'family arg))
+
+(defun geneal-goto-child (arg)
+  "Show child."
+  (interactive "P")
+  (geneal-follow-reference 'children 'parents 'individual arg))
+
+(defun geneal-goto-reference (n)
+  "Goto the genealogy record with index N.
+N can be given as prefix or prompted for."
+  (interactive "NGoto reference number:")
+  (let ((r (geneal-deref n)))
+    (unless r
+      (error "Record not in database."))
+    (db-jump-to-record r)))
+
+(defun geneal-change-record-index (n)
+  "Change the index number of this record to N (as prefix or prompted for).
+All linked records will record the change as well."
+  (interactive "NNew reference number:")
+  (let* ((quick (database-get-local 'quick dbc-database))
+         (old-n (dbf-displayed-record-field 'index))
+         (rec (gethash old-n quick)))
+    (unless (eq rec (dbf-displayed-record))
+      (error "Index table corrupted"))
+    (when (gethash n quick)
+      (error "Index already used in database"))
+    (puthash n rec quick)
+    (remhash old-n quick)
+    (dbf-displayed-record-set-field 'index n)
+    (dbf-redisplay-entire-record-maybe)))
+
+
+;;; Description setting ...
+
+(defun geneal-set-description ()
+  "Set the summary description of this record from data in the record.
+This works for `individual' and `family' records; all other types
+signal error."
+  (interactive)
+  (let* ((rcd (dbf-displayed-record))
+         (typ (db-record-field rcd 'type))
+         (fun (case typ
+                (individual 'geneal-individual-description)
+                (family 'geneal-family-description)
+                ;; Also consider 'address and 'reference (maybe).
+                (t (error "Can't generate description of %s records"
+                          typ))))
+         (val (substring (funcall fun rcd) 1)))
+    (dbf-displayed-record-set-field 'record-description val)
+    (dbf-redisplay-entire-record-maybe)))
+
+(defun geneal-individual-description (rcd)
+  (concat
+   (flet ((maybe (pfx fld sfx)
+                 (let ((tmp (db-record-field rcd fld)))
+                   (and tmp (< 0 (length tmp))
+                        (concat pfx tmp sfx)))))
+     (concat
+      (maybe " "  'prefix-name "")
+      (maybe " "  'first-name  "")
+      (maybe " "  'middle-name "")
+      (maybe " (" 'nickname    ")")
+      (maybe " "  'last-name   "")
+      (maybe " [" 'last-name-a "]")
+      (maybe ", " 'suffix-name "")))
+   (let ((rx "^\\([-0-9a-z]+-\\)?\\([12]?[0-9][0-9][0-9]\\)\\((.+)\\)?$")
+         b d)
+     (setq b (db-record-field rcd 'date-of-birth)
+           b (cond ((= 0 (length b)) nil)
+                   ((string-match rx b) (match-string 2 b))
+                   (t b))
+           d (db-record-field rcd 'date-of-death)
+           d (cond ((= 0 (length d)) nil)
+                   ((string-match rx d) (match-string 2 d))
+                   (t d)))
+     (cond ((and b d) (concat " (" b "-" d ")"))
+           (b (concat " (b: " b ")"))
+           (d (concat " (d: " d ")"))
+           (t nil)))))
+
+(defun geneal-family-description (rcd)
+  (flet ((full (r) (concat (db-record-field r 'first-name)
+                           " "
+                           (db-record-field r 'last-name)))
+         (half (which) (let ((r (db-record-field rcd which)))
+                         (if r (full r) "(?)"))))
+    (concat " "     (half 'husband)
+            " and " (half 'wife))))
+
+
+;;; Basic datatype record-index
+
+(edb-define-recordfieldtype 'record-index nil
+  :type           'record-index
+  :default-value   nil
+  :actual->stored 'number-to-string
+  :stored->actual 'string-to-number
+  :order-fn       'db-number-order
+  :sort-fn        '<
+  :match-function '=
+  :help-info      "The index of a record in the database.")
+
+(edb-define-displaytype 'record-index nil
+  :indent           nil
+  :reachablep       nil
+  :actual->display 'number-to-string
+  :display->actual 'string-to-number)
+
+
+;;; Basic datatype record-ref
+
+(edb-define-recordfieldtype 'record-ref nil
+  :type           'record-ref
+  :default-value   nil
+  :actual->stored 'geneal-record-ref->stored
+  :stored->actual 'geneal-stored->record-ref
+  :order-fn       'geneal-record-ref-order
+  :sort-fn        'geneal-record-ref-<
+  :match-function 'geneal-record-ref-=
+  :help-info      "A reference to another record in the database.")
+
+(defun geneal-record-ref-order (a b)
+  "Return -1, 0, or 1 depending on whether the record A comes before B,
+is the same record as B, or comes after B.
+A nil reference always comes \"before\" any other."
+  (cond ((and a b)
+         ;; A and B both have some value, let's coerce to an int...
+         (unless (integerp a)
+           (setq a (db-record-field a 'index)))
+         (unless (integerp b)
+           (setq b (db-record-field b 'index)))
+         ;; Now compare the indices
+         (cond ((= a b) 0)
+               ((< a b) -1)
+               (t 1)))
+        (a 1)
+        (b -1)
+        (t 0)))
+
+(defun geneal-record-ref-= (a b)
+  "Return t if the records A and B are the same, nil otherwise."
+  (= (geneal-record-ref-order a b) 0))
+
+(defun geneal-record-ref-< (a b)
+  "Returns t if the record A comes before B, nil otherwise.
+A nil reference always comes \"before\" any other."
+  (< (geneal-record-ref-order a b) 0))
+
+(defun geneal-record-ref->stored (ref)
+  (cond ((integerp ref) (number-to-string ref))
+        (ref (number-to-string (db-record-field ref 'index)))
+        (t nil)))
+
+(defun geneal-stored->record-ref (str)
+  (cond ((null str)
+         nil)
+        ((integerp str)
+         str)
+        ((or (string-equal str "unknown")
+             (string-equal str ""))
+         nil)
+        (t
+         (db-string->integer str))))
+
+
+;;; Display types related to datatype record-ref
+
+;;; Base display type just shows number...and allows update
+(edb-define-displaytype 'record-ref nil
+  :indent           nil
+  :actual->display 'geneal-record-ref->string
+  :display->actual 'geneal-string->record-ref)
+
+(defun geneal-record-ref->string (ref)
+  (cond ((integerp ref) (number-to-string ref))
+        (ref (number-to-string (db-record-field ref 'index)))
+        (t "Unknown")))
+
+(defun geneal-string->record-ref (str)
+  (cond ((null str)
+         nil)
+        ((or (string-equal str "unknown")
+             (string-equal str ""))
+         nil)
+        ((integerp str)
+         str)
+        (t
+         (db-string->integer str))))
+
+;;; Generic function to indirect through a reference
+(defun geneal-record-ref->value-generic (ref fld)
+  (if (null ref)
+      ""
+    (let ((r (geneal-deref ref)))
+      (if (null r)
+          "[[[ No record in database ]]]"
+        (db-record-field r fld)))))
+
+(defmacro define-geneal-record-ref-display (typ fld)
+  `(edb-define-displaytype ,typ nil
+     :indent           t
+     :max-height       nil
+     :reachablep       nil
+     :actual->display  (lambda (ref)
+                         (geneal-record-ref->value-generic ref ,fld))
+     :display->actual 'geneal-no-edit))
+
+;;; Show the name of the referenced record
+(define-geneal-record-ref-display 'record-ref-name 'record-description)
+
+;;; Show the address from the referenced record
+(define-geneal-record-ref-display 'record-ref-addr 'addr)
+
+
+;;; Basic datatype record-ref-list
+
+;;; A list of record-refs (int, nil or actual record), single elements
+;;; are allowed to be represented without list...
+
+(edb-define-recordfieldtype 'record-ref-list nil
+  :type           'record-ref-list
+  :default-value   nil
+  :actual->stored 'geneal-record-ref-list->stored
+  :stored->actual 'geneal-stored->record-ref-list
+  :help-info      "A list of references to other records in the database.")
+
+(defun geneal-record-ref-list->stored (ref)
+  (cond ((null ref) nil)
+        ((listp ref)
+         (mapconcat 'geneal-record-ref->stored ref ","))
+        (t (geneal-record-ref->stored ref))))
+
+(defun geneal-stored->record-ref-list (str)
+  (cond ((null str)
+         nil)
+        ((integerp str)
+         str)
+        ((or (string-equal str "unknown")
+             (string-equal str ""))
+         nil)
+        (t
+         (delq 0 (mapcar 'string-to-number (split-string str ","))))))
+
+(edb-define-displaytype 'record-ref-list nil
+  ;; For now you can't edit this directly
+  :indent           t
+  :max-height       nil
+  :reachablep       nil
+  :actual->display 'geneal-record-ref-list->string
+  :display->actual 'geneal-string->record-ref-list)
+
+(defun geneal-record-ref-list->string (ref)
+  (if (and ref (listp ref))
+      (let ((idx 0))
+        (mapconcat (function
+                    (lambda (r)
+                      (concat (number-to-string (setq idx (1+ idx)))
+                              ": "
+                              (geneal-record-ref->string r)
+                              "\t"
+                              (geneal-record-ref->value-generic
+                               r 'record-description))))
+                   ref "\n"))
+    (concat (geneal-record-ref->string ref)
+            "\t"
+            (geneal-record-ref->value-generic
+             ref 'record-description))))
+
+
+;;; Datatype Record-type and related stuff
+
+(defvar geneal-record-types (mapcar (lambda (sym)
+                                      (cons sym (capitalize
+                                                 (symbol-name sym))))
+                                    '(individual
+                                      family
+                                      address
+                                      reference)))
+
+(edb-define-displaytype 'geneal-record-type nil
+  :indent           nil
+  :reachablep       nil
+  :actual->display 'geneal-record-type->string
+  :display->actual 'geneal-string->record-type)
+
+(edb-define-recordfieldtype 'geneal-record-type nil
+  :type           'geneal-record-type
+  :default-value   nil
+  :actual->stored 'geneal-record-type->stored
+  :stored->actual 'geneal-stored->record-type
+  :order-fn       'geneal-record-type-order
+  :match-function 'eq
+  :help-info      "The type of a genealogy record.")
+
+(defun geneal-record-type->string (key)
+  (if key
+      (cdr (assq key geneal-record-types))
+    "Unspecified"))
+
+(defun geneal-string->record-type (key)
+  (car (rassoc key geneal-record-types)))
+
+(defun geneal-record-type->stored (key)
+  (and key (substring (cdr (assq key geneal-record-types)) 0 1)))
+
+(defun geneal-stored->record-type (key)
+  (let ((c (aref key 0))
+        (l geneal-record-types)
+        (r nil))
+    (while l
+      (if (char-equal c (aref (cdar l) 0))
+          (setq r (caar l)
+                l nil)
+        (setq l (cdr l))))
+    r))
+
+(defun geneal-record-type-order (a b)
+  (cond ((eq a b) 0)
+        ((eq a 'individual) -1)
+        ((eq a 'family) (if (eq b 'individual) 1 -1))
+        ((eq a 'address) (if (eq b 'reference) -1 1))
+        ((eq a 'reference) 1)))
+
+
+;;; Datatype sex
+
+;;; The "sex" field can have three values, nil means unknown, and symbols
+;;; male and female represent the obvious meanings...
+
+(defvar geneal-sex-alist '((male "Male") (female "Female")))
+
+(edb-define-displaytype 'sex nil
+  :indent           nil
+  :actual->display 'geneal-sex->string
+  :display->actual 'geneal-string->sex)
+
+(edb-define-recordfieldtype 'sex nil
+  :type           'sex
+  :default-value   nil
+  :actual->stored 'geneal-sex->stored
+  :stored->actual 'geneal-stored->sex
+  :order-fn       'geneal-sex-order
+  :match-function 'eq
+  :help-info      "The type of a genealogy record.")
+
+(defun geneal-sex->string (key)
+  (if (null key)
+      "Unspecified"
+    (let ((l geneal-sex-alist)
+          (r nil))
+      (while l
+        (when (eq key (car (car l)))
+          (setq r (cadr (car l))))
+        (setq l (cdr l)))
+      r)))
+
+(defun geneal-string->sex (key)
+  (let ((l geneal-sex-alist)
+        (r nil))
+    (while l
+      ;; Really want "initial substring..."
+      (when (string-equal key (cadr (car l)))
+        (setq r (car (car l))))
+      (setq l (cdr l)))
+    r))
+
+(defun geneal-sex->stored (key)
+  (and key
+       (let ((l geneal-sex-alist)
+             (r nil))
+         (while l
+           (when (eq key (car (car l)))
+             (setq r (cadr (car l))))
+           (setq l (cdr l)))
+         (substring r 0 1))))
+
+(defun geneal-stored->sex (key)
+  (let ((l geneal-sex-alist)
+        (r nil))
+    (while l
+      (when (string-equal key (substring (cadr (car l)) 0 1))
+        (setq r (car (car l))))
+      (setq l (cdr l)))
+    r))
+
+(defun geneal-sex-order (a b)
+  (cond ((eq a b) 0)
+        ((eq a 'male) -1)
+        ((eq a 'female) 1)))
+
+
+;;; Global stuff.
+
+(defun geneal-install-keymap (prefix)
+  "Install a keymap w/ PREFIX char in the Database View mode keymap.
+\\{geneal-mode-map}"
+  (interactive "cPrefix character for Genealogy commands: ")
+  (unless geneal-mode-map
+    (setq geneal-mode-map
+          (let ((m (make-sparse-keymap)))
+            (define-key m "p" 'geneal-goto-parent)
+            (define-key m "h" 'geneal-goto-husband)
+            (define-key m "w" 'geneal-goto-wife)
+            (define-key m "m" 'geneal-goto-marriage)
+            (define-key m "c" 'geneal-goto-child)
+            (define-key m "g" 'geneal-goto-reference)
+            (define-key m "n" 'geneal-change-record-index)
+            (define-key m "d" 'geneal-set-description)
+            m)))
+  (define-key database-view-mode-map (char-to-string prefix) geneal-mode-map))
+
+;;; geneal.edb ends here

@@ -1,0 +1,28 @@
+Date: Mon, 22 Mar 93 12:21:52 -0500
+From: "Jonathan I. Kamens" <jik@gza.com>
+
+The format of the rolodex used by the "rolo" program is as follows:
+
+The first eight lines of each entry in the rolodex contain the name,
+work phone, home phone, company, work address, home address, remarks
+and modification date of the entry.  The field name for each of those
+lines is not included, because they are always the same fields in the
+same order.  Then, subsequent lines contain extra fields (I'm not sure
+how many extra fields the program actually allows; my EDB database
+allows five), in the format "Name: value".  The entry is terminated by
+a blank line.
+
+Semicolons in field values are displayed by rolo as newlines, so they
+are displayed by my EDB database as newlines as well.
+
+In addition, since I consider the "Birthday" and "Anniversary" fields
+to be very important, I've displayed them as main fields in my
+database, even though they're extra fields in the rolo program.
+
+One of the things I like most about my database is that it
+automatically sets the tab width so that all of the field values are
+lined up, even when a long extra field name is created.  Note,
+however, that this is limited by the fact that emacs 18.59 has a
+maximum tab width (for some unknown reason) of 20.  I've posted to
+gnu.emacs.bug, complaining about this and sending a patch to remove
+the restriction.

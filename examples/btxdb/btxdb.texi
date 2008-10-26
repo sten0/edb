@@ -1,0 +1,183 @@
+\input texinfo @c -*-texinfo-*-
+@c %**start of header
+@setfilename btxdb.info
+@settitle Btxdb User's Manual
+@finalout
+@setchapternewpage odd
+@c %**end of header
+
+
+@c @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ifinfo
+This file documents the @code{btxdb} BibTeX Database system.
+
+Copyright (C) 1993 Thorsten Ohl <ohl@@crunch.ikp.physik.th-darmstadt.de>
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+
+@end ignore
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Foundation.
+@end ifinfo
+
+
+@c @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@titlepage
+@title Btxdb
+@subtitle The BibTeX Database System
+@subtitle Edition 0.0, for btxdb Version 0.2
+@subtitle January 1993
+@author by Thorsten Ohl
+
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 1993 Thorsten Ohl
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Foundation.
+@end titlepage
+
+
+@c @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@node Top, , , (dir)
+
+@ifinfo
+This file documents the @code{btxdb} BibTeX Database System.
+@end ifinfo
+
+This documentation does not yet exist ... obviously.
+
+@menu
+* Copying::                     Reading your rights.
+* Overview::                    Preliminary information.
+* News::                        Recent improvements.
+* Installation::                Installation.
+* Problems::                    Reporting bugs.
+* Concept Index::               Index of concepts.
+@end menu
+
+
+@c @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@node Copying, Overview, Top, Top
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 3
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+
+@c @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@node Overview, News, Copying, Top
+@chapter Overview
+@cindex overview
+
+
+@c @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@node News, Installation, Overview, Top
+@chapter News
+
+@itemize @bullet
+
+@item
+User visible changes from 0.4 to 0.5:
+
+@itemize @minus
+@item
+The entry type is now an enumerated type.
+Using the full format (toggled by @kbd{C-x v}) should now eliminate all
+errors when changing the entry type.
+@end itemize
+
+@item
+User visible changes from 0.3 to 0.4:
+
+@itemize @minus
+@item
+@samp{btxdb} is no longer compatible with @samp{EDB} Versions
+before 1.15.  You will have to upgrade immediately.
+@item
+New command @kbd{C-x v} (aka.: @kbd{M-x btxdb:toggle-full-format})
+to toggle the use of the full @samp{unknown} format.  This is mainly
+useful for cleaning up entries.
+@end itemize
+
+@item
+User visible changes before 0.3:
+
+@itemize @minus
+@item
+Too many and forgotten ...
+@end itemize
+
+@end itemize
+
+
+@c @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@node Installation, Problems, News, Top
+@chapter Installation
+
+Here is how I recompile @samp{EDB} (Michael's
+@kbd{M-x byte-compile-database} never worked properly for me because
+some macros were not properly expanded).
+
+@example
+#!/bin/sh
+EMACSLOADPATH=.:$EMACSLOADPATH \
+   emacs -batch `for i in util*.el [bd]*.el; do echo -l $i; done` \
+         -f batch-byte-compile util*.el [bd]*.el
+@end example
+
+
+@c @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@node Problems, Concept Index, Installation, Top
+@chapter Reporting Bugs
+@cindex bugs
+
+
+@c @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@node Concept Index, , Problems, Top
+@unnumbered Concept Index
+
+@printindex cp
+
+@shortcontents
+@contents
+
+
+@c @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@bye

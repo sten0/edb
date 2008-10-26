@@ -1,0 +1,27 @@
+///////////////////////////// INCOLLECTION \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+         Code: \tag,nil-or-string
+................................................................Required
+       Author: \author,author
+        Title: \title,nil-or-string,indent
+    Booktitle: \booktitle,nil-or-string,indent
+    Publisher: \publisher,nil-or-string,indent
+         Year: \year,nil-or-string
+................................................................Optional
+       Editor: \editor,author
+       Volume: \volume,nil-or-string
+       Number: \number,nil-or-string
+       Series: \series,nil-or-string,indent
+         Type: \type,nil-or-string,indent
+      Chapter: \chapter,nil-or-string,indent
+        Pages: \pages,nil-or-string
+      Address: \address,nil-or-string,indent
+      Edition: \edition,nil-or-string
+        Month: \month,month
+         Note: \note,nil-or-string,indent
+          Key: \key,nil-or-string
+     Crossref: \crossref,nil-or-string
+.................................................................Ignored
+     Keywords: \keywords,nil-or-string,indent
+      Remarks: \annote,nil-or-string,indent
+      Updated: \updated,nil-or-string
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ INCOLLECTION /////////////////////////////

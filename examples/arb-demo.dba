@@ -1,0 +1,48 @@
+;;; arb-demo.dba                                        -*- emacs-lisp -*-
+;;;
+;;; This database auxiliary file is for use with the database file arb-demo.
+
+(database-set-fieldnames-to-list database '(place time purpose))
+(setf (database-print-name database) "Mike's Time & Place Database")
+
+(let ((r-si (database-record-sepinfo database)))
+  (setf
+   ;; Separating
+   (sepinfo-sep-string                 r-si) "\n\n"
+   ;; Extra characters at end of file
+   (sepinfo-post-last-string           r-si) "\n"))
+
+(setf
+ ;; Reading
+ (database-read-record-from-region  database) 'arb-demo-rrfr
+ ;; Writing
+ (database-write-region-from-record database) 'arb-demo-wrfr)
+
+;; This function (correctly) assumes the buffer is narrowed to the region.
+(defun arb-demo-rrfr ()
+  (if (re-search-forward
+       "Place:[ \t]*\\(.*\\)\nTime:[ \t]*\\(.*\\)\nPurpose:[ \t]*\\(.*\\)" nil t)
+      (list 'place   (match-string 1)
+            'time    (match-string 2)
+            'purpose (match-string 3))
+    (error "arb-demo-rrfr: This line region didn't look like a record to me.")))
+
+(defun arb-demo-wrfr (record)
+  (insert "Place:   "   (db-record-field record 'place)
+	  "\nTime:    " (db-record-field record 'time)
+	  "\nPurpose: " (db-record-field record 'purpose)))
+
+;; Automatically choose the appropriate format for the current record.
+(defun arb-demo-set-format-from-data (record)
+  (if (string= "Home" (db-record-field record 'place))
+      (db-change-format "home format")
+    (db-change-format "non-home format")))
+
+(setq dbf-format-name-spec-alist
+      '(("home format" . "arb-demo.home-fmt")
+	("non-home format" . "arb-demo.fmt"))
+
+      dbf-before-display-record-function
+      'arb-demo-set-format-from-data)
+
+;;; arb-demo.dba ends here

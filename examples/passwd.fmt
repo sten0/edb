@@ -1,0 +1,17 @@
+====== Visiting /etc/passwd ======
+
+User : \username,width=20   Uid: \uid,width=5   Gid: \gid
+
+Name : \gcos-field
+
+Home : \home-dir
+
+Shell: \login-shell
+
+Local Variables:
+eval: (let ((db database))
+        (database-set-fieldnames-to-list db
+          '(username password uid gid gcos-field home-dir login-shell))
+        (setf (database-print-name db) "Password database"
+              (sepinfo-sep-string (database-field-sepinfo db)) ":"))
+End:

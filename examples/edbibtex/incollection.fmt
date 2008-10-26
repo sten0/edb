@@ -1,0 +1,38 @@
+***************************** INCOLLECTION *****************************
+         Code: \BibTeX-tag
+................................................................Required
+       Author: \author
+        Title: \title
+    Booktitle: \booktitle
+    Publisher: \publisher
+         Year: \year
+................................................................Optional
+       Editor: \editor
+      Chapter: \chapter
+        Pages: \pages
+      Address: \address
+        Month: \month
+         Note: \note
+.................................................................Ignored
+      Journal: \journal
+       Series: \series
+       Volume: \volume
+       Number: \number
+      Edition: \edition
+       School: \school
+  Institution: \institution
+ Organization: \organization
+         Type: \type
+ Howpublished: \howpublished
+          Key: \key
+     Crossref: \crossref
+         ISBN: \isbn
+         ISSN: \issn
+     LCNumber: \lcnum
+       Errata: \errata
+     Keywords: \keywords
+     Language: \language
+      Remarks: \annote
+      Updated: \updated
+     Warnings: \warnings
+***************************** INCOLLECTION *****************************

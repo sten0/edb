@@ -1,0 +1,2 @@
+":"; exec ./ebatch -l $0
+(require 'database)

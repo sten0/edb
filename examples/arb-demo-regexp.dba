@@ -1,0 +1,28 @@
+;;; arb-demo-regexp.dba                         -*- emacs-lisp -*-
+
+(setf (database-print-name database)
+      "Mike's Time & Place Database [regexp version]")
+
+(database-set-fieldnames-to-list database '(place time purpose))
+
+;;; Reading
+(let ((r-si (database-record-sepinfo database))
+      (f-si (database-field-sepinfo  database)))
+  (setf
+   ;; Records
+   (sepinfo-sep-string                r-si) "\n\n"
+   (sepinfo-post-last-string          r-si) "\n"
+   ;; Fields
+   (sepinfo-pre-first-regexp          f-si) "^[^:]*:[ \t]*"
+   (sepinfo-pre-first-regexp-submatch f-si) 0
+   (sepinfo-sep-regexp                f-si) "\n[^:]*:[ \t]*"
+   (sepinfo-sep-regexp-submatch       f-si) 0))
+
+;;; Writing
+(defun arb-demo-wrfr (record)
+  (insert "Place:   "   (db-record-field record 'place)
+	  "\nTime:    " (db-record-field record 'time)
+	  "\nPurpose: " (db-record-field record 'purpose)))
+(setf (database-write-region-from-record database) 'arb-demo-wrfr)
+
+;;; arb-demo-regexp.dba ends here

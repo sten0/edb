@@ -1,0 +1,123 @@
+;;; bfuncs --- some -*-emacs-lisp-*- for "emacs -batch" invocation
+
+;;; Copyright (C) 2005,2006,2007,2008 Thien-Thi Nguyen
+
+;; This file is part of EDB.
+;;
+;; EDB is free software; you can redistribute it and/or modify it under
+;; the terms of the GNU General Public License as published by the Free
+;; Software Foundation; either version 3, or (at your option) any later
+;; version.
+;;
+;; EDB is distributed in the hope that it will be useful, but WITHOUT
+;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+;; FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+;; for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with EDB; see the file COPYING.  If not, write to the Free
+;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+;; MA 02110-1301, USA.
+
+;;; Commentary:
+
+;; This file, deliberately named w/o .el suffix, is not installed.
+;; It contains various thunks for invocation from the GNUmakefile.
+
+;;; Code:
+
+(unless noninteractive
+  (error "File not intended for interactive use -- see GNUmakefile"))
+
+(require 'cl)
+(require 'pp)
+
+(defun edb-bfunc-get-GNUmakefile (var)
+  (interactive "sVar: ")
+  (let ((ans (with-temp-buffer
+               (insert "zup:\n\t@echo \"$(" var ")\"\n")
+               (call-process-region (point-min) (point-max) "make" t t nil
+                                    "--no-print-directory"
+                                    "-f" "GNUmakefile" "-f" "-" "zup")
+               (buffer-substring (point-min) (1- (point-max))))))
+    (if (interactive-p)
+        (message "%s" ans)
+      (split-string ans))))
+
+(defun edb-bfunc-make-edbcore ()
+  (let ((writep (not (file-exists-p "edbcore.el")))
+        (badnamesp (equal '("true") (edb-bfunc-get-GNUmakefile "badnamesp")))
+        (ls (edb-bfunc-get-GNUmakefile "edbcore-components")))
+    (unless writep
+      (dolist (file ls)
+        (setq writep (or writep (file-newer-than-file-p file "edbcore.el")))))
+    (when writep
+      (with-temp-buffer
+        (dolist (file ls)
+          (insert-file-contents file)
+          (goto-char (point-max)))
+        (insert "\n(provide 'edbcore)")
+        (let (b e acc)
+          (goto-char (point-min))
+          (while (re-search-forward "^(:edb1 .*)\n\n" (point-max) t)
+            (setq b (match-beginning 0)
+                  e (match-end 0)
+                  acc (cons (buffer-substring b e) acc))
+            (delete-region b e))
+          (search-backward ":further-init edb--global-state")
+          (delete-region (point) (progn (forward-line 1) (point)))
+          (let ((standard-output (current-buffer)))
+            (pp '(edb--rput nil :edb1 (make-hash-table :size 7 :test 'eq)))
+            (dolist (text (nreverse acc))
+              (let ((form (car (read-from-string text))))
+                (pp `(unless (edb--rget '(:edb1) ,(cadr form))
+                       (edb--rput '(:edb1) ,(cadr form) ,(caddr form))))))))
+        (let ((rx (concat "\n;;;###badname" (unless badnamesp "\n.*"))))
+          (goto-char (point-min))
+          (while (re-search-forward rx (point-max) t)
+            (delete-region (match-beginning 0) (match-end 0))))
+        (let (decl)
+          (goto-char (point-min))
+          (while (re-search-forward ";;;###safe-file-local-variable"
+                                    (point-max) t)
+            (save-excursion
+              (down-list 1) (forward-sexp 1)
+              (setq decl `(put ',(read (current-buffer))
+                               'safe-local-variable
+                               'edb-true)))
+            (replace-match (format "%S" decl))))
+        (let ((make-backup-files nil))
+          (write-file "edbcore.el"))))))
+
+(defun edb-bfunc-make-all ()
+  (edb-bfunc-make-edbcore)
+  (let ((dir (car load-path))
+        (els (edb-bfunc-get-GNUmakefile "installed-el-files")))
+    (unless (file-directory-p dir)
+      (error "%S is not a directory." dir))
+    (unless (file-exists-p (expand-file-name "db-util.el" dir))
+      (error "Could not find db-util.el in %S" dir))
+
+    (mapc 'load els)
+
+    (let ((count 0)
+          source dest fake)
+      (dolist (file (cons "database.el" els))
+        (setq source (expand-file-name file dir)
+              dest (concat (file-name-sans-versions source) "c"))
+
+        ;; Compile unless a newer .elc file exists.
+        (if (file-newer-than-file-p dest source)
+            (push dest fake)
+          (byte-compile-file source)
+          (incf count)))
+
+      ;; If any compilation happens, touch all the old .elc
+      ;; files to fool -- aka "interoperate with" -- make(1).
+      (unless (= 0 count)
+        (apply 'call-process "touch" nil nil nil fake))
+
+      (message "Done (Total of %d file%s compiled)"
+               count (if (= count 1) "" "s")))))
+
+;;; bfuncs ends here

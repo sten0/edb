@@ -1,0 +1,24 @@
+         ECI Software Database
+
+         Name: \name
+  Description: \desc,indent
+      Version: \version
+         Arch: \arch
+           OS: \os
+ Restrictions: \restric,indent
+     Bin Path: \binpath
+  Binary List: \binlist,indent
+ Library Path: \libpath
+ Library List: \liblist,indent
+     Man Path: \manpath
+    Info Path: \infopath
+    Help Path: \helppath
+       Source: \source
+
+    Installed: \installdate,date-iso
+ Installed By: \installer
+Install notes: \installnotes,indent
+
+  Last Update: \updatedate,date-iso
+   Updated By: \updater
+ Update Notes: \updatenotes,indent

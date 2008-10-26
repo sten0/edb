@@ -1,0 +1,11 @@
+Family: \last
+Given:  \first
+Middle: \middle
+
+Age:    \age
+
+Local Variables:
+edb-data-coding: iso-safe
+eval: (database-set-fieldnames-to-list database
+                                       '(first middle last (age . integer)))
+End:
