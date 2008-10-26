@@ -1,0 +1,99 @@
+Using the TEP Alumni Database
+=============================
+
+This document describes the use of the TEP Alumni Database with EDB, an
+Emacs database package.  It is presumed that you know how to use EDB; see
+its manual for instructions on doing database operations like moving from
+record to record, finding a particular record, editing fields of a record,
+sorting records, etc.
+
+* The address consists of several fields
+
+  The address, city, state, and zip are separate fields.  Don't try to just
+  type the entire address all at once; use the TAB key to get to the next
+  field.
+
+* Automatic updating of contact date and old address and phone fields
+
+  Whenever a database record is edited, the "contact date" field is set
+  to the current date.
+
+  When any of the residence fields (home-address, home-city, home-state, or
+  home-zip) are edited, the user is queried whether to set all four old
+  residence fields are set to the previous values of the residence fields.
+  So, for instance, if the home address is
+		253 Commonwealth Avenue
+		Boston, MA 02115
+  and the old home address is
+		123 Boring Street
+		Smallville, USA 00000
+  and we edit the home-zip field from 02115 to 02116, and answer "y" to the
+  "Move previous home address to old-address fields?" question, then the
+  new home address will be
+		253 Commonwealth Avenue
+		Boston, MA 02116
+  and the old home address will become
+		253 Commonwealth Avenue
+		Boston, MA 02115
+  The Smallville address has been lost.  It should be obvious when to
+  answer "y" and when to answer "n" to the question.
+
+  Similar mechanisms are in place for the home phone number (which is
+  separately managed because it and the address may change independently)
+  and for the business address and phone number.
+
+  Having fields automatically updated is is a good feature when the address
+  is really changing, since it means you don't have to set the old address
+  fields by hand.  It is a nuisance when you are just fixing typos.  In
+  order to defeat these mechanisms, do
+	M-x tep-fix-typo
+  No fields will be automatically updated after you run this command.
+  Alternately (and more simply), just answer "n" to the questions as
+  they're asked.
+
+* Making reports
+
+  You can use the commands
+    M-x tep-address-report
+    M-x tep-year-report
+    M-x tep-firstname-report
+    M-x tep-nickname-report
+  to create files such as "address-report.out" in the /Alumni/Database/Reports
+  directory.  You can use these files directly, or typeset them by running the
+  LaTeX program; from the command line, say
+    latex address-report.tex
+  to create the file address-report.dvi, which you can print by doing
+    lpr -d address-report.dvi
+  You can use
+    M-x tep-all-reports
+  to create all the .out files, but you'll still have to run LaTeX on them,
+  and print them, one at a time.
+
+* Making labels
+
+  Use M-x tep-labels to create mailing labels.  This creates a buffer named
+  *TEP labels* which contains the preferred mailing address of each
+  alumnus.  You'll want to save this buffer to a file.  On athena, the
+  filename should have an extension (contain a period in the name).
+
+  To create a *TEP labels* buffer with only Massachusetts alumni, ordered
+  by class year, do M-x tep-local-labels.
+
+  If you have access to the "Midnight macros" for TeX, you can process this
+  file by running TeX on the file make-labels.tex; from the Unix command line:
+    tex make-labels
+  and then printing the resulting file:
+    lpr -d make-labels.dvi
+  If you're on athena, then, you need to be using the SIPB TeX macros; do
+    setenv TEXINPUTS .:/mit/sipb/lib/tex/macros
+  in your .login.  The file make-labels.tex can be found at the end of
+  leber-db.dba if you don't have it already.  (On athena, see the Reports 
+  directory.)
+
+  If the top line on each page gets cut off by your printer, change the
+  line in make-labels.tex that looks like
+    \vfirst=0pt
+  to
+    \vfirst=5pt
+  You can play with the parameter value to get it right; there are 72 pts
+  in an inch.

@@ -1,0 +1,437 @@
+;;; -*-Emacs-Lisp-*-
+
+;;; To do:
+;; The interactive functions should check that they're in the right buffer
+;; (namely, database buffer) before executing.
+;; Should omit deceased brothers from some reports.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Noninteractive functions
+;;;
+
+;;; These combine several fields to give a single result.
+
+;; This should truncate middle names to a single letter, if there's a full
+;; first name there.
+
+(defun tep-record-fullname (record)
+  (concat (db-record-field record 'first-name) " "
+	  (db-record-field record 'last-name)
+	  (let ((jr (db-record-field record 'jr)))
+	    (if (empty-string-p jr)
+		""
+	      (concat ", " jr)))))
+
+(defun tep-record-biz-address (record)
+  (let ((title (db-record-field record 'biz-title))
+	(company-name (db-record-field record 'biz-company-name))
+	(address (db-record-field record 'biz-address)))
+    (if (not (empty-string-p address))
+	(concat
+	 (if (empty-string-p title)
+	     ""
+	   (concat title "\n"))
+	 (if (empty-string-p company-name)
+	     ""
+	   (concat company-name "\n"))
+	 address "\n"
+	 (db-record-field record 'biz-city) ", "
+	 (db-record-field record 'biz-state) " "
+	 (db-record-field record 'biz-zip)))))
+
+(defun tep-record-home-address (record)
+  (let ((address (db-record-field record 'home-address)))
+    (if (not (empty-string-p address))
+	(concat
+	 address "\n"
+	 (db-record-field record 'home-city) ", "
+	 (db-record-field record 'home-state) " "
+	 (db-record-field record 'home-zip)))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Change hooks
+;;;
+
+;; These should display a message admitting what they've just done.
+;; (Not if they ask the user first, perhaps.)
+
+;; Change hooks return t if the record should be redisplayed.
+
+(defun tepdb:after-read ()
+  (setq dbf-first-change-function 'tep-contact-date)
+  ;; transitional (EDB 1.x to 2.x) approach; likely to change --ttn
+  (set (make-local-variable 'db-edit-mode-hooks)
+       (lambda ()
+         (dolist (var '(tep-homeaddr-oldified
+                        tep-homephone-oldified
+                        tep-bizaddr-oldified
+                        tep-bizphone-oldified))
+           (set (make-local-variable var) nil))))
+
+  (dbf-set-change-function 'home-address 'tep-homeaddr-change-hook)
+  (dbf-set-change-function 'home-city 'tep-homeaddr-change-hook)
+  (dbf-set-change-function 'home-state 'tep-homeaddr-change-hook)
+  (dbf-set-change-function 'home-zip 'tep-homeaddr-change-hook)
+  (dbf-set-change-function 'home-phone 'tep-homephone-change-hook)
+
+  (dbf-set-change-function 'biz-address 'tep-bizaddr-change-hook)
+  (dbf-set-change-function 'biz-city 'tep-bizaddr-change-hook)
+  (dbf-set-change-function 'biz-state 'tep-bizaddr-change-hook)
+  (dbf-set-change-function 'biz-zip 'tep-bizaddr-change-hook)
+  (dbf-set-change-function 'biz-phone 'tep-bizphone-change-hook)
+
+  (remove-hook 'db-after-read-hooks 'tepdb:after-read))
+
+(add-hook 'db-after-read-hooks 'tepdb:after-read)
+
+;;;
+;;; Defeat the change hooks
+;;;
+
+;; This is moot now that the user is always queried before changes are made
+;; anyway.
+
+(defun tep-fix-typo ()
+  (interactive)
+  "Prevent contact-date, old address fields from changing when record is edited."
+  (if (not (db-format-buffer-p))
+      (error "Only call tep-fix-typo in a database format buffer."))
+  (setq tep-homeaddr-oldified t)
+  (setq tep-homephone-oldified t)
+  (setq tep-bizaddr-oldified t)
+  (setq tep-bizphone-oldified t)
+  ;; defeat first-change-function, at a small price if the record isn't changed
+  (dbf-set-this-record-modified-p t))
+
+
+;;;
+;;; Contact date
+;;;
+
+(defun tep-contact-date (fieldname oldvalue newvalue)
+  "Put the current date in this record's `contact date' field."
+  (dbf-this-record-set-field 'contact-date
+			     (let ((now (current-time-string)))
+			       (concat (substring now 4 8)
+				       (substring now 8 11)
+				       (substring now 20)))))
+
+;; Add "defeat" mechanisms for phone as well.
+
+;;;
+;;; Home address
+;;;
+
+;; All the obnoxious questions are asked because it's too easy to
+;; accidentally knock out the old home address when making a minor edit.
+
+(defvar tep-homeaddr-oldified nil)
+(defvar tep-homephone-oldified nil)
+
+(defun tep-homeaddr-change-hook (fieldname oldvalue newvalue)
+  (if (and (not tep-homeaddr-oldified)
+	   (y-or-n-p "Move previous home address to old home address fields? "))
+      (progn
+	(dbf-this-record-set-field 'old-home-address
+				   (if (eq fieldname 'home-address)
+				       oldvalue
+				     (db-record-field t 'home-address)))
+	(dbf-this-record-set-field 'old-home-city
+				   (if (eq fieldname 'home-city)
+				       oldvalue
+				     (db-record-field t 'home-city)))
+	(dbf-this-record-set-field 'old-home-state
+				   (if (eq fieldname 'home-state)
+				       oldvalue
+				     (db-record-field t 'home-state)))
+	(dbf-this-record-set-field 'old-home-zip
+				   (if (eq fieldname 'home-record)
+				       oldvalue
+				     (db-record-field t 'home-zip)))
+	(setq tep-homeaddr-oldified t)
+	t)
+    (progn
+      (setq tep-homeaddr-oldified t)
+      nil)))
+
+(defun tep-homephone-change-hook (fieldname oldvalue newvalue)
+  (if (and (not tep-homephone-oldified)
+	   (y-or-n-p "Move previous home phone to old-home-phone field? "))
+      (progn
+	(dbf-this-record-set-field 'old-home-phone oldvalue)
+	(setq tep-homephone-oldified t)
+	t)
+    (progn
+      (setq tep-homephone-oldified t)
+      nil)))
+
+;;;
+;;; Business address
+;;;
+
+(defvar tep-bizaddr-oldified nil)
+(defvar tep-bizphone-oldified nil)
+
+(defun tep-bizaddr-change-hook (fieldname oldvalue newvalue)
+  (if (and (not tep-bizaddr-oldified)
+	   (y-or-n-p "Move previous business address to old business address fields? "))
+      (progn
+	(dbf-this-record-set-field 'old-biz-address
+				   (if (eq fieldname 'biz-address)
+				       oldvalue
+				     (db-record-field t 'biz-address)))
+	(dbf-this-record-set-field 'old-biz-city
+				   (if (eq fieldname 'biz-city)
+				       oldvalue
+				     (db-record-field t 'biz-city)))
+	(dbf-this-record-set-field 'old-biz-state
+				   (if (eq fieldname 'biz-state)
+				       oldvalue
+				     (db-record-field t 'biz-state)))
+	(dbf-this-record-set-field 'old-biz-zip
+				   (if (eq fieldname 'biz-record)
+				       oldvalue
+				     (db-record-field t 'biz-zip)))
+	(setq tep-bizaddr-oldified t)
+	t)
+    (progn
+      (setq tep-bizaddr-oldified t)
+      nil)))
+
+(defun tep-bizphone-change-hook (fieldname oldvalue newvalue)
+  (if (and (not tep-bizphone-oldified)
+	   (y-or-n-p "Move previous business phone to old-home-phone field? "))
+      (progn
+	(dbf-this-record-set-field 'old-biz-phone oldvalue)
+	(setq tep-bizphone-oldified t)
+	t)
+    (progn
+      (setq tep-bizphone-oldified t)
+      nil)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Reports (except labels)
+;;;
+
+(defun tep-report-directory ()
+  (let ((sysname (system-name)))
+    (cond ((member sysname '("emu" "coot" "swallow"))
+	   (expand-file-name "~mernst/tep/db/report/"))
+	  (t
+           ;; Assume we're on athena
+	   ;; "/mit/tep/Alumni/Database/Report/"
+           ;; Actually, we are far past the decstation dayz...
+           "/tmp/"))))
+
+;;;
+;;; All four reports
+;;;
+
+(defun tep-all-reports ()
+  (interactive)
+
+  (tep-year-report)
+  (tep-firstname-report)
+  (tep-nickname-report)
+  ;; This is last so the database is left in a reasonable sorted order.
+  (tep-address-report)
+  (message "Wrote four *-report.out files.")
+  )
+
+;;;
+;;; Abstraction
+;;;
+
+(defun tep-report (filename sort-fieldnames fixup)
+  (let ((base (expand-file-name filename (tep-report-directory))))
+    (save-excursion
+      (database-sort nil (list (mapcar 'list sort-fieldnames)))
+      (dbf-finished-sorting)
+      (db-report base)
+      ;; We're now in the *Database Report* buffer.
+      (when fixup (funcall fixup))
+      (write-file (concat base ".out")))))
+
+
+;;;
+;;; Address report
+;;;
+
+(defun tep-address-report ()
+  (interactive)
+
+  ;; I should include the contact date in this report.
+
+  (tep-report
+   "address-report"
+   '(last-name first-name)
+   ;; I realize this is a crock.  Cut me some slack!  I'll fix it later.
+   ;; Make the address report in this buffer look nicer.
+   (lambda ()
+     ;; Get rid of "Parents" (if address != "house") or "house"
+     (goto-char (point-min))
+     (while (search-forward "house\n,  \n\nPar" nil t)
+       (replace-match "Squar" nil t))
+     (goto-char (point-min))
+     ;; Assumes one one line in parents' address.
+     (replace-regexp "Parents:\\\n.*\\\n.*\\\n.*\\\n.*\\\nBus" "Bus")
+     (goto-char (point-min))
+     (while (search-forward "Squaren" nil t)
+       (replace-match "Paren" nil t))
+
+     (goto-char (point-min))
+     (while (search-forward "\n\n" nil t)
+       (replace-match "\n"))
+     (goto-char (point-min))
+     (while (search-forward "Business:\n,  \n-" nil t)
+       (replace-match "-"))
+     (goto-char (point-min))
+     ;; Get rid of empty "Jr." parts of names.
+     (while (search-forward ", \n" nil t)
+       (replace-match "\n"))
+     (goto-char (point-min))
+     (while (search-forward "\n \n" nil t)
+       (replace-match "\n"))
+     (goto-char (point-min))
+     (while (search-forward ",  \n" nil t)
+       (replace-match "\n"))
+     (goto-char (point-min))
+     (while (search-forward "\n\n" nil t)
+       (replace-match "\n"))
+     (goto-char (point-min))
+     (while (search-forward "-----" nil t)
+       (delete-region (match-beginning 0) (match-end 0)))
+     (goto-char (point-min))
+     (while (search-forward "Business:\n\n" nil t)
+       (delete-region (match-beginning 0) (match-end 0)))
+     (goto-char (point-min))
+     (while (search-forward "\n\n\n" nil t)
+       (replace-match "\n\n")))))
+
+
+;;;
+;;; Year report
+;;;
+
+(defun tep-year-report ()
+  (interactive)
+
+  (tep-report "year-report"
+	      '(class-year last-name)
+              (lambda ()
+                ;; Get rid of empty "Jr." parts of names.
+                (while (search-forward ",  \\\\\n" nil t)
+                  (replace-match " \\\\\n" nil t)))))
+
+;;;
+;;; Firstname report
+;;;
+
+(defun tep-firstname-report ()
+  (interactive)
+
+  ;; (I need to ignore the middle initial in this sorting.)
+  (tep-report "firstname-report"
+	      '(first-name last-name)
+	      nil))
+
+;;;
+;;; Nickname report
+;;;
+
+(defun tep-nickname-report ()
+  (interactive)
+
+  (tep-report "nickname-report"
+	      '(nickname)
+	      (lambda ()
+		;; Get rid of empty "Jr." parts of names.
+		(while (search-forward ",  \\\\\n" nil t)
+                  (replace-match " \\\\\n" nil t))
+		;; Get rid of lines with no nickname.
+		(goto-char (point-min))
+		(delete-matching-lines "^ "))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Labels
+;;;
+
+;; Results go into the *TEP labels* buffer.
+;; Save to a file (say, in the reports directory).
+;; Run TeX (not LaTeX) on ~/tex/make-labels.tex to process the output.
+;; Print make-labels.dvi.
+
+(defun tep-labels ()
+  (interactive)
+  (db-maprecords
+   (lambda (record)
+     (let ((name (tep-record-fullname record))
+           (address (if (string-equal "B" (db-record-field
+                                           record 'address-preferred))
+                        (tep-record-biz-address record)
+                      (tep-record-home-address record))))
+       ;; (message "found name %s and address %s" name)
+       (if address
+           (princ (format "%s\n%s\n\n" name address)
+                  (get-buffer-create "*TEP labels*")))))))
+
+
+;; only marked records, I think
+(defun tep-labels/marked ()
+  (interactive)
+  (db-maprecords
+   (lambda (record)
+     (let ((name (tep-record-fullname record))
+           (address (if (string-equal "B" (db-record-field
+                                           record 'address-preferred))
+                        (tep-record-biz-address record)
+                      (tep-record-home-address record))))
+       ;; (message "found name %s and address %s" name)
+       (if address
+           (princ (format "%s\n%s\n\n" name address)
+                  (get-buffer-create "*TEP labels*")))))
+   nil t)
+  (switch-to-buffer-other-window "*TEP labels*"))
+
+(defun tep-local-labels ()
+  (interactive)
+  ;; Go to state field.
+  (db-first-field)
+  (db-next-field 8)
+  ;; Select local alumni:  those with "MA" in the state.  (C-u M-s ma RET)
+  (db-search-field "MA" t)
+  (db-omit-unmarked-records)
+  (db-view-mode)
+  ;; Sort on class year.
+  (database-sort nil '(((3))))
+  ;; Create labels.
+  (tep-labels))
+
+;; As of 3/23/92, the file make-labels.tex looked like this, without the
+;; leading "; " on each line.
+; \input labels
+; \vlbls=11 \hlbls=3
+; \vfirst=0pt
+; \hfirst=0pt
+; \vinter=0pt
+; \hinter=0pt
+; \vlblsize=1in
+; \hlblsize=2.833in
+; % \vindent
+; % \hindent
+;
+; % \lbloutline=0.5pt
+;
+; % \erroraction=1
+;
+; \font\twelverm=cmr12
+; \twelverm
+;
+; \message{What is the label file? }
+; \read-1 to\labeldatafile
+;
+; \labelfile{\labeldatafile}
+; \bye
+

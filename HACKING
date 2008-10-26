@@ -1,0 +1,44 @@
+-*-outline-*-
+
+* hacksup.el
+
+When editing the elisp, first load hacksup.el to set up indentation, otherwise
+the code will tend to unceremoniously crawl off the right side of the screen.
+
+* DEBUG=1
+
+Normally, tests/ebatch.in (used by "make check") discards output.
+However, if you set env var DEBUG, it enables stdout and stderr.
+
+* Patches
+
+For small changes, please include a suitable ChangeLog entry of the form:
+
+YYYY-MM-DD  J. Random Hacker  <j.r.hacker@some.node>  (tiny change)
+
+	* FILE.el (func-1): Fix foo handling.
+	(func-2): Take additional arg quux, baaz.  Update callers.
+	(func-3): Likewise.
+	(var-1): Doc fix.
+
+The precise date is not important; it will be adjusted when the patch is
+installed.  This example is also slightly suboptimal in that there are many
+different changes included together (for the sake of demonstration).  It is
+better to instead separate each change to its own patch + ChangeLog entry.
+
+To make the patch, use "diff -u" against either a fresh cvs checkout (best),
+or the latest release (next best).  Patches against older releases will be
+considered at lower priority, if at all.
+
+* public repository
+
+To get a source tree:
+
+ $ git clone http://www.gnuvola.org/wip/edb.git
+
+Once you have a source tree:
+
+ $ sh autogen.sh
+
+See autogen.sh comments for which tool versions are recommended to install on
+your system (minimally -- probably later versions work, too).

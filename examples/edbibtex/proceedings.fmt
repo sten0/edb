@@ -1,0 +1,38 @@
+***************************** PROCEEDINGS ******************************
+         Code: \BibTeX-tag
+................................................................Required
+        Title: \title
+         Year: \year
+................................................................Optional
+       Editor: \editor
+    Publisher: \publisher
+ Organization: \organization
+      Address: \address
+        Month: \month
+         Note: \note
+.................................................................Ignored
+       Author: \author
+      Journal: \journal
+       Series: \series
+       Volume: \volume
+       Number: \number
+        Pages: \pages
+      Chapter: \chapter
+    Booktitle: \booktitle
+      Edition: \edition
+       School: \school
+  Institution: \institution
+         Type: \type
+ Howpublished: \howpublished
+          Key: \key
+     Crossref: \crossref
+         ISBN: \isbn
+         ISSN: \issn
+     LCNumber: \lcnum
+       Errata: \errata
+     Keywords: \keywords
+     Language: \language
+      Remarks: \annote
+      Updated: \updated
+     Warnings: \warnings
+***************************** PROCEEDINGS ******************************

@@ -1,0 +1,38 @@
+******************************** INBOOK ********************************
+         Code: \BibTeX-tag
+................................................................Required
+       Author: \author
+       Editor: \editor
+        Title: \title
+      Chapter: \chapter
+        Pages: \pages
+    Publisher: \publisher
+         Year: \year
+................................................................Optional
+       Volume: \volume
+       Series: \series
+      Address: \address
+      Edition: \edition
+        Month: \month
+         Note: \note
+.................................................................Ignored
+      Journal: \journal
+       Number: \number
+    Booktitle: \booktitle
+       School: \school
+  Institution: \institution
+ Organization: \organization
+         Type: \type
+ Howpublished: \howpublished
+          Key: \key
+     Crossref: \crossref
+         ISBN: \isbn
+         ISSN: \issn
+     LCNumber: \lcnum
+       Errata: \errata
+     Keywords: \keywords
+     Language: \language
+      Remarks: \annote
+      Updated: \updated
+     Warnings: \warnings
+******************************** INBOOK ********************************

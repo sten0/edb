@@ -1,0 +1,444 @@
+2007-12-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* tepdb.dba (tep-report): Make into a func; update callers.
+	(tep-prettify-address-report): Incorporate into unique caller.
+
+2007-12-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* tepdb.dba (tepdb:after-read): Fix omission bug
+	introduced 2006-07-12: Include (empty) arg list.
+
+2007-12-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* www-links2, www-links2.edb, www-links3, www-links3.edb: New files.
+
+2007-12-12  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* www-links, www-links.edb: New files.
+
+2007-12-05  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* passwd.edb, passwd.fmt: For display,
+	bump width of `username' to 20.
+
+2007-05-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* null.edb: Move :EDB after initial comment block.
+
+2007-04-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* null.edb: New file.
+
+2006-07-25  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* arb-demo-regexp.edb, arb-demo.edb, eicsw.edb
+	* forms-demo2-inherent.edb, forms-demo2.edb, names.edb,
+	* passwd.edb, rolo-jik.edb, retired.edb, skram.edb:
+	Make sure all text blocks end with :EOTB.
+
+2006-07-13  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* geneal.dat, geneal.edb: New files.
+
+2006-07-12  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* tepdb.dba: Use `add-hook' and `remove-hook'.
+	(tepdb:after-read): New func.
+
+2006-07-12  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* edbibtex/bibtex.dba: Use `add-hook'.
+	* edbibtex/edbibtex.el (BibTeX-set-up-db-buffer): Fix omission bug:
+	Remove this function from `db-before-read-hooks' when done.
+
+2006-07-03  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* eicsw.fmt: Use `date-iso' for Installed and Last Update fields.
+
+	* eicsw.edb: Use `date-iso' in the display text block.
+
+	* eicsw.dba, eicsw.edb (suredate): For this recordfieldtype,
+	specify YYYY-MM-DD date format for :actual->stored.
+
+2006-06-30  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* eicsw.dba, eicsw.edb: Use `edb-define-enumtype'.
+
+2006-06-10  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* eicsw.dba, eicsw.edb: Throughout, use
+	`edb-define-displaytype' and `edb-define-recordfieldtype'.
+
+2006-06-08  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* edbibtex/edbibtex.el (BibTeX-wrfr): Replace match w/ literal text.
+
+2006-06-08  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* tepdb.dba (tep-year-report): Replace match w/ literal text.
+	(tep-nickname-report): Likewise.
+	(tep-prettify-address-report): Likewise.  Also, use `delete-region'.
+
+2006-06-08  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* edbibtex/edbibtex.el: Don't modify `db-change-format' definition.
+
+2006-06-05  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* intro-and-addr: Mention db-convert.el removal.
+
+2005-12-31  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* forms-demo2-inherent.edb: New file.
+
+2005-12-31  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* edbibtex/edbibtex.el, arb-demo-regexp.dba:
+	* arb-demo.dba, eicsw.dba, rolo-jik.dba, tepdb.dba:
+	Use `db-record-field' and/or `db-record-set-field'.
+
+2005-12-30  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* tepdb.dba (tep-labels, tep-labels/marked): Use `db-maprecords'.
+	* edbibtex/edbibtex.el (BibTeX-define-abbreviations): Likewise.
+
+2005-12-28  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* arb-demo-regexp.edb: Use vectors for :field-separator and :cruft.
+
+2005-12-19  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* eicsw.edb: Rewrite :record-defaults value as lambda expression.
+
+2005-12-18  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* eicsw.dba (swdb-record-defaults): Use `current-time-string'.
+	* eicsw.edb (swdb-record-defaults): Likewise.
+
+2005-12-18  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* rolo-jik.edb: Remove :field-setter.
+	(rolodex-change-date): Use `dbf-this-record-set-field'.
+
+2005-12-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* passwd.edb: Specify `integer' for fields `uid' and `gid'.
+
+2005-12-11  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* forms-demo2.edb: Use vector for :substitutions.
+
+2005-12-10  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* forms-demo2.edb: Use :field-order.
+
+2005-12-07  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* rolo-jik.edb (rolo-jik-regexp): Fix typo.
+	(rolodex-write-record): Use nil arglist.
+
+2005-12-06  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* forms-demo2-int.dat, tepdb: Rewrite in "format 0.7".
+
+2005-12-05  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* eicsw.edb: Use `define-enum-type',
+	`define-displaytype-from-displayspec' and
+	`define-recordfieldtype-from-recordfieldspec'.
+
+2005-12-05  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* eicsw.edb: Convert :require to `require' form.
+
+2005-11-28  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* arb-demo-regexp.edb: New file.
+
+2005-11-28  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* eicsw.edb: Fix typo in :summary-format.
+
+2005-11-28  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* rolo-jik.dba, rolo-jik.edb: No longer set `post-last-string'
+	slot in `record-sepinfo' slot in database.
+
+2005-11-27  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* arb-demo.dba (arb-demo-rrfr): Remove `(goto-char (point-min))'.
+	* rolo-jik.dba (rolodex-rrfr): Likewise.
+
+2005-11-27  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* rolo-jik.edb (rolo-jik-regexp): New var.
+	(rolodex-read-record): Use `rolo-jik-regexp'.  Return plist.
+
+	* arb-demo.edb (arb-demo-read-record): Return plist.
+
+2005-11-26  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* arb-demo.fmt: Remove local-variables block.
+
+2005-11-23  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* arb-demo.dba (arb-demo-rrfr): Return plist.
+	* rolo-jik.dba (rolodex-rrfr): Likewise.
+
+2005-11-19  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* tepdb.dba: In `db-after-read-hooks', set `db-edit-mode-hooks',
+	after making it a buffer-local var, not `dbf-reset-on-edit-list'.
+
+2005-11-19  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* tepdb.dba (tep-report, tep-local-labels):
+	Pass nil to `database-sort'.
+
+2005-11-19  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* arb-demo.edb: Remove :post-last-record.  Add :cruft.
+
+2005-11-19  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* edbibtex/edbibtex.el (BibTeX-set-format-from-data)
+	(BibTeX-validate-record, BibTeX-rrfr):
+	No longer pass DATABASE to `record-set-field'.
+
+2005-11-19  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* edbibtex/edbibtex.el (BibTeX-define-abbreviations):
+	No longer specify DB to `maprecords'.
+
+2005-11-19  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* tebdb.dba (tep-labels, tep-labels/marked):
+	No longer specify DB to `maprecords'.
+
+2005-11-19  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* rolo-jik.dba (rolodex-wrfr): Omit DATABASE arg to `record-field'.
+	(rolodex-before-display): Likewise.  Also, make RECORD optional.
+	If omitted, pass t as RECORD to `record-field'.
+	(rolodex-change-function): Call `rolodex-before-display' w/o args.
+
+2005-11-19  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* tepdb.dba (tep-record-fullname):
+	No longer take DATABASE or pass it to `record-field'.
+	(tep-record-biz-address, tep-record-home-address): Likewise.
+	(tep-homeaddr-change-hook, tep-bizaddr-change-hook):
+	Pass t as RECORD, and no longer pass DATABASE to `record-field'.
+	(tep-labels, tep-labels/marked): Update calls to `tep-record-fullname',
+	`tep-record-biz-address' and `tep-record-home-address'.
+
+	* edbibtex/edbibtex.el (BibTeX-define-abbreviations, BibTeX-wrfr)
+	(BibTeX-set-format-from-data, BibTeX-check-abbreviations)
+	(BibTeX-validate-record): No longer pass DATABASE to `record-field'.
+
+2005-11-19  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* arb-demo.dba (arb-demo-wrfr, arb-demo-set-format-from-data):
+	Omit DATABASE arg to `record-field'.
+
+	* arb-demo-regexp.dba (arb-demo-wrfr): Likewise.
+
+2005-11-18  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* rolo-jik.edb (rolodex-read-record): Remove unused auto var.
+
+2005-11-18  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* arb-demo.dba (arb-demo-rrfr): Use `db-make-record'.
+	* rolo-jik.dba (rolodex-rrfr): Likewise.
+
+2005-10-25  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* arb-demo-regexp.dba: No longer specify default format file.
+
+2005-10-24  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* eicsw.dba, eicsw.edb: No longer specify data file.
+
+2005-10-17  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* eicsw.dba, eicsw.edb: Fix typo: Use correct name for data file.
+
+2005-05-27  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* edbibtex/gpl.texinfo: Delete file.
+	* edbibtex/edbibtex.texinfo (Copying):
+	Replace @include w/ copyright notice.
+	(Installation): No longer mention gpl.texinfo.
+	* edbibtex/Makefile (DOCUMENTATION): Remove gpl.texinfo.
+
+2005-04-09  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* passwd.fmt: Coalesce code in local
+	variables block into one `let' form.
+
+2005-04-08  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* edbibtex/edbibtex.el (BibTeX-make-record):
+	Use length of `fieldnames' value.
+
+2005-01-19  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* tepdb.dba (tep-report): Use field
+	names directly in field-priorities list.
+
+2005-01-18  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* names.fmt (edb-data-coding): Use `iso-safe'.
+
+2005-01-18  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* eicsw.dba: Use `db-string-or-nil->string', `db-string-or-nil-order-ci',
+	`db-string-or-nil-lessp-ci' and `db-string-or-nil-match-function'.
+
+	* eicsw.edb: Likewise.
+
+2005-01-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* eicsw.dba: Require `edb-t-timedate1'.
+	Use `edb-t-timedate1:parse-date-string'.
+
+	* eicsw.edb: Add :require for `edb-t-timedate1'.
+	Use `edb-t-timedate1:parse-date-string'.
+
+2005-01-14  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* arb-demo-regexp.dba: Use `setf' forms.
+	* arb-demo.dba: Likewise.
+	* eicsw.dba: Likewise.
+	* forms-demo2.fmt: Likewise.
+	* passwd.fmt: Likewise.
+	* rolo-jik.dba: Likewise.
+	* rolo-jik.edb: Likewise.
+	* edbibtex/bibtex.dba: Likewise.
+
+2005-01-13  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* names.fmt (edb-data-coding): Add local variable.
+
+2005-01-13  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* arb-demo.edb, eicsw.edb, forms-demo2.edb: New files.
+	* names.edb, passwd.edb, rolo-jik.edb: New files.
+
+2004-10-07  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* eicsw.dba: Specify overriding attributes via `db-tagged-setup' arg
+	instead of through multiple `database-set-local' calls.
+
+2004-10-06  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* tepdb.dba (tep-report-directory): Use `member'.
+	Also, for default case, return "/tmp".
+
+2004-10-06  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* tepdb.dba (tep-report): Update syntax for quasiquote and unquote.
+
+2004-10-06  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* edbibtex/edbibtex.el:
+	No longer use `function' around lambda forms.
+	Convert `function' with symbol arg to `quote'.
+	* tepdb.dba: Likewise.
+	* eicsw.dba: Likewise.
+	* btxdb.el: Likewise.
+
+2004-10-05  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* eicsw.dba:
+	No longer modify recordfieldtype `date' slot `stored->actual'.
+	(suredate): New recordfieldtype. Use it instead of `date'.
+
+2004-09-17  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* tepdba.dba (tep-prettify-address-report): Replace
+	`replace-string' with `(while (search-forward...) ...)'.
+	(tep-year-report): Likewise.
+	(tep-nickname-report): Likewise.
+
+2004-09-09  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* rolo-jik.dba (newlines->semis): Use `replace-regexp-in-string'.
+	(semis->newlines): Likewise.
+
+2004-09-03  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* eicsw.dba: Throughout, use new interface
+	for `define-displaytype-from-displayspec'
+	and `define-recordfieldtype-from-recordfieldspec'.
+
+2004-08-29  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* edbibtex/bibtex.dba (db-default-field-type): No longer set this var.
+
+2004-08-28  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* tepdb.dba (tep-labels): Delete unused local `db'.
+	(tep-labels/marked): Likewise.
+	Also, use `maprecords' instead of `maplinks'.
+
+2004-08-28  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* edbibtex/edbibtex.el (BibTeX-define-abbreviations): Use `maprecords'.
+
+2004-08-27  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* tepdb.dba (db-after-read-hooks): Fix misplaced paren bug:
+	Move last action within `lambda' instead of within `function'.
+
+2004-08-27  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* rolo-jik.dba (newlines->semis): Use `db-string-replace-regexp-2'.
+	(semis->newlines): Likewise.
+
+2004-08-27  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* rolo-jik.dba (match-string): Delete func; Emacs provides a subr.
+
+2004-08-26  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* names.dat: Tabify.
+
+2004-08-20  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* arb-demo.dba (arb-demo-rrfr): Use `match-string'.
+
+2004-05-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* README: Initial checkin from Michael Ernst.
+	* forms-demo2.fmt, rolo-jik.dba, forms-demo2.report, rolo-jik.doc,
+	arb-demo, geneal, rolo-jik.fmt, arb-demo-regexp, eicsw.dat,
+	intro-and-addr, tepdb, arb-demo-regexp.dba, eicsw.dba, names.dat,
+	tepdb.dba, arb-demo.dba, eicsw.fmt, names.fmt, tepdb.fmt,
+	arb-demo.fmt, forms-demo2-int.dat, passwd.fmt, tepdb.instr,
+	arb-demo.home-fmt, forms-demo2.dat, rolo-jik.dat: Likewise.
+
+	* btxdb, btxdb/examples: New directories.
+	* btxdb/COPYING: Initial checkin from Michael Ernst.
+	* btxdb/COPYING, btxdb/ChangeLog, btxdb/Makefile, btxdb/README,
+	btxdb/TODO, btxdb/article.fmt, btxdb/bibtex.fmt, btxdb/book.fmt,
+	btxdb/booklet.fmt, btxdb/btxdb.el, btxdb/btxdb.texi,
+	btxdb/conference.fmt, btxdb/gpl.texinfo, btxdb/inbook.fmt,
+	btxdb/incollection.fmt, btxdb/inproceedings.fmt,
+	btxdb/journals-abbrev.rep, btxdb/journals-full.rep,
+	btxdb/journals.dat, btxdb/journals.dba, btxdb/journals.fmt,
+	btxdb/manual.fmt, btxdb/mastersthesis.fmt, btxdb/misc.fmt,
+	btxdb/phdthesis.fmt, btxdb/proceedings.fmt, btxdb/techreport.fmt,
+	btxdb/unpublished.fmt, btxdb/examples/bibtex.bib: Likewise.
+
+	* edbibtex: New directory.
+	* edbibtex/Makefile: Initial checkin from Michael Ernst.
+	* edbibtex/article.fmt, edbibtex/bibtex.dba, edbibtex/bibtex.fmt,
+	edbibtex/book.fmt, edbibtex/booklet.fmt, edbibtex/compile.el,
+	edbibtex/edbibtex.el, edbibtex/edbibtex.texinfo, edbibtex/gpl.texinfo,
+	edbibtex/inbook.fmt, edbibtex/incollection.fmt,
+	edbibtex/inproceedings.fmt, edbibtex/manual.fmt,
+	edbibtex/mastersthesis.fmt, edbibtex/misc.fmt, edbibtex/phdthesis.fmt,
+	edbibtex/preamble.fmt, edbibtex/proceedings.fmt, edbibtex/string.fmt,
+	edbibtex/techreport.fmt, edbibtex/unpublished.fmt: Likewise.

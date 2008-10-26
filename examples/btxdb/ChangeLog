@@ -1,0 +1,353 @@
+2006-07-12  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el (btxdb:read-comments): Fix omission bug:
+	Remove this function from `db-before-read-hooks' when done.
+	(btxdb:stored->actual): New func.
+	(btxdb:initialize): Use `btxdb:stored->actual'.
+
+2006-07-11  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el (btxdb:initialize): Don't copy and modify recordfieldspecs.
+	Instead, use `db-set-field-help'.
+
+2006-06-30  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el: Use `edb-define-enumtype'.
+
+2006-06-10  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el (btxdb:initialize): Fix omission bug:
+	Specify `string-or-nil' as default recordfieldtype.
+
+2006-06-10  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el: Throughout, use `edb-define-displaytype'
+	and `edb-define-recordfieldtype'.
+
+2006-06-08  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el (btxdb:set-format-from-data): Use `db-change-format'.
+
+2006-06-08  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el (btxdb:authors-display->list)
+	(btxdb:rrfr): Use `delete-region'.
+
+2006-06-08  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el (btxdb-find-file): Use `db-find-file'.
+
+2006-06-06  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el (btxdb-find-file): Make `dbc-database' buffer-local.
+
+2006-01-03  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el (btxdb:extract-year, btxdb:match-years):
+	Use `string-to-number'.
+
+2005-12-31  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el: Use `db-record-field' and/or `db-record-set-field'.
+
+2005-12-30  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* journals.dba (btxdb-update-journals): Use `db-maprecords'.
+
+2005-12-06  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* journals.dat: Rewrite in "format 0.7".
+
+2005-11-27  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el (btxdb:rrfr): Remove `(goto-char (point-min))'.
+
+2005-11-24  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el (journal, author): For these recordfieldtypes, arrange to
+	remember the :actual->stored function in symbol property of `btxdb'.
+	(btxdb:write-field): Use symbol property of `btxdb'.
+
+2005-11-23  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el (btxdb:rrfr): Return plist.
+
+2005-11-19  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* journals.dba (btxdb-update-journals):
+	No longer specify DB to `maprecords'.
+
+2005-11-19  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el (btxdb:initialize):
+	Fix bug: Use `dbf-format-name-spec-alist'.
+
+2005-11-19  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el (btxdb:fields): Use `defvar'.
+	(btxdb:authors->list): Use `with-temp-buffer'.
+	(btxdb:authors-display->list): Likewise.
+
+2005-11-19  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el (btxdb:set-format-from-data, btxdb:write-field)
+	(btxdb:wrfr): No longer pass DATABASE to `record-field'.
+
+2005-11-18  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el (btxdb:rrfr): Use `db-make-record'.
+
+2005-11-18  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el (btxdb:write-field, btxdb:initialize):
+	Update refs to `edb--v1-rs' slots.
+
+2005-10-29  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* journals.dba: No longer specify data file.
+
+2005-10-29  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el (btxdb:set-print-name): Delete func.
+	* bibtex.fmt: No longer call `btxdb:set-print-name'.
+
+2005-10-24  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* journals.dba: No longer specify default format file.
+
+2005-10-24  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el (btxdb-find-file): Rename arg to FILENAME.
+
+2005-10-15  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* journals.dba, btxdb.el: Don't quote lambda forms.
+
+2005-10-11  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el (btxdb:build-journal-alists): Fix typo introduced
+	2005-01-18: Remove spurious reference to `locate-file'.
+
+2005-10-04  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el (btxdb:authors->list): Call `buffer-disable-undo' with no args.
+	(btxdb:authors-display->list): Likewise.
+
+2005-05-27  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* gpl.texinfo: Delete file.
+	* btxdb.texi (Copying): Replace @include w/ copyright notice.
+	* Makefile (SUPPORT): Remove gpl.texinfo.
+	(NON_CVS_FILES): Delete var. Remove references.
+
+2005-05-27  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* COPYING: Delete file; redundant w/ that in top-level dir.
+	* Makefile (SUPPORT, NON_CVS_FILES): Remove COPYING.
+
+2005-04-11  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el (btxdb:initialize): Use `edb--copy-v1-rs'.
+
+2005-01-19  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el (btxdb:write-field):
+	Pass key directly to `database-recordfieldspec'.
+	(btxdb:initialize): Likewise.
+
+2005-01-19  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el: Remove "Local Variables" comment block.
+
+2005-01-18  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el (btxdb:build-journal-alists):
+	Use `db-locate-readable-file-prefer-cwd'.
+	(btxdb-find-file): Likewise.
+
+2005-01-14  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el, journals.dba: Use `setf' forms.
+
+2004-10-08  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el: Use `match-string' instead of `db-match-string'.
+	* edbibtex/edbibtex.el: Likewise.
+
+2004-09-13  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el (btxdb:build-journal-alists): Use `locate-file'.
+	(btxdb-find-file): Likewise.
+
+2004-09-09  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el (btxdb:write-field): Use `replace-regexp-in-string'.
+
+2004-09-08  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el (btxdb-find-file): Use `db-read-database-file'.
+
+2004-09-03  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el: Throughout, use new interface
+	for `define-displaytype-from-displayspec'
+	and `define-recordfieldtype-from-recordfieldspec'.
+
+2004-08-28  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el (btxdb:initialize): Use `database-set-fieldnames-to-list'.
+
+2004-08-27  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el (btxdb:write-field): Use `db-string-replace-regexp-2'.
+
+2004-08-25  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* btxdb.el: Update copyright.
+	(btxdb:RCS-Id): Update.
+	(btxdb:initialize): Use `add-hook'.
+
+Sat Nov 20 22:14:10 1993  Thorsten Ohl  (ohl@linux)
+
+	* README: describe brute force patch to EDB to make in run under
+	Emacs 19.
+
+	* btxdb.el: LCD Entry.
+
+	* VERSION = 0.6   (There are no code changes, but the EDB patch
+	is really necessary ...)
+
+Tue May 25 19:01:48 1993  Thorsten Ohl  (ohl@chico)
+
+	* VERSION = 0.5
+
+	* btxdb:RCS-Id: remove the $'s
+
+	* btxdb:fields: NIL -> UNKNOWN
+
+	* make CLASS an enumerated type
+
+	* btxdb:rrfr: protect against bogus types
+
+Mon May 24 18:17:04 1993  Thorsten Ohl  (ohl@chico)
+
+	* Makefile: make INSTALL and NEWS from btxdb.info.
+
+Fri May 21 18:24:02 1993  Thorsten Ohl  (ohl@chico)
+
+	* make month an enumerated type.  Much simpler to code and use.
+
+Thu May 20 18:45:28 1993  Thorsten Ohl  (ohl@chico)
+
+	* VERSION = 0.4
+
+	* all format files: double the backslashes.
+
+	* btxdb:set-print-name: new function: use the file name
+	as print name.
+
+	* btxdb:set-format-from-data: don't use custom formats, iff
+	btxdb:always-use-full-format is non nil.
+
+	* btxdb:always-use-full-format: new variable,
+	btxdb:toggle-full-format: new function.
+
+Thu May 20 13:51:57 1993  Thorsten Ohl  (ohl@chico)
+
+	* btxdb.el: exchange the third and fourth arguments of
+	RECORD-SET-FIELD to bring btxdb up to EDB 1.15.
+
+Wed May 12 15:49:30 1993  Thorsten Ohl  (ohl@chico)
+
+	* btxdb:rrfr: initialize MONTH.
+
+Wed Mar 31 14:37:48 1993  Thorsten Ohl  (ohl@chico)
+
+	* Makefile: (EXPORT_FLAG) don't use the time to identify
+	the version to export, this adds files from the Attic.
+
+Thu Jan 14 16:35:22 1993  Thorsten Ohl  (ohl@chico)
+
+	* btxdb:initialize: the last change was NOT a goot idea, because
+	it broke using multiple databases.  Temporarily protect
+	`btxdb:setup-read-buffer' only.
+
+	* *.fmt: don't have any required fields at all.  Too confusing for
+	the user.
+
+Thu Jan 14 15:54:52 1993  Thorsten Ohl  (ohl@chico)
+
+	* btxdb:initialize: protect against multiple invocations (this
+	broke adding of a new record).
+
+	* btxdb:help-info: hook for more extensive help.
+
+Wed Jan 13 20:52:07 1993  Thorsten Ohl  (ohl@chico)
+
+	* btxdb:fields: allow type specific ignored fields.
+
+	* use this feature for errata of articles and techreports and for
+	the ISBN of books, manuals, and proceedings.
+
+Mon Jan 11 17:48:50 1993  Thorsten Ohl  (ohl@chico)
+
+	* btxdb:journals-file-path: search here for `journals.el'.
+
+Mon Jan 11 16:30:40 1993  Thorsten Ohl  (ohl@chico)
+
+	* (btxdb-find-file): new function.  Almost identical to
+	(db-find-file), but provides a bibtex.fmt as default format.
+
+	* BibTeX-db::* -> btxdb:*
+	Cosmetical change.
+
+	* added example directory.
+
+	* Update VERSION to 0.2.
+
+Mon Jan 11 11:59:46 1993  Thorsten Ohl  (ohl@chico)
+
+	* Put the .dba file into a local variables section of
+	bibtex.fmt (Michael Ernst's suggestion).
+
+Mon Jan  4 20:09:32 1993  Thorsten Ohl  (ohl@chico)
+
+	* btxdb.el (BibTeX-db::set-record-type): new function.
+
+	* fix some missing defaults.
+
+Mon Jan  4 17:20:19 1993  Thorsten Ohl  (ohl@chico)
+
+	* journals.dat, journals.dba, journals.fmt, journals-full.rep,
+	journals-abbrev.rep: new files, implementing a simple database for
+	journal @string's.
+
+	* Makefile: maintain them.
+
+	* btxdb.el:  new display type `journal' for minimal support of
+	journal @string's.
+
+	* article.fmt, bibtex.fmt: use \journal.
+
+Wed Dec 30 21:34:13 1992  Thorsten Ohl  (ohl@chico)
+
+	* Handle editors like authors.
+
+	* Save the prolog in the BibTeX file.
+
+	* Maintain an ``updated'' field.
+
+Wed Dec 30 18:34:10 1992  Thorsten Ohl  (ohl@chico)
+
+	* New display/record types for year, month, and author.
+
+	* Rename general utility functions to `tho::...'.
+
+Fri Dec 25 21:53:10 1992  Thorsten Ohl  (ohl@chico)
+
+	* masterthesis -> mastersthesis (typo).
+
+	* Almost usable prototype.
+
+
+ChangeLog,v 1.18 1993/11/20 22:22:53 ohl Exp

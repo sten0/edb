@@ -1,0 +1,38 @@
+**************************** INPROCEEDINGS *****************************
+         Code: \BibTeX-tag
+................................................................Required
+       Author: \author
+        Title: \title
+    Booktitle: \booktitle
+         Year: \year
+................................................................Optional
+       Editor: \editor
+        Pages: \pages
+ Organization: \organization
+    Publisher: \publisher
+      Address: \address
+        Month: \month
+         Note: \note
+.................................................................Ignored
+      Journal: \journal
+       Series: \series
+       Volume: \volume
+       Number: \number
+      Chapter: \chapter
+      Edition: \edition
+       School: \school
+  Institution: \institution
+         Type: \type
+ Howpublished: \howpublished
+          Key: \key
+     Crossref: \crossref
+         ISBN: \isbn
+         ISSN: \issn
+     LCNumber: \lcnum
+       Errata: \errata
+     Keywords: \keywords
+     Language: \language
+      Remarks: \annote
+      Updated: \updated
+     Warnings: \warnings
+**************************** INPROCEEDINGS *****************************

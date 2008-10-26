@@ -1,0 +1,5 @@
+#!/bin/sh
+emacs=${EMACS-emacs}
+loadfrom=`cd @abs_top_srcdir@/lisp ; pwd`
+if [ x"$DEBUG" = x ] ; then exec 1>/dev/null 2>&1 ; fi
+exec $emacs -batch --eval "(add-to-list 'load-path \"$loadfrom\")" "$@"

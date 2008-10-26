@@ -1,0 +1,91 @@
+Thien-Thi Nguyen:
+in subdir `lisp', wrote:
+  system.el   state.el   connection.el
+  edb-1int-to-single.el   edb-meta.el
+in subdir `examples', wrote:
+  arb-demo-regexp.edb   arb-demo.edb   eicsw.edb
+  forms-demo2-inherent.edb   forms-demo2.edb   geneal.edb
+  names.edb   null.edb   passwd.edb   rolo-jik.edb
+  www-links   www-links.edb
+  www-links2   www-links2.edb
+  www-links3   www-links3.edb
+in subdir `skram', wrote everything;
+changed almost everything else, as well
+
+
+Alan K. Stebbens:
+in this directory wrote:
+  db-rdb.el   edb-t-places-usuk.el   edb-t-timedate1.el
+in this directory changed:
+  db-time.el
+
+
+Bertrand Petit:
+in this directory wrote:
+  db-isbn.el    db-isbntst.el
+
+
+Jonathan I. Kamens:
+in subdir `examples' wrote:
+  rolo-jik.dat   rolo-jik.dba   rolo-jik.doc   rolo-jik.fmt
+
+
+Michael A. Patton:
+in this directory wrote:
+  db-tagged.el
+in subdir `examples' wrote:
+  geneal  geneal.dat
+
+
+Michael Burschik:
+in subdir `examples/edbibtex' wrote:
+  article.fmt
+  bibtex.dba   bibtex.fmt
+  book.fmt   booklet.fmt
+  compile.el   edbibtex.el
+  edbibtex.texinfo
+  inbook.fmt   incollection.fmt   inproceedings.fmt
+  manual.fmt   mastersthesis.fmt
+  misc.fmt
+  phdthesis.fmt   preamble.fmt   proceedings.fmt
+  string.fmt   techreport.fmt   unpublished.fmt
+
+
+Michael Ernst:
+in this directory wrote:
+  database.el    db-interfa.el  db-rep.el      db-util.el
+  db-convert.el  db-search.el   db-time.el     edb-t-human-names.el
+  db-file-io.el  db-sort.el     db-two-dbs.el  edb-t-places-usuk.el
+  db-format.el   db-summary.el  db-types.el    edb-t-timedate1.el
+in subdir `examples' wrote:
+  arb-demo   arb-demo-regexp   arb-demo-regexp.dba   arb-demo.dba
+  arb-demo.fmt   arb-demo.home-fmt
+  eicsw.dat   eicsw.dba   eicsw.fmt
+  forms-demo2.dat   forms-demo2.fmt   forms-demo2.report
+  names.dat   names.fmt
+  tepdb   tepdb.dba   tepdb.fmt   tepdb.instr
+in this directory changed:
+  db-isbn.el    db-isbntst.el    db-rdb.el    db-tagged.el
+
+
+R. J. Chassell:
+in subdir `examples' wrote:
+  intro-and-addr
+
+
+Thorsten Ohl:
+in subdir `examples/btxdb' wrote:
+  article.fmt   bibtex.fmt   book.fmt   booklet.fmt
+  btxdb.el   btxdb.texi
+  conference.fmt   inbook.fmt   incollection.fmt   inproceedings.fmt
+  journals-abbrev.rep   journals-full.rep
+  journals.dat   journals.dba   journals.fmt
+  manual.fmt   mastersthesis.fmt   misc.fmt
+  phdthesis.fmt   proceedings.fmt
+  techreport.fmt   unpublished.fmt
+in subdir `examples/btxdb/examples' wrote:
+  bibtex.bib
+
+
+Erich Waelde:
+in subdir `doc' wrote: refcard.tex

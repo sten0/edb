@@ -1,0 +1,133 @@
+2008-05-25  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	When deleting a record, clear highest (post-shift) vov element.
+
+	* b00.test: Display vov before and after;
+	add check for highest index cleared; use `error'.
+	(vov): New func.
+
+2008-05-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Use GNUmakefile throughout.
+
+	* GNUmakefile.in: Rename from Makefile.in.
+	(BLARGH): Convert assignment to appending assignment `TESTS +='.
+
+2008-05-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Fix OBOE: When deleting a record, limit shift-in count properly.
+
+	* b00.test: New file.
+	* Makefile.in (BLARGH): Add b00.test.
+
+2008-05-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Add support for testing regressions using "make check".
+
+	* Makefile.in (BLARGH): New var.
+	(check-TESTS): Also check tests listed in $(BLARGH).
+
+2008-05-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Update `load-path' in ebatch for testing.
+
+	* ebatch.in (topdir): Delete var.
+	(loadfrom): New var; use it to add to `load-path'.
+
+2007-04-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* null.test: New file.
+	* Makefile.in (TESTS): Add null.test.
+
+2007-04-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	* Makefile.in (check-TESTS): No longer discard stdout and stderr.
+	* ebatch.in: Discard output, but only if env var DEBUG not set.
+
+2006-01-17  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* Makefile.in (EMACS): Use configure-substituted var `EMACS'.
+
+2006-01-03  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* Makefile.in (emacs): Delete var.
+	(EMACS): New var.
+	(TESTENV): Add `EMACS' and its value.
+
+	* ebatch.in (emacs): Use env var `EMACS'.
+
+2005-01-19  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* Makefile.in (topsrcdir): New var.
+	(TESTSENV): Add `srcdir' and `topsrcdir'.
+	(check-TESTS): Spell TESTSENV correctly.
+
+	* skram.test: Use env var `topsrcdir'.
+
+	* isbn.test: Use env var `srcdir'.
+
+2005-01-19  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* Makefile.in (srcdir): New var.
+	(check-TESTS): Use it.
+
+	* ebatch.in: Use @abs_top_srcdir@.
+
+2005-01-18  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* skram.test: Use `error' instead of `kill-emacs'.
+
+2005-01-18  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* isbn.test: New file.
+	* Makefile.in (topdir): Delete var.
+	(ebatch): Likewise.
+	(wily-emacs): Likewise.
+	(check): Remove check-isbns.
+	(TESTS): Add isbn.test.
+	(check-isbns): Delete target.
+
+2005-01-18  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* skram.test: New file.
+	* Makefile.in (check): Remove check-skram.
+	(TESTSENV): New var.
+	(TESTS): Add skram.test.
+	(check-TESTS): Use $(TESTENV).
+	(check-skram): Delete target.
+
+2005-01-18  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* friendly.test: New file.
+	* Makefile.in (TESTS): Add friendly.test.
+
+2005-01-18  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* ebatch.in: New file.
+	* alive.test: Use file "./ebatch".
+
+2005-01-18  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* alive.test: New file.
+
+	* Makefile.in (check): Depend on check-TESTS.
+	(TESTS): New var.
+	(check-TESTS): New target.
+
+2004-09-12  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* check-isbns.el: New file.
+
+	* Makefile.in (emacs): New var.
+	(topdir): Likewise.
+	(ebatch) LIkewise.
+	(wily-emacs): Likewise.
+	(check): Remove actions.
+	Depend on `check-skram' and `check-isbns'.
+	(check-skram): New target.
+	(check-isbns): Likewise.
+
+2004-09-11  Thien-Thi Nguyen  <ttn@surf.glug.org>
+
+	* Makefile.in: New file.
+

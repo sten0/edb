@@ -1,0 +1,41 @@
+/////////////////////////////// UNKNOWN \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+        Class: \class,class
+         Code: \tag,nil-or-string
+................................................................Required
+................................................................Optional
+       Author: \author,author
+       Editor: \editor,author
+        Title: \title,nil-or-string,indent
+      Journal: \journal,journal
+        Month: \month,month
+         Year: \year,nil-or-string
+       Volume: \volume,nil-or-string
+      Chapter: \chapter,nil-or-string,indent
+       Number: \number,nil-or-string
+        Pages: \pages,nil-or-string
+    Publisher: \publisher,nil-or-string,indent
+    Booktitle: \booktitle,nil-or-string,indent
+       Series: \series,nil-or-string,indent
+      Edition: \edition,nil-or-string
+       School: \school,nil-or-string,indent
+  Institution: \institution,nil-or-string,indent
+ Organization: \organization,nil-or-string,indent
+      Address: \address,nil-or-string,indent
+         Type: \type,nil-or-string,indent
+ Howpublished: \howpublished,nil-or-string,indent
+         Note: \note,nil-or-string,indent
+          Key: \key,nil-or-string
+     Crossref: \crossref,nil-or-string
+.................................................................Ignored
+         ISBN: \isbn,nil-or-string
+     LCNumber: \lcnum,nil-or-string
+       Errata: \errata,nil-or-string,indent
+     Keywords: \keywords,nil-or-string,indent
+      Remarks: \annote,nil-or-string,indent
+      Updated: \updated,nil-or-string
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ UNKNOWN ////////////////////////////////
+
+Local Variables:
+eval: (require 'btxdb)
+eval: (btxdb:initialize)
+End:

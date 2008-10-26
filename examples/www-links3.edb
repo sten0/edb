@@ -1,0 +1,45 @@
+;;; www-links3.edb                              -*-emacs-lisp-*-
+
+;; Copyright (C) 2008 Thien-Thi Nguyen
+;;
+;; This file is part of EDB.
+;;
+;; EDB is free software; you can redistribute it and/or modify it under
+;; the terms of the GNU General Public License as published by the Free
+;; Software Foundation; either version 3, or (at your option) any later
+;; version.
+;;
+;; EDB is distributed in the hope that it will be useful, but WITHOUT
+;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+;; FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+;; for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with EDB; see the file COPYING.  If not, write to the Free
+;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+;; MA 02110-1301, USA.
+
+:EDB (single)
+
+:name "WWW Links (Everything)"
+
+(edb-define-recordfieldtype 'suredate 'date
+  :actual->stored 'edb-t-timedate1:format-date-iso
+  :stored->actual 'edb-t-timedate1:parse-date-string)
+
+:fields [url title (last-check . suredate) comments]
+:record-separator "\C-l"
+:field-separator "\C-t"
+
+:display t
+  \title
+  \url
+  (\last-check,date-iso)
+
+Comments:
+\comments
+:EOTB
+
+:summary-format "\\last-check,width=11 \\title"
+
+;;; www-links3.edb ends here

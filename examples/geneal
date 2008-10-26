@@ -1,0 +1,69 @@
+Date: Fri, 24 Jul 92 21:28:05 EDT
+To: edb-list@theory.lcs.mit.edu
+Subject: Elaborate example of EDB use (Genealogy)
+From: Michael A. Patton <MAP@lcs.mit.edu>
+
+I'm releasing my genealogy database front-end for EDB as example code.
+I've been using it for a little while now, developing it in parallel
+with the main EDB development.  The "external" format is intended for
+use with a free program called Geneal (which I'm also working on).  It
+has a number of interesting features that other EDB users may find
+useful for reference...
+
+ o _Not_ written by Mike Ernst, the convolutions of my brain being
+	different, it may offer suggestions on different ways of doing
+	things.
+
+ o Very elaborate use of the db-tagged external format (this is what I
+	wrote it for :-)
+
+ o Actual database is a network, not strictly a linear list of
+	records.  There are fields in the database which are
+	"references" to other records (these are also always paired,
+	i.e. the target will have a [predictable] pointer back).  In
+	the internal form, these fields contain the actual referenced
+	record.
+
+ o Several special purpose types, for the above "references", and
+	lists thereof.  These also have multiple variant display
+	functions, so a reference can show as both the internal record
+	number and as some text derived from the referenced record (for
+	genealogy, the referenced person's name :-).
+
+ o Special commands to move from record to record via these
+	"references", including options to create new records if
+	needed and provide the appropriate bidirectional links.
+
+ o Fields which are "computed", i.e. not actually stored in the DB but
+	calculated internally from other data when needed and cached
+	in the internal form.
+
+ o Variant records (although the handling is still a bit of a kludge).
+	The database actually consists of 4 different kinds of records
+	which have different fields (the kludge being that the rep is
+	a superset of these).  It uses the alternate-format features
+	to get different displays with only the relevant fields for
+	editing in each record.
+
+ o No documentation :-)
+
+
+To get a copy, use anonymous FTP to FTP.LCS.MIT.EDU and look in the
+directory ~map/genealogy (~map/genealogy.tar.Z is the obvious
+compilation thereof), all the files there are related, the main code
+is in geneal.el, there are five format (.fmt) files and an example
+data file.  You will need EDB version 0.29 for it to run.
+
+I've only done the most rudimentary robustness pass at this, and fixed
+bugs I came across while using it to maintain my own genealogy DB.
+I'll be happy to hear feedback on it from anyone who wants to.  I'd
+especially appreciate cleanup of some of the EDB interface stuff (it's
+pretty haphazard since I was writing it as EDB was developing).
+
+            __
+  /|  /|  /|  \         Michael A. Patton, Network Manager
+ / | / | /_|__/         Laboratory for Computer Science
+/  |/  |/  |atton       Massachusetts Institute of Technology
+
+Disclaimer: The opinions expressed above are a figment of the phosphor
+on your screen and do not represent the views of MIT, LCS, or MAP. :-)

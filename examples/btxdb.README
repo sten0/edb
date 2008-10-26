@@ -1,0 +1,34 @@
+Date: Wed, 30 Dec 92 22:05:15 -0500
+From: ohl@chico.harvard.edu (Thorsten Ohl)
+To: edb-list@theory.lcs.mit.edu
+Subject: Editing BibTeX files w/ EDB
+
+Some time ago someone asked about a BibTeX interface for EDB.  Since
+there was no response and I would also like to have something of this
+sort, I hacked a first approximation over the holidays.
+
+        * It's rough.
+        * It has no documentation.
+        * I have made almost no efforts to parse general BibTeX files,
+          just the subset I use (or rather a subset thereof).
+
+        * ... but it might be better than nothing.
+
+I have put it up for anonymous ftp on `chico.harvard.edu' in the
+directory `pub'.  The code is in `btxdb-0.3.tar.Z'.  The file
+`bibtex.dat' serves as an example database.
+
+[ As of early 1994, the definitive place to get the latest version was
+  ftp://crunch.ikp.physik.th-darmstadt.de/pub/ohl/misc/btxdb-0.6.tar.gz
+]
+
+Comments, suggestions, and code are welcome.  But I can make no
+support commitments ...
+
+Happy GNU Year,
+-tho
+
+/// Thorsten Ohl, Physics Dept, Harvard University, Cambridge, MA 02138, USA
+//////// net: ohl@physics.harvard.edu, ohl@crunch.ikp.physik.th-darmstadt.de
+////////////////////////////// voice: +1-617-495-3219,  fax: +1-617-496-8396
+

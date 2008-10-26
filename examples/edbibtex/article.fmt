@@ -1,0 +1,38 @@
+******************************* ARTICLE ********************************
+         Code: \BibTeX-tag
+................................................................Required
+       Author: \author
+        Title: \title
+      Journal: \journal
+         Year: \year
+................................................................Optional
+       Volume: \volume
+       Number: \number
+        Pages: \pages
+        Month: \month
+         Note: \note
+.................................................................Ignored
+       Editor: \editor
+       Series: \series
+      Chapter: \chapter
+    Publisher: \publisher
+    Booktitle: \booktitle
+      Edition: \edition
+       School: \school
+  Institution: \institution
+ Organization: \organization
+      Address: \address
+         Type: \type
+ Howpublished: \howpublished
+          Key: \key
+     Crossref: \crossref
+         ISBN: \isbn
+         ISSN: \issn
+     LCNumber: \lcnum
+       Errata: \errata
+     Keywords: \keywords
+     Language: \language
+      Remarks: \annote
+      Updated: \updated
+     Warnings: \warnings
+******************************* ARTICLE ********************************

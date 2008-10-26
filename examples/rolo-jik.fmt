@@ -1,0 +1,21 @@
+Name:	\name
+Work phone:	\work-phone
+Home phone:	\home-phone
+Company:	\company
+Work address:	\work-address
+Home address:	\home-address
+Remarks:	\remarks
+Birthday:	\birthday
+Anniversary:	\anniversary
+
+\extra1-name:	\extra1-value
+\extra2-name:	\extra2-value
+\extra3-name:	\extra3-value
+\extra4-name:	\extra4-value
+\extra5-name:	\extra5-value
+
+Last modified:	\date,unreachable
+
+Local Variables:
+rolodex-min-field-width: 13
+End:

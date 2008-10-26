@@ -1,0 +1,23 @@
+Self-Knowledge Requires Attentive Maintenance!
+=============================================
+
+Apparently, `\thing\ '
+can be found in various places in the source:
+\places (\kind here)
+
+Prospects for its continued survival in EDB 1.x: \thumbs-one
+As for EDB 2.x, for now we'll just say "\thumbs-two\ ".
+
+Local Variables:
+eval: (database-set-fieldnames-to-list db
+        '(thing kind thumbs-one thumbs-two places))
+eval: (let* ((db database)
+             (fsep (database-field-sepinfo db))
+             (rsep (database-record-sepinfo db)))
+        (setf (database-print-name db) "SKRAM"
+              (sepinfo-sep-string fsep) "\n:"
+              (sepinfo-sep-string rsep) "\n\n"
+              (sepinfo-post-last-string rsep) "\n\n"))
+eval: (dbf-set-summary-format
+        "\\thumbs-one,width=6 \\kind,width=10 \\thing")
+End:

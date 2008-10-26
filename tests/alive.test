@@ -1,0 +1,2 @@
+":"; exec ./ebatch --no-site-file -l $0
+(require 'database)

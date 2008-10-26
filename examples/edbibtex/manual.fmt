@@ -1,0 +1,38 @@
+******************************** MANUAL ********************************
+         Code: \BibTeX-tag
+................................................................Required
+        Title: \title
+................................................................Optional
+       Author: \author
+ Organization: \organization
+      Address: \address
+      Edition: \edition
+        Month: \month
+         Year: \year
+         Note: \note
+.................................................................Ignored
+       Editor: \editor
+      Journal: \journal
+       Series: \series
+       Volume: \volume
+       Number: \number
+        Pages: \pages
+      Chapter: \chapter
+    Publisher: \publisher
+    Booktitle: \booktitle
+       School: \school
+  Institution: \institution
+         Type: \type
+ Howpublished: \howpublished
+          Key: \key
+     Crossref: \crossref
+         ISBN: \isbn
+         ISSN: \issn
+     LCNumber: \lcnum
+       Errata: \errata
+     Keywords: \keywords
+     Language: \language
+      Remarks: \annote
+      Updated: \updated
+     Warnings: \warnings
+******************************** MANUAL ********************************

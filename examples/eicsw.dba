@@ -1,0 +1,97 @@
+;;; eicsw.dba --- Define the ECI Software database
+
+;; Define some enumerated types
+
+;; "arch"
+
+(edb-define-enumtype 'arch
+	'("rs6000"			;IBM
+	  "NeXT"			;NeXT
+	  "sun3" "sun4"			;Sun
+	  "mipsel"			;DECstation 5000
+	  "r3000"			;SGI R3000
+	  "r4000"			;SGI R4000
+	  "mac"				;Macintosh
+	  "any"				;any
+	  ) nil)
+
+;; "os"
+
+(edb-define-enumtype 'os
+	'("AIX3.2"
+	  "NeXTOS2.0" "NeXTOS3.0"
+	  "SunOS4.0.3" "SunOS4.1.1" "SunOS4.1.2"
+	  "Solaris2.0" "Solaris2.1"
+	  "Ultrix4.1" "Ultrix4.2"
+	  "IRIX4.1" "IRIX4.2"
+	  "MacOS6.0.5" "MacOS7.0"
+	  "any"				;any
+	  ) nil)
+
+;; "short-string": both a one-line-string and a string-or-nil.
+
+(edb-define-displaytype 'short-string 'one-line-string
+  :actual->display 'db-string-or-nil->string)
+
+(edb-define-recordfieldtype 'short-string 'one-line-string
+  :type           'short-string
+  :order-fn       'db-string-or-nil-order-ci
+  :sort-fn        'db-string-or-nil-lessp-ci
+  :match-function 'db-string-or-nil-match-function)
+
+(require 'edb-t-timedate1)
+
+(edb-define-recordfieldtype 'suredate 'date
+  ;; writing: YYYY-MM-DD
+  :actual->stored 'edb-t-timedate1:format-date-iso
+  ;; reading: either YYYY-MM-DD or MM/DD/YY
+  :stored->actual 'edb-t-timedate1:parse-date-string)
+
+;; Now define the database fields and overriding attributes
+
+(db-tagged-setup
+ ;; fields
+ '(((name	  . short-string)    "NM" "Name of software")
+   ((desc	  . string-or-nil)   "SD" "Software description")
+   ((version      . short-string)    "VR" "Version of software installed")
+   ((arch         . arch)	     "MA" "Machine architecture of installation")
+   ((os	          . os)		     "OS" "Operating System")
+   ((restric      . string-or-nil)   "OR" "Operational restrictions (if any)")
+   ((installdate  . suredate)	     "ID" "Date installed")
+   ((installer    . short-string)    "IR" "Who installed it")
+   ((installnotes . string-or-nil)   "IN" "Installation Notes")
+   ((binpath      . short-string)    "BP" "Path to binaries")
+   ((binlist      . string-or-nil)   "BL" "List of binaries (possibly linked)")
+   ((libpath      . short-string)    "LP" "Path to libraries")
+   ((liblist      . string-or-nil)   "LL" "List of libraries (eg: \"-lX11\")")
+   ((manpath      . short-string)    "MP" "Path to \"man\" pages")
+   ((infopath     . short-string)    "IP" "Path to GNU info file")
+   ((helppath     . short-string)    "HP" "Path to file or command to help user with software")
+   ((source       . short-string)    "SR" "Source location: FTP site, or local filesystem")
+   ((updatedate   . suredate)	     "UD" "Last update date")
+   ((updater      . short-string)    "UR" "Who did the last update")
+   ((updatenotes  . string-or-nil)   "UN" "Notes on last update"))
+ ;; overriding attributes
+ :pre-tag-regexp      ""
+ :tag-chars           "A-Z"
+ :separator-regexp    ":[ \t]*"
+ :separator-output    ":\t"
+ :continuation-regexp "^[ \t]+"
+ :continuation-output "\t")
+
+(setf (database-print-name database) "ECI Software Database")
+
+(dbf-set-summary-format
+ "\\name,width=12 \\version,width=6 \\updatedate,date-mmddyy,width=8 \\arch,width=10 \\os,width=10")
+
+(defun swdb-record-defaults (new-rec database)
+  "Provide defaults for new records in the database."
+  (let ((curdate (edb-t-timedate1:parse-date-string (current-time-string)))
+	(curuser (concat (user-login-name) "@" (system-name))))
+    (db-record-set-field new-rec 'installdate curdate database)
+    (db-record-set-field new-rec 'installer   curuser database)
+    (db-record-set-field new-rec 'updatedate  curdate database)))
+
+(setq db-new-record-function 'swdb-record-defaults)
+
+;;; eicsw.dba ends here

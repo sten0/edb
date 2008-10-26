@@ -1,0 +1,55 @@
+NM:	amd
+SD:	Automounting daemon
+VR:	5.2.2.2
+MA:	rs6000
+OS:	AIX3.2
+ID:	07/15/92
+IR:	aks@anywhere
+IN:	Must execute "amd" with MALLOCTYPE=3.1 set
+BP:	/eci/amd/bin
+BL:	amd, amq
+MP:	/eci/amd/man
+SR:	/fs/src6/local/sys/amd5.3beta
+UD:	07/15/92
+
+NM:	archie
+SD:	FTP index archive database server query client program
+VR:	1.3
+MA:	rs6000
+OS:	AIX3.2
+ID:	01/27/92
+IR:	aks@anywhere
+BP:	/eci/bin
+BL:	archie
+MP:	/eci/man
+SR:	/fs/src6/local/data/archie
+UD:	01/27/92
+
+NM:	areacode
+SD:	Convert areacodes to cities and states
+MA:	rs6000
+OS:	AIX3.2
+ID:	06/09/92
+IR:	aks@anywhere
+BP:	/eci/bin
+BL:	areacode
+SR:	~aks/src/Data/areacode
+UD:	06/09/92
+
+NM:	emacs
+SD:	GNU's programmable, full-screen editor with X support
+VR:	18.56
+MA:	rs6000
+OS:	AIX3.2
+ID:	08/07/92
+IR:	aks@anywhere
+IN:	FLOAT_PATCH installed, supporting true floating point type.
+	GMALLOC_PATCH installed, allowing Emacs to use GNU malloc package.
+BP:	/eci/bin
+BL:	emacs, ctags, etags, emacsclient, emacs-18.58, ctags-18.58, 
+	etags-18.58, emacsclient-18.58
+LP:	/eci/emacs
+MP:	/eci/man
+IP:	/eci/emacs/info/emacs
+SR:	/fs/src1/Gnu/emacs
+UD:	08/07/92

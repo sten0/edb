@@ -1,0 +1,128 @@
+- 1.32
+  - document API comprehensively
+    - functions
+    - variables
+  - finalize control properties for `single' schema-schema
+
+- 2.01
+  - drop
+    - "internal file layout"
+    - defstructs
+    - special handling for format and aux files
+    - `db-find-file'
+    - various hooks / vars
+    - aliases
+      - maprecords
+      - define-displaytype-from-displayspec
+      - define-recordfieldtype-from-recordfieldspec
+      - define-enum-type
+  - move to "edb-" prefix namespace
+  - observer-single and observer-batch protocol
+  - add :include control property
+  - support connection-based namespaces
+    - source
+    - data types
+    - display types
+
+- eventually
+  - write edb-t-timedate.el using abstractions provided by Emacs
+  - eliminate @findex and @vindex in docs
+  - use examples in "make check"
+  - use selected bugs in "make check"
+  - use term "table" for collection of records
+  - use term "database" for collection of tables
+  - synthetic/dynamic/remote/etc data
+  - reduce insert/delete lossage, use text properties and/or overlays
+  - allow ring or ewoc as "virtual vov"
+  - use external tar(1) to access encapsulated file tree
+  - extend db-rdb.el to wrap subprocess interaction
+  - redesign indexing to avoid befuddling OBOE potential
+
+- think!
+
+  - Namespace cleaning
+
+	Everything should be prefixed w/ "database-" or "db[a-z]-"
+	or "edb-" for EDB 1.x.
+
+	This is incompatible w/ early EDB 1.x if we take the hard-line
+	approach of guaranteeing no change from what was previously
+	documented.  To avoid the hobgoblin-of-small-minds situation, we
+	partition the documented items into those that are sound (likely
+	to be carried forward to EDB 2.x) and those that are unsound
+	(should have been hidden by higher-level abstractions from the
+	beginning, but unfortunately wasn't).
+
+	Each item or group of items, whether sound or unsound, must be
+	addressed on a case by case basis.  The goal is to introduce
+	incompatibility only where it is not so impactful to current
+	applications (the sample set being those databases in the
+	`examples' subdirectory plus any requests from afield -- to
+	date, this latter category has been thunderously silent but who
+	knows what the future will drag in from the past).
+
+	Where incompatibility is deemed to be of high impact (the item
+	is used and is either sound, or if unsound, unsound only in
+	implementation), the docs are to be revised to deprecate (1.x)
+	and eliminate (2.x) the item.  Deprecations must be accompanied
+	by some kind of migration path or plan.  For incompatibility of
+	low impact, the item can simply be deleted from the docs after
+	being marked as "documentation to be deleted" for at least one
+	release.
+
+	For 2.x, everything should be prefixed with "edb-".  The nice
+	hack would be to move 1.x to a point such that switching a
+	late-1.x-conforming application to 2.x can be done via a one-line
+	sed/elisp script only.  Internals should use "edb--".
+
+  - Terminology tweak
+
+	By EDB 2.x, docs and comments should define "database" as a
+	"collection of tables", "table" as a "collection of rows",
+	and "row" as an ordered tuple of "columns".  Also, decoupling
+	of control connection, reads and commits should be made very
+	clear in documentation and function names.
+
+	In this terminology, past (EDB 1.x) behavior can be described
+	as "mostly-direct manipulation of a single-table database".
+
+  - Higher abstraction level for EDB 2.x
+
+	The API for EDB 2.x is to focus on three areas: "conversion
+	specification", "data source specification" and "presentation
+	specification".  In some sense, 2.x is to give up some of the
+	flexibility of 1.x (largely unused in practice) in exchange for
+	a cleaner overall architecture.  Where possible, specification
+	is to be done declaratively rather than functionally.
+
+	The file-reading and -writing bits of EDB 1.x are to be
+	generalized into "conversion for read" and "conversion for
+	write" function pairs.  The set of built-in pairs to be
+	distributed w/ EDB is to be extendable by applications:
+	"conversion specification".
+
+	Selected bits of the `displayspec', `recordfieldspec' and
+	`sepinfo' structures are to be folded into the "data source
+	specification".  Comingling of data source and data source
+	specification, as implemented in EDB 1.x using local variables,
+	is to be dropped.
+
+	The 2.x "native data source" is to be a tar file (maybe gzipped)
+	that may or may not be self-contained; it may specify the actual
+	data source as some "non-native data source" outside itself.
+
+	Non-native data sources are to include files, connections to
+	network-available databases (e.g., PostgreSQL or web queries),
+	and generally, completely synthetic sources (i.e., the output of
+	elisp functions).
+
+	Applications do not need to know about "link" or "record index".
+	The `link' structure, ring-management code, and `displayspec'
+	structure are to be replaced by calls to ewoc.el functions (for
+	ordered views) and a congruent hash-table based implementation
+	(for unordered views).  Support for indexing by the application
+	is to be generalized into r/w/observe access to per-record
+	metainfo, opaque to EDB.  These implementation details are to be
+	further abstracted as "presentation specification".
+
+  - Better support for relational databases for EDB 3.x

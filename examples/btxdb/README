@@ -1,0 +1,65 @@
+[EDB-maintainer notes; original README follows pagebreak.
+
+ to play:
+  (require 'database)
+  (add-to-list 'db-format-file-path default-directory)
+  (load-file "btxdb.el")
+  (btxdb-find-file "examples/bibtex.bib")
+
+ second step is to enable finding *.fmt files, ymmv.
+
+ --ttn 2006-06-10]
+
+
+This directory contains some hacked code which might become a BibTeX
+interface for the GNU Emacs Database (EDB) someday.
+
+Note: This version *requires* EDB Version 1.15 or later, since it uses
+      the new argument order in RECORD-SET-FIELD.
+
+No promises, no warranty, no documentation ...
+
+########################################################################
+
+Emacs 19 has a `fixed' (i.e. POSIXLY_CORRECT) regex.c, which is
+exponentially slow for some cases.  Unfortunately EDB's
+DISPLAYTYPE-REGEXP is one of those (this is a good chance to laern,
+what `exponentially slow' really means :-).  If you do not use the
+abbreviated displayspecs without commata, you can apply the following
+patch to EDB:
+
+===================================================================
+RCS file: /home/sources/ohl/emacs/edb/db-format.el,v
+retrieving revision 1.4
+retrieving revision 1.5
+diff -c -r1.4 -r1.5
+*** 1.4	1993/11/20 18:31:04
+--- 1.5	1993/11/20 21:14:44
+***************
+*** 388,394 ****
+
+  ;; Perhaps the comma shouldn't be optional; but then I'd have to do special
+  ;; work for the first field, which I'm loathe to do.
+! (defconst displaytype-regexp (concat ",?"
+  				   "\\(" symbol-regexp
+  				   "\\|" displaytype-nonsymbol-regexp
+  				   "\\)"))
+--- 388,397 ----
+
+  ;; Perhaps the comma shouldn't be optional; but then I'd have to do special
+  ;; work for the first field, which I'm loathe to do.
+! ;; [ Hmm, the optional comma is a desaster for the `fixed' regex.c of
+! ;;   Emacs 19.  Since I do not use the display abbreviations, I
+! ;;   decided to make it mandatory.  -tho ]
+! (defconst displaytype-regexp (concat ","
+  				   "\\(" symbol-regexp
+  				   "\\|" displaytype-nonsymbol-regexp
+  				   "\\)"))
+
+########################################################################
+
+/// Thorsten Ohl, TH Darmstadt, Schlossgartenstr. 9, D-64289 Darmstadt, Germany
+//////////////// net: ohl@crunch.ikp.physik.th-darmstadt.de, ohl@gnu.ai.mit.edu
+/// voice: +49-6151-16-3116, secretary: +49-6151-16-2072, fax: +49-6151-16-2421
+
+README,v 1.3 1993/11/20 22:22:54 ohl Exp
