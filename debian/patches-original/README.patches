@@ -1,8 +1,0 @@
-These were the original patches as of edb_1.21-16 before they were
-converted into single dpatch.
-
-	patch < debian/sakai.patch
-	patch -R < debian/nitschke.patch
-	patch < debian/kawamura.patch
-
- -- Jari Aalto <jari.aalto@cante.net>, Thu, 13 Sep 2007 09:47:52 +0300
