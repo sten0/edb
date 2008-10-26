@@ -2,5 +2,5 @@
 
 version=3
 
-# <Webpage URL> <string match> [Version  [Action]]
-http://pag.csail.mit.edu/~mernst/software/edb  .*edb-([\d.]+).tar.gz
+# <Webpage URL> <string match> [Version  [Action]]h
+http://www.gnuvola.org/software/edb/ .*edb-([\d.]+).tar.gz
