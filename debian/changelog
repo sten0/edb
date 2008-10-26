@@ -1,3 +1,18 @@
+edb (1.31-1) unstable; urgency=low
+
+  * New upstream release (Closes: #303785).
+  * debian/copyright:
+    - Update upstream information: current maintainer and URL.
+  * debian/control:
+    - (Homepage): New field. Point to current upstream.
+    - (Depends): Remove emacs21.
+    - (Standards-Version): update to 3.8.0
+    - (Vcs-*): New fields.
+  * debian/copyright:
+    - Update URL.
+
+ -- Jari Aalto <jari.aalto@cante.net>  Sun, 26 Oct 2008 16:16:26 +0300
+
 edb (1.21-18) unstable; urgency=low
 
   * debian/copyrigt:
