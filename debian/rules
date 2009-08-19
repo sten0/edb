@@ -6,13 +6,14 @@
 PACKAGE = edb
 
 include debian/debian-vars.mk
+include /usr/share/dpatch/dpatch.make
 
 config.status: configure
 	# target: config.status
 	dh_testdir
 	./configure --prefix=$$(pwd)/debian/$(PACKAGE)/usr
 
-build-stamp: config.status
+build-stamp: config.status patch
 	# target: build-stamp
 	dh_testdir
 
@@ -22,7 +23,7 @@ build-stamp: config.status
 
 build: build-stamp
 
-clean:
+clean: unpatch
 	# target: clean
 	dh_testdir
 	dh_testroot
