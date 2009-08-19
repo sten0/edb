@@ -5,19 +5,23 @@ edb (1.31-1) unstable; urgency=low
     - (Build-Depends): use debhelper 7.
     - (Depends): Add emacs23, remove emacs21.
     - (Homepage): New field. Point to current upstream.
-    - (Standards-Version): update to 3.8.0
+    - (Standards-Version): update to 3.8.2
     - (Vcs-*): New fields.
   * debian/copyright
     - Update upstream information: current maintainer and URL.
     - Adjust layout to match latest dh-make template.
     - Corrected Copyright from GPL-2 to GPL as this is the right
       edb license.
+    - Spell out GPL-2 (lintian).
   * debian/patches/15-lisp-bfuncs--ignore-jobserver.dpatc
     - Correct make -j jobserver problem.
+  * debian/{prerm,postinst}
+    - Delete; not needed with debhelper 7.
   * debian/rules
-     - Adjust to new upstream release.
+    - Adjust to new upstream release.
+    - (install): use dh_prep (lintian).
 
- -- Jari Aalto <jari.aalto@cante.net>  Wed, 19 Aug 2009 09:21:31 +0000
+ -- Jari Aalto <jari.aalto@cante.net>  Wed, 19 Aug 2009 09:35:27 +0000
 
 edb (1.21-17) unstable; urgency=low
 
