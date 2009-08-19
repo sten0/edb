@@ -35,10 +35,11 @@ License: GPL
     Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
     Boston, MA 02110-1301, USA.
 
-The Debian packaging is licensed under the GPL, see below, and is:
+The Debian packaging is licensed under the GPL-2 or later, see below,
+and is:
 
-    Copyright (C) 2006-2007 Jari Aalto <jari.aalto@cante.net>
+    Copyright (C) 2006-2009 Jari Aalto <jari.aalto@cante.net>
     Copyright (C) 1998-2004 Takao KAWAMURA <kawamura@debian.org>
 
 On Debian systems, the complete text of the GNU General
-Public License can be found in `/usr/share/common-licenses/GPL'.
+Public License can be found in `/usr/share/common-licenses/GPL-2'.
