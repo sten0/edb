@@ -5,52 +5,69 @@
 ;; Originally contributed by Nils Naumann <naumann@unileoben.ac.at>
 ;; Modified by Dirk Eddelbuettel <edd@debian.org>
 ;; Adapted for dh-make by Jim Van Zandt <jrv@vanzandt.mv.com>
-
+;;
 ;; The edb package follows the Debian/GNU Linux 'emacsen' policy and
-;; byte-compiles its elisp files for each 'emacs flavor' (emacs19,
-;; xemacs19, emacs20, xemacs20...).  The compiled code is then
-;; installed in a subdirectory of the respective site-lisp directory.
-;; We have to add this to the load-path:
-(let ((package-dir (concat "/usr/share/"
-                           (symbol-name flavor)
-                           "/site-lisp/edb")))
+;; byte-compiles its elisp files for each 'emacs flavor' (emacs<NN>).
+;; The compiled code is then installed in a subdirectory of the
+;; respective site-lisp directory.
+
+(defvar edb-directory)
+
+;; Add this to the load-path:
+
+(let ((package-dir
+       (format "/usr/share/%s/site-lisp/edb"
+	       (symbol-name flavor))))
+
   ;; If package-dir does not exist, the package must have
-  ;; removed but not purged, and we should skip the setup.
+  ;; been removed but not purged, and we should skip the setup.
   (when (file-directory-p package-dir)
+
     (if (fboundp 'debian-pkg-add-load-path-item)
 	(debian-pkg-add-load-path-item package-dir)
       (setq load-path (cons package-dir load-path)))
-    ;;
 
-(setq edb-directory
-      (concat "/usr/share/" (symbol-name debian-emacs-flavor)
-              "/site-lisp/edb"))
+    (setq edb-directory
+	  (format "/usr/share/%s/site-lisp/edb"
+		  (symbol-name debian-emacs-flavor)))
 
-(autoload 'db-find-file "database" "EDB database package" t)
-(autoload 'load-database "database" "EDB database package" t)
-(autoload 'byte-compile-database "database" "EDB database package" t)
+(autoload 'edb-version		    "database" "EDB database package" t)
+(autoload 'edb-interact		    "database" "EDB database package" t)
+(autoload 'db-view-mode		    "edbcore"  "EDB database package" t)
+(autoload 'db-find-file		    "edbcore"  "EDB database package" t)
+(autoload 'db-edit-mode		    "edbcore"  "EDB database package" nil)
+(autoload 'database-mode	    "edbcore"  "EDB database package" nil)
+(autoload 'database-summary-mode    "edbcore"  "EDB database package" nil)
 
-(add-hook 'find-file-hooks 'edb-after-find-file)
+(add-hook 'find-file-hooks 'edb-debian-after-find-file)
 
-(defvar inhibit-edb nil
+(defvar edb-debian-inhibit-edb nil
   "*Non-nil means don't automatically parse EDB database files.
-Sometimes a value of t is useful for debugging.")
+Sometimes a value of t is useful for debugging.
+Used in function `edb-debian-after-find-file'.")
 
-(defun edb-after-find-file ()
+(defun edb-debian-after-find-file-old ()
+  "Turn on EDB if first like is ';; Database file written by EDB'.
+Function should be placed in `find-file-hooks'."
+  ;; When called, point is at the beginning of the buffer.
+  (if (and (not edb-debian-inhibit-edb)
+	   (looking-at ";; Database file written by EDB"))
+      (db-find-file (buffer-file-name))))
+
+(defun edb-debian-after-find-file-old ()
   "If this is a database file in EDB internal file layout, run EDB.
-To be placed in `find-file-hooks'."
-  ;; When this is called, we are at the beginning of the buffer.
-  (if (and (not inhibit-edb)
+Function should be placed in `find-file-hooks'."
+  ;; When called, point is at the beginning of the buffer.
+  (if (and (not edb-debian-inhibit-edb)
+	   ;; See edbcore.el
 	   (looking-at ";; Database file written by EDB"))
       (progn
-        (require 'database)
+        (require 'edbcore)
         (db-this-buffer)
         ;; db-this-buffer kills the current buffer; and an error results
         ;; when Emacs tries to switch back to it.  find-file-noselect
         ;; uses the buf variable to hold the new buffer.
         (setq buf (buffer-name (current-buffer))))))
 
-(require 'edb-fixes-1.21)
 
-    ;;
-    ))
+)) ;; End when-let
