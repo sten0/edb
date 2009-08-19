@@ -64,9 +64,9 @@ binary-indep: build
 
 	install -m 755 -d $(PKGDIR)/usr/share/emacs/site-lisp/edb \
 			  $(PKGDIR)/usr/share/info
-	install -m 644 *.el debian/edb-fixes-1.21.el $(PKGDIR)/usr/share/emacs/site-lisp/edb
-	install -m 644 edb.info* $(PKGDIR)/usr/share/info
+	# install -m 644 *.el debian/edb-fixes-1.21.el $(PKGDIR)/usr/share/emacs/site-lisp/edb
 
+	dh_installinfo doc/edb.info
 	dh_installdocs
 #	dh_installexamples
 #	dh_installmenu
