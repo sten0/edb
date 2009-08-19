@@ -1,0 +1,20 @@
+edb (1.31-1) unstable; urgency=low
+
+  * NEW UPSTREAM VERSION
+  - The new package has very little common with the old package. Please
+    not following changes
+
+  [ edb package ]
+  * load-database
+    - This interactive function no longer exists in package.
+      Use db-find-file.
+
+  [ Debian specific ]
+  * inhibit-edb
+    - Variable has been renamed to edb-debian-inhibit-edb
+  * edb-after-find-file
+    - Function has been renamed to edb-debian-after-find-file
+      and it is installed to find-file-hooks
+
+ -- Jari Aalto <jari.aalto@cante.net>  Wed, 19 Aug 2009 15:34:39 +0000
+
