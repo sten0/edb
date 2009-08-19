@@ -61,12 +61,27 @@ install: build
 
 	# The 'make install' doesn't install all files. Do it by hand.
 	install -m 644 lisp/*.el  $(PKGLISPDIR)
+	# But do not include these, which are not edb-* namespace
+	rm 	$(PKGLISPDIR)/connection.el \
+		$(PKGLISPDIR)/state.el \
+		$(PKGLISPDIR)/system.el
 
-	# We need this in emacsen-install
-	install -m 644 lisp/bfuncs $(PKGLISPDIR)
+	# We need these in emacsen-install
+	#
+	# The byte compilation is real strange.
+	# The bfuncs::edb-bfunc-make-all calls 'make', which reads GNUmakefile
+	# with some hackery to print out variables (*.el file lists) stored there.
+	# So GNUmakefile must be avalable for 'edb-bfunc-make-all'.
+
+	install -m 644 lisp/bfuncs lisp/GNUmakefile $(PKGLISPDIR)
 
 	# debhelper will handle this
 	rm -f $(INFODIR)/dir*
+
+	# Install examples
+
+	install -m 755 -d $(PKGDOCDIR)
+	tar -cf - examples | tar -C $(PKGDOCDIR) -xf -
 
 # Build architecture-independent files here.
 binary-indep: build install
@@ -86,7 +101,10 @@ binary-indep: build install
 #	dh_undocumented
 	dh_installchangelogs
 #	dh_strip
-	dh_compress
+
+	# Do not compress EDB example data files
+	dh_compress -X.edb -X.dba -X.fmt -X.dat
+
 	dh_fixperms
 #	dh_suidregister
 	dh_installdeb
