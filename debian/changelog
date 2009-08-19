@@ -7,7 +7,9 @@ edb (1.31-1) unstable; urgency=low
     - Please add info-dir-section to your info files (Closes: #528870).
       Included in original file doc/edb.texi,
   * debian/control
-    - (Build-Depends): update debhelper 7. Remove dpatch. Add make.
+    - (Build-Depends): Update to debhelper 7. Remove dpatch. Add
+      emacs23 | emacs22 | emacs-snapshot.
+    - (Depends): Add make.
     - (Depends): Add emacs23 (Closes: #542206), remove emacs21.
     - (Homepage): New field. Point to current upstream.
     - (Standards-Version): update to 3.8.2
@@ -35,7 +37,7 @@ edb (1.31-1) unstable; urgency=low
     - Adjust to new upstream release.
     - (install): use dh_prep (lintian).
 
- -- Jari Aalto <jari.aalto@cante.net>  Wed, 19 Aug 2009 18:08:02 +0000
+ -- Jari Aalto <jari.aalto@cante.net>  Wed, 19 Aug 2009 18:30:11 +0000
 
 edb (1.21-17) unstable; urgency=low
 
