@@ -36,6 +36,9 @@ clean: unpatch
 		| xargs -r rm
 
 	rm -f lisp/*.elc
+
+	# Generated files
+	rm -f lisp/edbcore.el
 	rm -f doc/refcard.aux doc/refcard.log
 
 	rm -f config.log config.status \
