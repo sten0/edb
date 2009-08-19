@@ -56,6 +56,9 @@ install: build
 	# target: install call make
 	$(MAKE) install
 
+	# We need this in emacsen-install
+	install -m 644 lisp/bfuncs $(PKGLISPDIR)
+
 	# debhelper will handle this
 	rm -f $(INFODIR)/dir*
 
