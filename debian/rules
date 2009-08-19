@@ -1,7 +1,4 @@
 #!/usr/bin/make -f
-# Made with the aid of dh_make, by Craig Small
-# Sample debian/rules that uses debhelper. GNU copyright 1997 by Joey Hess.
-# Some lines taken from debmake, by Christoph Lameter.
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
@@ -9,25 +6,49 @@
 PACKAGE = edb
 
 include debian/debian-vars.mk
-include /usr/share/dpatch/dpatch.make
+
+config.status: configure
+	dh_testdir
+
+	# Add here commands to configure the package.
+	./configure --prefix=$$(pwd)/debian/$(PACKAGE)/usr
 
 build: build-stamp
-build-stamp: patch
+build-stamp: config.status
 	dh_testdir
 
 	# Add here commands to compile the package.
-	$(MAKE) info
+	$(MAKE)
 
 	touch build-stamp
 
-clean: unpatch
+clean:
 	dh_testdir
 	dh_testroot
 	rm -rf build-stamp $(PKGDIR)
 
-	$(MAKE) cleandoc
+	[ ! -f GNUMakefile ] || $(MAKE) clean
+
+	find . -name GNUmakefile \
+		-o -name "*[#~]*" \
+		| xargs -r rm
+
+	rm -f lisp/*.elc
+
+	rm -f config.log config.status \
+		examples/null examples/passwd \
+		tests/ebatch
 
 	dh_clean
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+
+	# Add here commands to install the package into debian/cbm.
+	$(MAKE) install
 
 # Build architecture-independent files here.
 binary-indep: build
@@ -66,10 +87,7 @@ binary-indep: build
 
 # Build architecture-dependent files here.
 binary-arch: build
-# We have nothing to do by default.
-
-source diff:
-	@echo >&2 'source and diff are obsolete - use dpkg-source -b'; false
+	# We have nothing to do by default.
 
 binary: binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary
