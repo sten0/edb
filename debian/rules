@@ -17,7 +17,8 @@ build-stamp: config.status patch
 	# target: build-stamp
 	dh_testdir
 
-	$(MAKE)
+	# Reset *any* jobserver -j options. Won't compile in parallel
+	$(MAKE) MAKEFLAGS= MFLAGS=
 
 	touch build-stamp
 
