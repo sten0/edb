@@ -1,12 +1,15 @@
-#!/bin/sh -e
+#!/bin/sh
+
+set -e
 
 FLAVOR=$1
 PACKAGE=edb
 
-if [ ${FLAVOR} = emacs ]; then exit 0; fi
+if [ "$FLAVOR" = emacs ]; then exit 0; fi
 
-echo remove/${PACKAGE}: Handling removal of emacsen flavor ${FLAVOR}
-echo remove/${PACKAGE}: Purging byte-compiled files for ${FLAVOR}
-rm -rf /usr/share/${FLAVOR}/site-lisp/${PACKAGE}
+echo "remove/$PACKAGE: Handling removal of emacsen flavor $FLAVOR"
+echo "remove/$PACKAGE: Purging byte-compiled files for $FLAVOR"
+
+rm -rf /usr/share/$FLAVOR/site-lisp/$PACKAGE
 
 exit 0
