@@ -55,7 +55,9 @@ install: build
 
 	# target: install call make
 	$(MAKE) install
-	find debian/
+
+	# debhelper will handle this
+	rm -f $(INFODIR)/dir*
 
 # Build architecture-independent files here.
 binary-indep: build install
