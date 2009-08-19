@@ -5,7 +5,7 @@ set -e
 FLAVOR=$1
 PACKAGE=edb
 
-if [ "$FLAVOR" = emacs ]; then exit 0; fi
+[ ! "$FLAVOR" = emacs ] || exit 0
 
 echo "remove/$PACKAGE: Handling removal of emacsen flavor $FLAVOR"
 echo "remove/$PACKAGE: Purging byte-compiled files for $FLAVOR"
