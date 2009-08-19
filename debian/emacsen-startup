@@ -46,6 +46,9 @@
 Sometimes a value of t is useful for debugging.
 Used in function `edb-debian-after-find-file'.")
 
+;; To test, try C-x C-f
+;;    /usr/share/doc/edb/examples/btxdb/journals.dat
+
 (defun edb-debian-after-find-file ()
   "Turn on EDB if first like is ';; Database file written by EDB'.
 Function should be placed in `find-file-hooks'."
