@@ -8,21 +8,22 @@ PACKAGE = edb
 include debian/debian-vars.mk
 
 config.status: configure
+	# target: config.status
 	dh_testdir
-
-	# Add here commands to configure the package.
 	./configure --prefix=$$(pwd)/debian/$(PACKAGE)/usr
 
-build: build-stamp
 build-stamp: config.status
+	# target: build-stamp
 	dh_testdir
 
-	# Add here commands to compile the package.
 	$(MAKE)
 
 	touch build-stamp
 
+build: build-stamp
+
 clean:
+	# target: clean
 	dh_testdir
 	dh_testroot
 	rm -rf build-stamp $(PKGDIR)
@@ -42,23 +43,23 @@ clean:
 	dh_clean
 
 install: build
+	# target: build
 	dh_testdir
 	dh_testroot
 	dh_clean -k
 	dh_installdirs
 
-	# Add here commands to install the package into debian/cbm.
 	$(MAKE) install
 
 # Build architecture-independent files here.
 binary-indep: build
+	# target: binary-indep
+
 #	dh_testversion
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+	dh_prep
 	dh_installdirs
-
-	# Add here commands to install the files into debian/tmp
 
 	install -m 755 -d $(PKGDIR)/usr/share/emacs/site-lisp/edb \
 			  $(PKGDIR)/usr/share/info
@@ -87,7 +88,7 @@ binary-indep: build
 
 # Build architecture-dependent files here.
 binary-arch: build
-	# We have nothing to do by default.
+	# We have nothing to do.
 
 binary: binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary
