@@ -17,11 +17,14 @@ edb (1.31-1) unstable; urgency=low
     - Discard all old patches; start from fresh with new edb.
   * debian/{prerm,postinst}
     - Delete; not needed with debhelper 7.
+  * debian/README.Debian
+    - Remove. Nothing to document about old patches to older
+      versions.
   * debian/rules
     - Adjust to new upstream release.
     - (install): use dh_prep (lintian).
 
- -- Jari Aalto <jari.aalto@cante.net>  Wed, 19 Aug 2009 11:16:34 +0000
+ -- Jari Aalto <jari.aalto@cante.net>  Wed, 19 Aug 2009 11:20:37 +0000
 
 edb (1.21-17) unstable; urgency=low
 
