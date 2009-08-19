@@ -26,6 +26,8 @@ edb (1.31-1) unstable; urgency=low
     - Adjust variable syntax and FLAVOR test.
   * debian/emacsen-startup
     - Rewrite for new upstream version.
+    - Rename custom functions and variables to clean
+      name space 'edb-debian-*'.
   * debian/{patches,patches-original}/
     - Discard all old patches; start from fresh with new edb.
   * debian/{prerm,postinst}
@@ -37,7 +39,7 @@ edb (1.31-1) unstable; urgency=low
     - Adjust to new upstream release.
     - (install): use dh_prep (lintian).
 
- -- Jari Aalto <jari.aalto@cante.net>  Wed, 19 Aug 2009 18:30:11 +0000
+ -- Jari Aalto <jari.aalto@cante.net>  Wed, 19 Aug 2009 18:34:49 +0000
 
 edb (1.21-17) unstable; urgency=low
 
