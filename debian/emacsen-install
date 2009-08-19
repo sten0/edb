@@ -1,39 +1,90 @@
-#! /bin/sh -e
+#! /bin/sh
+# Synopsis: emacsen-install emacs23 [[--test] [ELDIR]]
+
+set -e
 
 FLAVOR=$1
+
+[ ! "$1" ] || shift
+
 PACKAGE=edb
+MESSAGE="install/$PACKAGE:"
+test=
 
-if [ ${FLAVOR} = emacs ]; then exit 0; fi
+ELDIR=/usr/share/emacs/site-lisp/$PACKAGE
+ELCDIR=/usr/share/$FLAVOR/site-lisp/$PACKAGE
 
-echo install/${PACKAGE}: Handling install of emacsen flavor ${FLAVOR}
+BYTECOMP=BYTE-COMPILE.el
+EL_LIBS="-l ./$BYTECOMP -l bfuncs -l database.el"
+EL_FLAGS="-batch -q -no-site-file"
+EMACS="$FLAVOR $EL_LIBS $EL_FLAGS"
 
-ELDIR=/usr/share/emacs/site-lisp/${PACKAGE}
-ELCDIR=/usr/share/${FLAVOR}/site-lisp/${PACKAGE}
+Run ()
+{
+    ${test+echo} "$@"
+}
 
-case ${FLAVOR} in
-    xemacs*)
-        echo install/${PACKAGE}: Ignoring emacsen flavor ${FLAVOR};;
-    *)
-        echo -n install/${PACKAGE}: Byte-compiling for ${FLAVOR} ...
-        install -m 755 -d ${ELCDIR}
-	rm -f ${ELDIR}/BYTE-COMPILE.el ${ELCDIR}/*.el ${ELCDIR}/*.elc
-        (
-            cd ${ELDIR}
-            echo '(setq load-path (cons "." load-path))' > BYTE-COMPILE.el
-            echo '(setq edb-directory ".")' >> BYTE-COMPILE.el
-            ${FLAVOR} -batch -q -no-site-file \
-                -l ./BYTE-COMPILE.el -l database.el \
-                -f byte-compile-database-all \
-                -f batch-byte-compile database.el
-            ${FLAVOR} -batch -q -no-site-file -f batch-byte-compile edb-fixes-1.21.el
+Main ()
+{
+    if [ "$FLAVOR" = emacs ]; then
+	return 0
+    fi
 
-            rm -f BYTE-COMPILE.el
-            mv -f *.elc ${ELCDIR}
-	    for f in *.el; do
-		ln -sf ${ELDIR}/$f ${ELCDIR}
+    if [ "$1" ]; then
+	test="test-mode"
+	shift
+    fi
+
+    if [ "$1" ]; then
+	ELDIR=$1
+	shift
+    fi
+
+    echo "install/$PACKAGE: Handling install of emacsen flavor $FLAVOR"
+
+    case "$FLAVOR" in
+	xemacs*)
+	    echo "$MESSAGE ignored."
+	    ;;
+
+	*)
+	    echo "$MESSAGE Byte-Compiling in dir $ELDIR/ ..."
+
+	    Run install -m 755 -d $ELCDIR
+	    Run rm -f $ELCDIR/*.el $ELCDIR/*.elc
+
+	    Run cd $ELDIR
+
+	    cat << EOF > $BYTECOMP
+(setq load-path (cons "." load-path))
+(setq edb-directory ".")
+EOF
+
+	    Run $EMACS \
+		-f edb-bfunc-make-all \
+		-f batch-byte-compile \
+		   database.el
+
+	    rm -f $BYTECOMP
+	    Run mv -f *.elc $ELCDIR/
+
+	    for file in $ELDIR/*.el
+	    do
+		if [ ! -f $file ]; then
+		    echo "$MESSAGE [ERROR] No $file in $(pwd)"
+		    exit 1
+		fi
+
+		Run ln -sf $file $ELCDIR
 	    done
-        )
-        echo " done.";;
-esac
 
-exit 0
+	    echo "$MESSAGE Byte-Compiling... done."
+	    ;;
+    esac
+
+    exit 0
+}
+
+Main  "$@"
+
+# Endo file
