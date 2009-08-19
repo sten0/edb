@@ -1,27 +1,60 @@
 # debian-vars.mk -- Common variables
 #
-#	Copyright (C) 2005-2009 Jari Aalto
+#   Copyright
 #
-#	Released under License GNU GPL v2, or (your choice) any later version.
-#	See <http://www.gnu.org/copyleft/gpl.html>.
+#	Copyright (C) 2005-2009 Jari Aalto <jari.aalto@cante.net>
 #
+#   License
+#
+#	This program is free software; you can redistribute it and or
+#	modify it under the terms of the GNU General Public License as
+#	published by the Free Software Foundation; either version 2 of
+#	the License, or (at your option) any later version.
+#
+#	This program is distributed in the hope that it will be useful, but
+#	WITHOUT ANY WARRANTY; without even the implied warranty of
+#	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+#	General Public License for more details at
+#	<http://www.gnu.org/copyleft/gpl.html>.
+#
+#   Description
+#
+#	This is GNU makefile part, that defines common variables and
+#	macros to be used from debian/rules. To install, add this:
+#
+#	    PACKAGE = foo
+#	    include debian/debian-vars.mk
+
+ifneq (,)
+    This makefile requires GNU Make.
+endif
 
 PACKAGE		?= foo
+TOPDIR		:= $(shell pwd)
 PKGDIR		= $(CURDIR)/debian/$(PACKAGE)
-SHAREDIR	= $(PKGDIR)/usr/share/$(PACKAGE)
-SITELISPDIR 	= $(PKGDIR)/usr/share/site-lisp
-PKGLISPDIR 	= $(PKGDIR)/usr/share/site-lisp/$(PACKAGE)
-LIBDIR		= $(PKGDIR)/usr/lib/$(PACKAGE)
-PIXDIR		= $(PKGDIR)/usr/share/pixmaps
-DESKTOPDIR	= $(PKGDIR)/usr/share/applications
-LOCALEDIR	= $(PKGDIR)/usr/share/locale
-INFODIR		= $(PKGDIR)/usr/share/info
+
+SHAREROOTDIR	= $(PKGDIR)/usr/share
+SHAREDIR	= $(SHAREROOTDIR)/$(PACKAGE)
+DOCROOTDIR	= $(SHAREROOTDIR)/doc
+PKGDOCDIR	= $(SHAREROOTDIR)/doc/$(PACKAGE)
+SITELISPDIR	= $(SHAREROOTDIR)/site-lisp
+PKGLISPDIR	= $(SHAREROOTDIR)/site-lisp/$(PACKAGE)
+DESKTOPDIR	= $(SHAREROOTDIR)/applications
+LOCALEDIR	= $(SHAREROOTDIR)/locale
+INFODIR		= $(SHAREROOTDIR)/info
+PIXDIR		= $(SHAREROOTDIR)/pixmaps
+
+MANROOTDIR	= $(SHAREROOTDIR)/man
+MAN1DIR		= $(MANROOTDIR)/man1
+MAN5DIR		= $(MANROOTDIR)/man5
+MAN8DIR		= $(MANROOTDIR)/man8
+
+LIBROOTDIR	= $(PKGDIR)/usr/lib
+LIBDIR		= $(LIBROOTDIR)/$(PACKAGE)
+LIBPERLDIR	= $(LIBROOTDIR)/perl
+
 BINDIR		= $(PKGDIR)/usr/bin
 SBINDIR		= $(PKGDIR)/usr/sbin
-MANDIR		= $(PKGDIR)/usr/share/man
-MAN1DIR		= $(MANDIR)/man1
-MAN5DIR		= $(MANDIR)/man5
-MAN8DIR		= $(MANDIR)/man8
 
 INSTALL		?= /usr/bin/install
 INSTALL_DATA	= $(INSTALL) -p -m 644
@@ -30,7 +63,20 @@ INSTALL_BIN	= $(INSTALL) -p -m 755
 INSTALL_DIR	= $(INSTALL) -m 755 -d
 
 #######################################################################
-# [Do this to take use of multiple CPU cores]
+# These are used for cross-compiling and for saving the configure script
+# from having to guess our platform (since we know it already)
+#
+# [Add this]
+# config.status: configure
+#	...
+#	./configure --host=$(DEB_HOST_GNU_TYPE) \
+#		    --build=$(DEB_BUILD_GNU_TYPE) \
+
+DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+
+#######################################################################
+# [Add this to use multiple CPU cores]
 #	build-stamp:
 #		$(MAKE) $(MAKE_FLAGS)
 
@@ -54,52 +100,4 @@ ifneq ($(CPU_COUNT),)
     MAKE_FLAGS	+= -j$(CPU_COUNT)
 endif
 
-#######################################################################
-# Dealing with packages that have old config.* files: (1) Save (2)
-# Use latest from Debian (3) restore. This way the *diff.gz stays claan.
-#
-# [Do this]
-# config.status: configure
-#	./configure
-#	$(config-save)
-#	$(config-patch)
-#	$(MAKE) $(MAKE_FLAGS)
-#
-# binary-arch: build install
-#	...
-#	$(config-restore)
-#	dh_builddeb
-
-define config-restore
-	# Restore original files
-	[ ! -f config.sub.original   ] || mv -v config.sub.original config.sub
-	[ ! -f config.guess.original ] || mv -v config.guess.original config.guess
-endef
-
-define config-save
-	# Save original files
-	[ -f config.sub.original   ] || cp -v config.sub config.sub.original
-	[ -f config.guess.original ] || cp -v config.guess config.guess.original
-endef
-
-ifneq ($(wildcard /usr/share/misc/config.sub),)
-define config-patch-sub
-	# Use latest versions
-	cp -vf /usr/share/misc/config.sub config.sub
-endef
-endif
-
-ifneq ($(wildcard /usr/share/misc/config.guess),)
-define config-patch-guess
-	# Use latest versions
-	cp -vf /usr/share/misc/config.guess config.guess
-endef
-endif
-
-define config-patch
-	$(config-patch-sub)
-	$(config-patch-guess)
-endef
-
-
-# End of of Makefile part
+# End of Makefile part
