@@ -1,67 +1,71 @@
 edb (1.31-1) unstable; urgency=low
 
   * New upstream release (Closes: #303785).
-  * debian/copyright:
-    - Update upstream information: current maintainer and URL.
-  * debian/control:
+  * debian/control
+    - (Build-Depends): use debhelper 7.
+    - (Depends): Add emacs23, remove emacs21.
     - (Homepage): New field. Point to current upstream.
-    - (Depends): Remove emacs21.
     - (Standards-Version): update to 3.8.0
     - (Vcs-*): New fields.
-  * debian/copyright:
-    - Update URL.
-
- -- Jari Aalto <jari.aalto@cante.net>  Sun, 26 Oct 2008 16:16:26 +0300
-
-edb (1.21-18) unstable; urgency=low
-
-  * debian/copyrigt:
-    - Layout adjusted to match latest dh-make template.
+  * debian/copyright
+    - Update upstream information: current maintainer and URL.
+    - Adjust layout to match latest dh-make template.
     - Corrected Copyright from GPL-2 to GPL as this is the right
       edb license.
+  * debian/patches/15-lisp-bfuncs--ignore-jobserver.dpatc
+    - Correct make -j jobserver problem.
+  * debian/rules
+     - Adjust to new upstream release.
 
- -- Jari Aalto <jari.aalto@cante.net>  Sun, 16 Sep 2007 22:29:34 +0300
+ -- Jari Aalto <jari.aalto@cante.net>  Wed, 19 Aug 2009 09:21:31 +0000
 
 edb (1.21-17) unstable; urgency=low
 
-  * [OVERALL]: Converted hand written patch system to dpatch.
-  * debian/*: removed trailing whitespaces from all files.
-  * debian/README.Debian-source: New. Explain what changed after 
-    package adoption.
-  * debian/compat: New file.
-  * debian/control:
-    (Build-Depands): Added dpatch.
-    (Depends): Added emacs22 to the beginning. (Closes: #433974).
-  * debian/copyright: Updated download URL (old one non-existent).
-  * debian/patches/*: One single dpatch to include all
-    previous changes.
-  * debian/patches-original/*: Stores here the original paches including
-    some email messages for historial reference.
-  * debian/rules: Removed DH_COMPAT, use dpatch and *.mk files.
-  * debian/watch: New file.
+  * OVERALL
+    - Convert hand written patch system to dpatch.
+  * debian/*
+    - Remove trailing whitespaces from all files.
+  * debian/README.Debian-source
+    - New. Explain what changed after package adoption.
+  * debian/compat
+     - New file.
+  * debian/control
+    - (Build-Depands): Added dpatch.
+    - (Depends): Add emacs22 to the beginning. (Closes: #433974).
+  * debian/copyright
+    - Update download URL; old one non-existent.
+  * debian/patches/*
+    - One single dpatch to include all previous changes.
+  * debian/patches-original/*
+    - Store the original paches including
+      some email messages for historial reference.
+  * debian/rules
+    - Remove DH_COMPAT, use dpatch and *.mk files.
+  * debian/watch
+    - New file.
 
  -- Jari Aalto <jari.aalto@cante.net>  Thu, 13 Sep 2007 10:11:49 +0300
 
 edb (1.21-16) unstable; urgency=low
 
-  * debian/control: (Section): Change from 'utils' => 'misc'
-    according to ftp-masters message:
-    'package says section is utils, override says misc'.
+  * debian/control
+    - (Section): Change from 'utils' => 'misc' according to ftp-masters
+      message: 'package says section is utils, override says misc'.
 
  -- Jari Aalto <jari.aalto@cante.net>  Sun, 19 Nov 2006 18:43:20 +0200
 
 edb (1.21-15) unstable; urgency=low
 
-  * New maintainer. (Orphaned; Closes: #353629)
-  * Applied patch by Tatsuya Kinoshita <tats@debian.org> to fix
+  * New maintainer (Orphaned; Closes: #353629).
+  * Apply patch by Tatsuya Kinoshita <tats@debian.org> to fix
     debian/control (Build-Depends, Build-Depends-Indep, Depends),
     debian/copyright (Proper copyright year, author, license),
     debian/emacsen-install (added "-q" during byte compilation and
     *.elc cleanup), debian/emacsen-remove (simplified "emacs" treatment),
     debian/emacsen-startup (better init implementation)
-  * debian/conffiles: File removed. Had entry
-    "/etc/emacs/site-start.d/50edb.el". This is automatically added
-    by debhelper.
+  * debian/conffiles
+    - Remove file. Had entry "/etc/emacs/site-start.d/50edb.el". This is
+      automatically added by debhelper.
 
  -- Jari Aalto <jari.aalto@cante.net>  Tue, 24 Oct 2006 20:07:51 +0300
 
