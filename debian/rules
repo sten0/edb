@@ -48,28 +48,22 @@ clean: unpatch
 	dh_clean
 
 install: build
-	# target: build
+	# target: install
 	dh_testdir
 	dh_testroot
 	dh_prep
-	dh_installdirs
 
+	# target: install call make
 	$(MAKE) install
+	find debian/
 
 # Build architecture-independent files here.
-binary-indep: build
+binary-indep: build install
 	# target: binary-indep
 
-#	dh_testversion
 	dh_testdir
 	dh_testroot
-	dh_prep
 	dh_installdirs
-
-	install -m 755 -d $(PKGDIR)/usr/share/emacs/site-lisp/edb \
-			  $(PKGDIR)/usr/share/info
-	# install -m 644 *.el debian/edb-fixes-1.21.el $(PKGDIR)/usr/share/emacs/site-lisp/edb
-
 	dh_installinfo doc/edb.info
 	dh_installdocs
 #	dh_installexamples
