@@ -46,28 +46,12 @@
 Sometimes a value of t is useful for debugging.
 Used in function `edb-debian-after-find-file'.")
 
-(defun edb-debian-after-find-file-old ()
+(defun edb-debian-after-find-file ()
   "Turn on EDB if first like is ';; Database file written by EDB'.
 Function should be placed in `find-file-hooks'."
   ;; When called, point is at the beginning of the buffer.
   (if (and (not edb-debian-inhibit-edb)
 	   (looking-at ";; Database file written by EDB"))
       (db-find-file (buffer-file-name))))
-
-(defun edb-debian-after-find-file-old ()
-  "If this is a database file in EDB internal file layout, run EDB.
-Function should be placed in `find-file-hooks'."
-  ;; When called, point is at the beginning of the buffer.
-  (if (and (not edb-debian-inhibit-edb)
-	   ;; See edbcore.el
-	   (looking-at ";; Database file written by EDB"))
-      (progn
-        (require 'edbcore)
-        (db-this-buffer)
-        ;; db-this-buffer kills the current buffer; and an error results
-        ;; when Emacs tries to switch back to it.  find-file-noselect
-        ;; uses the buf variable to hold the new buffer.
-        (setq buf (buffer-name (current-buffer))))))
-
 
 )) ;; End when-let
