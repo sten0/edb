@@ -39,7 +39,7 @@
 (autoload 'database-mode	    "edbcore"  "EDB database package" nil)
 (autoload 'database-summary-mode    "edbcore"  "EDB database package" nil)
 
-(add-hook 'find-file-hooks 'edb-debian-after-find-file)
+(add-hook 'find-file-hook 'edb-debian-after-find-file)
 
 (defvar edb-debian-inhibit-edb nil
   "*Non-nil means don't automatically parse EDB database files.
