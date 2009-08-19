@@ -59,6 +59,9 @@ install: build
 	# Don't need compiled files
 	rm -f $(PKGLISPDIR)/*.elc
 
+	# The 'make install' doesn't install all files. Do it by hand.
+	install -m 644 lisp/*.el  $(PKGLISPDIR)
+
 	# We need this in emacsen-install
 	install -m 644 lisp/bfuncs $(PKGLISPDIR)
 
