@@ -36,6 +36,7 @@ clean: unpatch
 		| xargs -r rm
 
 	rm -f lisp/*.elc
+	rm -f doc/refcard.aux doc/refcard.log
 
 	rm -f config.log config.status \
 		examples/null examples/passwd \
