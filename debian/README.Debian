@@ -1,0 +1,16 @@
+README.Debian for edb
+---------------------
+
+EDB is Emacs Database, which can use text files for data storage. The
+default Debian install adds a function to `find-file-hook' which
+detects if the file's first line starts with:
+
+    ;; Database file written by EDB
+
+You can try EDB by loading one of the examples:
+
+    C-x C-f /usr/share/doc/edb/examples/btxdb/journals.dat
+
+For more information, consult info pages: C-h i
+
+ -- 2009-08-19 Jari Aalto <jari.aalto@cante.net>
