@@ -11,11 +11,13 @@ edb (1.31-1) unstable; urgency=low
     - (Standards-Version): update to 3.8.2
     - (Vcs-*): New fields.
   * debian/copyright
-    - Update upstream information: current maintainer and URL.
+    - Update upstream information: current upstream and URL.
     - Adjust layout to match latest dh-make template.
     - Corrected Copyright from GPL-2 to GPL as this is the right
       edb license.
     - Spell out GPL-2 (lintian).
+  * debian/emacsen-install
+    - Rewrite for new upstream version.
   * debian/{patches,patches-original}/
     - Discard all old patches; start from fresh with new edb.
   * debian/{prerm,postinst}
@@ -27,7 +29,7 @@ edb (1.31-1) unstable; urgency=low
     - Adjust to new upstream release.
     - (install): use dh_prep (lintian).
 
- -- Jari Aalto <jari.aalto@cante.net>  Wed, 19 Aug 2009 11:36:44 +0000
+ -- Jari Aalto <jari.aalto@cante.net>  Wed, 19 Aug 2009 14:51:03 +0000
 
 edb (1.21-17) unstable; urgency=low
 
