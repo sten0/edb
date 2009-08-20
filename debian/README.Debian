@@ -11,6 +11,12 @@ You can try EDB by loading one of the examples:
 
     C-x C-f /usr/share/doc/edb/examples/btxdb/journals.dat
 
-For more information, consult info pages: C-h i
+For more information, consult info pages in Emacs <C-h i>. For quick
+introduction[*], start from section "Three types of EDB faile" in
+/usr/share/doc/edb/examples/intro-and-addr.gz
+
+[*] Pay no attention to file's example Emacs code section in "end EDB
+    and Two column entry for .emacs file". The file is from year 1993
+    and does not reflect current EDB.
 
  -- 2009-08-19 Jari Aalto <jari.aalto@cante.net>
