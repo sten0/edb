@@ -10,6 +10,8 @@ edb (1.31-1) unstable; urgency=low
     - (Build-Depends): Update to debhelper 7. Remove dpatch. Add
       emacs23 | emacs22 | emacs-snapshot.
     - (Depends): Add make. Move emacs* packages to Build-Depends-Indep.
+      Add ${misc:Depends} (lintian).
+      Add "dpkg (>= 1.15.4) | install-info" (lintian).
     - (Build-Depends-Indep): Add emacs23 (Closes: #542206), remove emacs21.
     - (Homepage): New field. Point to current upstream.
     - (Standards-Version): update to 3.8.3.
@@ -39,7 +41,7 @@ edb (1.31-1) unstable; urgency=low
     - Adjust to new upstream release.
     - (install): use dh_prep (lintian).
 
- -- Jari Aalto <jari.aalto@cante.net>  Thu, 20 Aug 2009 19:26:19 +0000
+ -- Jari Aalto <jari.aalto@cante.net>  Thu, 20 Aug 2009 19:31:52 +0000
 
 edb (1.21-17) unstable; urgency=low
 
