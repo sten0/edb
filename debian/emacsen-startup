@@ -42,20 +42,20 @@
 
     (add-hook 'find-file-hook 'edb-debian-after-find-file)
 
-    (defvar edb-debian-inhibit-edb nil
-      "*Non-nil means don't automatically parse EDB database files.
-Sometimes a value of t is useful for debugging.
-Used in function `edb-debian-after-find-file'.")
-
-    ;; To test, try C-x C-f
-    ;;    /usr/share/doc/edb/examples/btxdb/journals.dat
-
     (defun edb-debian-after-find-file ()
       "Turn on EDB if first like is ';; Database file written by EDB'.
 Function should be placed in `find-file-hooks'."
       ;; When called, point is at the beginning of the buffer.
-      (if (and (not edb-debian-inhibit-edb)
-	       (looking-at ";; Database file written by EDB"))
-	  (db-find-file (buffer-file-name))))
+      (when (and (not edb-debian-inhibit-edb)
+		 (looking-at ";; Database file written by EDB"))
+	(let ((file (buffer-file-name))
+	      (find-file-hook find-file-hook))
+	  ;; - We're already in the FILE, so kill buffer
+	  ;;   and let db-* functions to load the file again
+	  ;; - BUT disable ourselves while db-* runs
+	  (kill-buffer (current-buffer))
+	  (delq 'edb-debian-after-find-file find-file-hook)
+	  (message "%s" find-file-hook)
+	  (db-find-file file))))
 
 )) ;; End let-when
