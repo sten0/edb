@@ -5,7 +5,7 @@ Maintainer: Jari Aalto <jari.aalto@cante.net>
 Uploaders: Tatsuya Kinoshita <tats@debian.org>
 Build-Depends: debhelper (>= 7)
 Build-Depends-Indep: texinfo, emacs23 | emacs22 | emacs-snapshot
-Standards-Version: 3.8.2
+Standards-Version: 3.8.3
 Vcs-Browser: http://git.debian.org/?p=collab-maint/edb.git
 Vcs-Git: git://git.debian.org/git/collab-maint/edb.git
 Homepage: http://www.gnuvola.org/software/edb

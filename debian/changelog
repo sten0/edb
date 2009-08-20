@@ -12,7 +12,7 @@ edb (1.31-1) unstable; urgency=low
     - (Depends): Add make. Move emacs* packages to Build-Depends-Indep.
     - (Build-Depends-Indep): Add emacs23 (Closes: #542206), remove emacs21.
     - (Homepage): New field. Point to current upstream.
-    - (Standards-Version): update to 3.8.2
+    - (Standards-Version): update to 3.8.3.
     - (Vcs-*): New fields.
   * debian/copyright
     - Update upstream information: current upstream and URL.
@@ -39,7 +39,7 @@ edb (1.31-1) unstable; urgency=low
     - Adjust to new upstream release.
     - (install): use dh_prep (lintian).
 
- -- Jari Aalto <jari.aalto@cante.net>  Thu, 20 Aug 2009 18:34:19 +0000
+ -- Jari Aalto <jari.aalto@cante.net>  Thu, 20 Aug 2009 19:26:19 +0000
 
 edb (1.21-17) unstable; urgency=low
 
