@@ -12,7 +12,7 @@ You can try EDB by loading one of the examples:
     C-x C-f /usr/share/doc/edb/examples/btxdb/journals.dat
 
 For more information, consult info pages in Emacs <C-h i>. For quick
-introduction[*], start from section "Three types of EDB faile" in
+introduction[*], start from section "Three types of EDB file" in
 /usr/share/doc/edb/examples/intro-and-addr.gz
 
 [*] Pay no attention to file's example Emacs code section in "end EDB
