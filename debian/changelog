@@ -3,10 +3,11 @@ edb (1.31-2) unstable; urgency=low
   * debian/docs
     - New. Install README, NEWS etc. (Closes: #544283).
 
- -- Jari Aalto <jari.aalto@cante.net>  Sun, 30 Aug 2009 12:21:05 +0000
+ -- Jari Aalto <jari.aalto@cante.net>  Sun, 04 Oct 2009 20:18:12 +0300
 
 edb (1.31-1) unstable; urgency=low
 
+  [ Jari Aalto ]
   * GENERAL INFORMATION
     - Read NEWS.Debian for incompatible changes.
   * New upstream release (Closes: #303785).
@@ -14,9 +15,11 @@ edb (1.31-1) unstable; urgency=low
     - Please add info-dir-section to your info files (Closes: #528870).
       Included in original file doc/edb.texi,
   * debian/control
-    - (Build-Depends): Update to debhelper 7. Remove dpatch. Add
+    - (Build-Depends): Update to debhelper 7. Remove dpatch.
+    - (Build-Depends-Indep): Add emacs23 | emacs22 | emacs-snapshot.
+      Remove emacs21.
+    - (Depends): Add make. Add emacs23 (Closes: #542206), remove emacs21.
       emacs23 | emacs22 | emacs-snapshot.
-    - (Build-Depends-Indep): Add emacs23 (Closes: #542206), remove emacs21.
     - (Depends): Add make. Move emacs* packages to Build-Depends-Indep.
       Add ${misc:Depends} (lintian).
       Add "dpkg (>= 1.15.4) | install-info" (lintian).
@@ -48,7 +51,11 @@ edb (1.31-1) unstable; urgency=low
     - Adjust to new upstream release.
     - (install): use dh_prep (lintian).
 
- -- Jari Aalto <jari.aalto@cante.net>  Thu, 20 Aug 2009 19:31:52 +0000
+  [ Tatsuya Kinoshita ]
+  * debian/emacsen-startup
+    - Define edb-debian-inhibit-edb to prevent a void-variable error.
+
+ -- Tatsuya Kinoshita <tats@debian.org>  Sun, 30 Aug 2009 15:04:09 +0900
 
 edb (1.21-17) unstable; urgency=low
 
