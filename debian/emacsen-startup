@@ -2,9 +2,10 @@
 ;;
 ;; Emacs startup file for the Debian GNU/Linux edb package
 ;;
-;; Originally contributed by Nils Naumann <naumann@unileoben.ac.at>
-;; Modified by Dirk Eddelbuettel <edd@debian.org>
+;; 2009-08-30 rewritten by Jari Aalto <jari.aalto@cante.net> for the 1.31.
 ;; Adapted for dh-make by Jim Van Zandt <jrv@vanzandt.mv.com>
+;; Modified by Dirk Eddelbuettel <edd@debian.org>
+;; Originally contributed by Nils Naumann <naumann@unileoben.ac.at>
 ;;
 ;; The edb package follows the Debian/GNU Linux 'emacsen' policy and
 ;; byte-compiles its elisp files for each 'emacs flavor' (emacs<NN>).
@@ -40,12 +41,14 @@
     (autoload 'database-mode	    "edbcore"  "EDB database package" nil)
     (autoload 'database-summary-mode    "edbcore"  "EDB database package" nil)
 
-    (defvar edb-debian-inhibit-edb nil)
+    (defvar edb-debian-inhibit-edb nil
+      "*If non-nil, disable `edb-debian-after-find-file' in `find-file-hook'.")
+
     (add-hook 'find-file-hook 'edb-debian-after-find-file)
 
     (defun edb-debian-after-find-file ()
       "Turn on EDB if first like is ';; Database file written by EDB'.
-Function should be placed in `find-file-hooks'."
+This function is normally placed in `find-file-hooks'."
       ;; When called, point is at the beginning of the buffer.
       (when (and (not edb-debian-inhibit-edb)
 		 (looking-at ";; Database file written by EDB"))
