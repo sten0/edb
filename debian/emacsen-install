@@ -32,7 +32,7 @@ Install ()
 
     case "$FLAVOR" in
 	xemacs*)
-	    echo "$MESSAGE ignored."
+	    echo "$MESSAGE [xemacs*] ignored."
 	    ;;
 
 	*)
