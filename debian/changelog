@@ -2,8 +2,15 @@ edb (1.31-2) unstable; urgency=low
 
   * debian/docs
     - New. Install README, NEWS etc. (Closes: #544283).
+  * debian/emacsen-startup
+    - (edb-debian-inhibit-edb): Add documentation string.
+    - (edb-debian-after-find-file): Improve documentation string.
+  * debian/control
+    - (Depends): Add emacs.
+  * debian/rules
+    - (clean): remove BYTE-COMPILE.el.
 
- -- Jari Aalto <jari.aalto@cante.net>  Sun, 04 Oct 2009 20:18:12 +0300
+ -- Jari Aalto <jari.aalto@cante.net>  Sun, 04 Oct 2009 20:29:40 +0300
 
 edb (1.31-1) unstable; urgency=low
 
