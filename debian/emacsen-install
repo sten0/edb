@@ -28,7 +28,7 @@ Install ()
     EL_FLAGS="-batch -q -no-site-file"
     EMACS="$FLAVOR $EL_LIBS $EL_FLAGS"
 
-    echo "install/$PACKAGE: Handling install of emacsen flavor $FLAVOR [$ARGS]"
+    echo "install/$PACKAGE: Handling install of emacsen flavor $FLAVOR"
 
     case "$FLAVOR" in
 	xemacs*)
