@@ -7,10 +7,13 @@ edb (1.31-2) unstable; urgency=low
     - (edb-debian-after-find-file): Improve documentation string.
   * debian/control
     - (Depends): Add emacs.
+    - (Section): Change misc to lisp.
+  * debian/emacsen-inmstall
+    - (Install): Adjust displayed message.
   * debian/rules
     - (clean): remove BYTE-COMPILE.el.
 
- -- Jari Aalto <jari.aalto@cante.net>  Sun, 04 Oct 2009 20:29:40 +0300
+ -- Jari Aalto <jari.aalto@cante.net>  Mon, 05 Oct 2009 23:30:31 +0300
 
 edb (1.31-1) unstable; urgency=low
 

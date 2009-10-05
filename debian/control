@@ -1,5 +1,5 @@
 Source: edb
-Section: misc
+Section: lisp
 Priority: optional
 Maintainer: Jari Aalto <jari.aalto@cante.net>
 Uploaders: Tatsuya Kinoshita <tats@debian.org>
