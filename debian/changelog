@@ -8,12 +8,12 @@ edb (1.31-2) unstable; urgency=low
   * debian/control
     - (Depends): Add emacs.
     - (Section): Change misc to lisp.
-  * debian/emacsen-inmstall
+  * debian/emacsen-install
     - (Install): Adjust displayed message.
   * debian/rules
     - (clean): remove BYTE-COMPILE.el.
 
- -- Jari Aalto <jari.aalto@cante.net>  Wed, 02 Dec 2009 09:42:06 +0000
+ -- Jari Aalto <jari.aalto@cante.net>  Sun, 20 Dec 2009 18:05:05 +0200
 
 edb (1.31-1) unstable; urgency=low
 
