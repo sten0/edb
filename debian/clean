@@ -1,0 +1,10 @@
+lisp/*.elc
+debian/BYTE*.el
+lisp/edbcore.el
+doc/refcard.aux
+doc/refcard.log
+config.log
+config.status
+examples/null
+examples/passwd
+tests/ebatch
