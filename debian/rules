@@ -1,6 +1,5 @@
 #!/usr/bin/make -f
 
-# Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
 PACKAGE = edb
@@ -19,7 +18,7 @@ build-stamp: config.status
 	# Reset *any* jobserver -j options. Won't compile in parallel
 	$(MAKE) MAKEFLAGS= MFLAGS=
 
-	touch build-stamp
+	touch $@
 
 build: build-stamp
 
@@ -27,26 +26,13 @@ clean:
 	# target: clean
 	dh_testdir
 	dh_testroot
-	rm -rf build-stamp $(PKGDIR)
+	dh_clean
 
 	[ ! -f GNUMakefile ] || $(MAKE) clean
 
 	find . -name GNUmakefile \
 		-o -name "*[#~]*" \
 		| xargs -r rm
-
-	rm -f lisp/*.elc \
-		debian/BYTE*.el
-
-	# Generated files
-	rm -f lisp/edbcore.el
-	rm -f doc/refcard.aux doc/refcard.log
-
-	rm -f config.log config.status \
-		examples/null examples/passwd \
-		tests/ebatch
-
-	dh_clean
 
 install: build
 	# target: install
@@ -62,6 +48,7 @@ install: build
 
 	# The 'make install' doesn't install all files. Do it by hand.
 	install -m 644 lisp/*.el  $(PKGLISPDIR)
+
 	# But do not include these, which are not edb-* namespace
 	rm 	$(PKGLISPDIR)/connection.el \
 		$(PKGLISPDIR)/state.el \
@@ -115,9 +102,5 @@ binary-indep: build install
 	dh_md5sums
 	dh_builddeb
 
-# Build architecture-dependent files here.
-binary-arch: build
-	# We have nothing to do.
-
-binary: binary-indep binary-arch
+binary: binary-indep
 .PHONY: build clean binary-indep binary-arch binary
