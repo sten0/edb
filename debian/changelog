@@ -1,3 +1,17 @@
+edb (1.31-3) unstable; urgency=low
+
+  * NOT RELEASED
+  * Move to packaging format "3.0 (quilt)".
+  * debian/copyright
+    - (Debianized): Separate line as in others.
+    - (GPL): Use FSF URL, not address (FSF recommendation).
+  * debian/rules
+    - (clean): move content to debian/clean for dh_clean.
+  * debian/source/format
+    - New file.
+
+ -- Jari Aalto <jari.aalto@cante.net>  Tue, 22 Dec 2009 10:39:12 +0200
+
 edb (1.31-2) unstable; urgency=low
 
   * debian/docs
