@@ -14,13 +14,15 @@ edb (1.31-3) unstable; urgency=low
     - Update variables.
   * debian/dirs
     - Remove empty usr/share/info
+  * debian/patches
+    - (10): New. Respect DESTDIR in makefile.
   * debian/rules
     - Udate to dh(1)
     - (override_dh_auto_install): Delete duplicate file
       arb-demo and unneeded (see examples/README) symlinks to /dev/null
       and /etc/passwd.
 
- -- Jari Aalto <jari.aalto@cante.net>  Tue, 06 Mar 2012 09:32:29 -0500
+ -- Jari Aalto <jari.aalto@cante.net>  Tue, 06 Mar 2012 10:53:39 -0500
 
 edb (1.31-2) unstable; urgency=low
 
