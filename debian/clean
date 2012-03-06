@@ -8,3 +8,4 @@ config.status
 examples/null
 examples/passwd
 tests/ebatch
+skram/skram.data
