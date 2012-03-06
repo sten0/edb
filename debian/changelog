@@ -10,12 +10,14 @@ edb (1.31-3) unstable; urgency=low
     - (Standards-Version): Update to 3.9.3.
   * debian/copyright
     - Update to format 1.0
+  * debian/debian-vars.mk
+    - Update variables.
   * debian/dirs
     - Remove empty usr/share/info
   * debian/rules
     - Udate to dh(1)
 
- -- Jari Aalto <jari.aalto@cante.net>  Tue, 06 Mar 2012 09:00:47 -0500
+ -- Jari Aalto <jari.aalto@cante.net>  Tue, 06 Mar 2012 09:20:51 -0500
 
 edb (1.31-2) unstable; urgency=low
 
