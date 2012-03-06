@@ -16,8 +16,11 @@ edb (1.31-3) unstable; urgency=low
     - Remove empty usr/share/info
   * debian/rules
     - Udate to dh(1)
+    - (override_dh_auto_install): Delete duplicate file
+      arb-demo and unneeded (see examples/README) symlinks to /dev/null
+      and /etc/passwd.
 
- -- Jari Aalto <jari.aalto@cante.net>  Tue, 06 Mar 2012 09:20:51 -0500
+ -- Jari Aalto <jari.aalto@cante.net>  Tue, 06 Mar 2012 09:32:29 -0500
 
 edb (1.31-2) unstable; urgency=low
 
