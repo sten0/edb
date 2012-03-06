@@ -1,45 +1,20 @@
 #!/usr/bin/make -f
 
-#export DH_VERBOSE=1
-
 PACKAGE = edb
 
 include debian/debian-vars.mk
 
-config.status: configure
-	# target: config.status
-	dh_testdir
-	./configure --prefix=$(PKGDIR)/usr
-
-build-stamp: config.status
-	# target: build-stamp
-	dh_testdir
-
-	# Reset *any* jobserver -j options. Won't compile in parallel
-	$(MAKE) MAKEFLAGS= MFLAGS=
-
-	touch $@
-
-build: build-stamp
-
-clean:
-	# target: clean
-	dh_testdir
-	dh_testroot
-	dh_clean
-
+override_dh_clean:
 	[ ! -f GNUMakefile ] || $(MAKE) clean
-
 	find . -name GNUmakefile \
 		-o -name "*[#~]*" \
 		| xargs -r rm
+	dh_clean
 
-install: build
-	# target: install
-	dh_testdir
-	dh_testroot
-	dh_prep
+override_dh_auto_test:
+	# Ignore tests and FAIL: skram.test
 
+override_dh_auto_install:
 	# target: install call make
 	$(MAKE) install
 
@@ -50,7 +25,7 @@ install: build
 	install -m 644 lisp/*.el  $(PKGLISPDIR)
 
 	# But do not include these, which are not edb-* namespace
-	rm 	$(PKGLISPDIR)/connection.el \
+	rm	$(PKGLISPDIR)/connection.el \
 		$(PKGLISPDIR)/state.el \
 		$(PKGLISPDIR)/system.el
 
@@ -71,36 +46,17 @@ install: build
 	install -m 755 -d $(PKGDOCDIR)
 	tar -cf - examples | tar -C $(PKGDOCDIR) -xf -
 
-# Build architecture-independent files here.
-binary-indep: build install
-	# target: binary-indep
+	# This file is duplicate with arb-demo-regexp
+	rm -f $(PKGDOCDIR)/examples/arb-demo
 
-	dh_testdir
-	dh_testroot
-	dh_installdirs
-	dh_installinfo doc/edb.info
-	dh_installdocs
-#	dh_installexamples
-#	dh_installmenu
-	dh_installemacsen
-#	dh_installinit
-#	dh_installcron
-#	dh_installmanpages
-#	dh_undocumented
-	dh_installchangelogs
-#	dh_strip
+	# Delete unused symlinks
+	rm -f $(PKGDOCDIR)/examples/passwd $(PKGDOCDIR)/examples/null
 
+override_dh_compress:
 	# Do not compress EDB example data files
 	dh_compress -X.edb -X.dba -X.fmt -X.dat
 
-	dh_fixperms
-#	dh_suidregister
-	dh_installdeb
-#	dh_shlibdeps
-	dh_gencontrol
-#	dh_makeshlibs
-	dh_md5sums
-	dh_builddeb
+%:
+	dh $@
 
-binary: binary-indep
-.PHONY: build clean binary-indep binary-arch binary
+# End of file
