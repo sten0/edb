@@ -1,0 +1,24 @@
+---
+ lisp/GNUmakefile.in |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/lisp/GNUmakefile.in
++++ b/lisp/GNUmakefile.in
+@@ -14,7 +14,7 @@
+ # for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+-# along with EDB; see the file COPYING.  If not, write to the Free
++# along with EDB; see the file COPYING.	 If not, write to the Free
+ # Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ # MA 02110-1301, USA.
+ 
+@@ -25,7 +25,7 @@
+ datarootdir = @datarootdir@
+ datadir = @datadir@
+ infodir = @infodir@
+-sitelisp = @sitelisp@
++sitelisp = $(DESTDIR)@sitelisp@
+ 
+ INSTALL = @INSTALL@
+ INSTALL_DATA = @INSTALL_DATA@
