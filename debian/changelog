@@ -1,16 +1,21 @@
 edb (1.31-3) unstable; urgency=low
 
-  * NOT RELEASED
   * Move to packaging format "3.0 (quilt)".
+  * debian/clean
+    - Delete test data.
+  * debian/compat
+    - Update to 9.
+  * debian/control
+    - (Build-Depends): Update to debhelper 9.
+    - (Standards-Version): Update to 3.9.3.
   * debian/copyright
-    - (Debianized): Separate line as in others.
-    - (GPL): Use FSF URL, not address (FSF recommendation).
+    - Update to format 1.0
+  * debian/dirs
+    - Remove empty usr/share/info
   * debian/rules
-    - (clean): move content to debian/clean for dh_clean.
-  * debian/source/format
-    - New file.
+    - Udate to dh(1)
 
- -- Jari Aalto <jari.aalto@cante.net>  Tue, 22 Dec 2009 10:39:12 +0200
+ -- Jari Aalto <jari.aalto@cante.net>  Tue, 06 Mar 2012 09:00:47 -0500
 
 edb (1.31-2) unstable; urgency=low
 
