@@ -51,15 +51,16 @@
 This function is normally placed in `find-file-hooks'."
       ;; When called, point is at the beginning of the buffer.
       (when (and (not edb-debian-inhibit-edb)
-		 (looking-at ";; Database file written by EDB"))
+		 ;; Bookmarking etc. might have moved point from start of buffer
+		 (save-excursion
+		   (goto-char (point-min))
+		   (looking-at ";; Database file written by EDB")))
+	;; - We're already in the FILE, so kill buffer
+	;;   and let db-* functions to load the file again
+	;; - BUT disable ourselves while db-* runs
 	(let ((file (buffer-file-name))
-	      (find-file-hook find-file-hook))
-	  ;; - We're already in the FILE, so kill buffer
-	  ;;   and let db-* functions to load the file again
-	  ;; - BUT disable ourselves while db-* runs
+	      ((edb-debian-inhibit-edb t)))
 	  (kill-buffer (current-buffer))
-	  (delq 'edb-debian-after-find-file find-file-hook)
-	  (message "%s" find-file-hook)
 	  (db-find-file file))))
 
 )) ;; End let-when

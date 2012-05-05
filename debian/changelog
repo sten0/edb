@@ -14,6 +14,9 @@ edb (1.31-3) unstable; urgency=low
     - Update variables.
   * debian/dirs
     - Remove empty usr/share/info
+  * debian/emacsen-startup
+    - (edb-debian-after-find-file): Preserve point, correct hook treatment.
+      Patch thanks to Kevin Ryde <user42@zip.com.au> (Closes: #671585).
   * debian/patches
     - (10): New. Respect DESTDIR in makefile.
   * debian/rules
@@ -22,7 +25,7 @@ edb (1.31-3) unstable; urgency=low
       arb-demo and unneeded (see examples/README) symlinks to /dev/null
       and /etc/passwd.
 
- -- Jari Aalto <jari.aalto@cante.net>  Tue, 06 Mar 2012 10:53:39 -0500
+ -- Jari Aalto <jari.aalto@cante.net>  Sat, 05 May 2012 08:04:13 +0300
 
 edb (1.31-2) unstable; urgency=low
 
