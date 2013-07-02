@@ -1,3 +1,6 @@
+From: Jari Aalto <jari.aalto@cante.net>
+Subject: Add DESTDIR support
+
 ---
  lisp/GNUmakefile.in |    4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
