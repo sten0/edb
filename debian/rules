@@ -31,10 +31,11 @@ override_dh_auto_install:
 
 	# We need these in emacsen-install
 	#
-	# The byte compilation is real strange.
-	# The bfuncs::edb-bfunc-make-all calls 'make', which reads GNUmakefile
-	# with some hackery to print out variables (*.el file lists) stored there.
-	# So GNUmakefile must be avalable for 'edb-bfunc-make-all'.
+	# The byte compilation is real strange. The
+	# bfuncs::edb-bfunc-make-all calls 'make', which reads
+	# GNUmakefile with some hackery to print out variables (*.el
+	# file lists) stored there. So GNUmakefile must be avalable
+	# for 'edb-bfunc-make-all'.
 
 	install -m 644 lisp/bfuncs lisp/GNUmakefile $(PKGLISPDIR)
 
