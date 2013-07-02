@@ -1,3 +1,6 @@
+From: Jari Aalto <jari.aalto@cante.net>
+Subject: Emacs 24.x adjustments
+
 ---
  lisp/connection.el         |   12 ++++++------
  lisp/database.el           |    4 ++--

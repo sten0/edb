@@ -1,3 +1,6 @@
+From: Jari Aalto <jari.aalto@cante.net>
+Subject: Emacs 24.x adjustments
+
 ---
  lisp/database.el   |    2 +-
  lisp/db-format.el  |    4 ++--
