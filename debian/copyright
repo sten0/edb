@@ -2,7 +2,8 @@ Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0
 Upstream-Name: edb
 Upstream-Contact: Thien-Thi Nguyen <ttn@gnuvola.org>
 Source: http://www.gnuvola.org/software/edb
-X-Source: http://www.emacswiki.org/cgi-bin/wiki/EmacsDataBase
+Comment:
+ See also http://www.emacswiki.org/cgi-bin/wiki/EmacsDataBase
 
 Files: *
 Copyright:
