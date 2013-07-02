@@ -16,7 +16,7 @@ override_dh_auto_test:
 
 override_dh_auto_install:
 	# target: install call make
-	$(MAKE) install
+	$(MAKE) DESTDIR=debian/edb install
 
 	# Don't need compiled files
 	rm -f $(PKGLISPDIR)/*.elc
