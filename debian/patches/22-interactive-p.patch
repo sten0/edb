@@ -47,32 +47,3 @@
        (message "Use of internal file layout now %sabled"
                 (if v "en" "dis")))))
  
---- a/lisp/edbcore.el
-+++ b/lisp/edbcore.el
-@@ -3363,7 +3363,7 @@
-       ;; First save away current format.
-       ;; No need to do anything with filename.
-       (let ((curname (edb--S :format-name)))
--        (when (and (interactive-p)
-+        (when (and (called-interactively-p 'interactive)
-                    (not curname)
-                    (y-or-n-p "Give the current format a name? "))
-           (setq curname (read-string "Name for current format: "))
-@@ -3441,7 +3441,7 @@
-                   dbf-format-name-spec-alist)
-             (erase-buffer))))
- 
--      (when (interactive-p)
-+      (when (called-interactively-p 'interactive)
-         (db-display-record (dbf-displayed-record) t)))))
- 
- 
-@@ -5776,7 +5776,7 @@
-                (not (zerop (prefix-numeric-value arg)))
-              (not (edb--1D dbc-database :togp)))))
-     (edb--1D! dbc-database :togp v)
--    (when (interactive-p)
-+    (when (called-interactively-p 'interactive)
-       (message "Use of internal file layout now %sabled"
-                (if v "en" "dis")))))
- 
