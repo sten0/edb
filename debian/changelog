@@ -20,15 +20,14 @@ edb (1.31-3) unstable; urgency=low
     - (edb-debian-after-find-file): Preserve point, correct hook treatment.
       Patch thanks to Kevin Ryde <user42@zip.com.au> (Closes: #671585).
   * debian/patches
-    - (10): New. Respect DESTDIR in makefile. Add headers.
-    - (10): New. Emacs 24 fixes.
+    - (10): New. Use DESTDIR.
   * debian/rules
     - Udate to dh(1)
     - (override_dh_auto_install): Delete duplicate file
       arb-demo and unneeded (see examples/README) symlinks to /dev/null
       and /etc/passwd.
 
- -- Jari Aalto <jari.aalto@cante.net>  Tue, 02 Jul 2013 13:18:17 +0300
+ -- Jari Aalto <jari.aalto@cante.net>  Tue, 02 Jul 2013 15:32:35 +0300
 
 edb (1.31-2) unstable; urgency=low
 
