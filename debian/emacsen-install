@@ -1,5 +1,5 @@
 #!/bin/sh
-# Synopsis: [DEBIAN_EL_DEBUG=1] emacsen-install [--test] emacs23 ...
+# Synopsis: [DEBIAN_EL_DEBUG=1] emacsen-install [--test] emacs24 ...
 
 set -e
 
@@ -31,8 +31,8 @@ Install ()
     echo "install/$PACKAGE: Handling install of emacsen flavor $FLAVOR"
 
     case "$FLAVOR" in
-	xemacs*)
-	    echo "$MESSAGE [xemacs*] ignored."
+	xemacs*|emacs23|emacs22|emacs21|emacs20|emacs19|mule2)
+	    echo "$MESSAGE [$FLAVOR] ignored."
 	    ;;
 
 	*)
