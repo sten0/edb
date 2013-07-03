@@ -1,5 +1,6 @@
 edb (1.31-3) unstable; urgency=low
 
+  [ Jari Aalto ]
   * Move to packaging format "3.0 (quilt)".
   * debian/clean
     - Delete test data.
@@ -14,20 +15,26 @@ edb (1.31-3) unstable; urgency=low
     - Update to format 1.0
   * debian/debian-vars.mk
     - Update variables.
-  * debian/dirs
-    - Remove empty usr/share/info
   * debian/emacsen-startup
     - (edb-debian-after-find-file): Preserve point, correct hook treatment.
       Patch thanks to Kevin Ryde <user42@zip.com.au> (Closes: #671585).
   * debian/patches
     - (10): New. Use DESTDIR.
+    - (20): New. Use cl-flet.
+    - (22): New. Use called-interactively-p.
   * debian/rules
     - Udate to dh(1)
     - (override_dh_auto_install): Delete duplicate file
       arb-demo and unneeded (see examples/README) symlinks to /dev/null
       and /etc/passwd.
 
- -- Jari Aalto <jari.aalto@cante.net>  Tue, 02 Jul 2013 15:32:35 +0300
+  [ Tatsuya Kinoshita ]
+  * debian/emacsen-install
+    - (Install): Ignore old versions of GNU Emacs.
+  * debian/control
+    - (Depends): Add emacs24, rm emacs23, emacs22.
+
+ -- Tatsuya Kinoshita <tats@debian.org>  Wed, 03 Jul 2013 12:41:07 +0900
 
 edb (1.31-2) unstable; urgency=low
 
