@@ -15,8 +15,7 @@ Subject: Emacs 24.x adjustments
  lisp/db-types.el           |    2 +-
  lisp/edb-1int-to-single.el |    6 +++---
  lisp/edb-meta.el           |    2 +-
- lisp/edbcore.el            |   30 +++++++++++++++---------------
- 14 files changed, 42 insertions(+), 42 deletions(-)
+ 13 files changed, 27 insertions(+), 27 deletions(-)
 
 --- a/lisp/connection.el
 +++ b/lisp/connection.el
@@ -76,7 +75,7 @@ Subject: Emacs 24.x adjustments
                                      (stringp v)
 --- a/lisp/database.el
 +++ b/lisp/database.el
-@@ -53,7 +53,7 @@
+@@ -53,7 +53,7 @@ the same as CONTROL's (or CONTROL's `buf
  buffer), with extension one of \".data\", \".dat\", or \"\" (empty string),
  in that order."
    (interactive
@@ -85,7 +84,7 @@ Subject: Emacs 24.x adjustments
                                        (format "%s file (type RET %s): "
                                                p1 p2)
                                        nil "")))
-@@ -86,7 +86,7 @@
+@@ -86,7 +86,7 @@ in that order."
      (unless data
        (setq data (when c-fname
                     (let ((stem (file-name-sans-extension c-fname)))
@@ -96,7 +95,7 @@ Subject: Emacs 24.x adjustments
                         (or (try ".data")
 --- a/lisp/db-file-io.el
 +++ b/lisp/db-file-io.el
-@@ -242,7 +242,7 @@
+@@ -242,7 +242,7 @@ The . that may precede the extension mus
          (down-list 1)
          (insert "cl-struct-")
          (goto-char here))
@@ -105,7 +104,7 @@ Subject: Emacs 24.x adjustments
                                  (forward-sexp z)
                                  (delete-region p (point)))))
          (when (db-skip-string-forward "; format 0.5")
-@@ -922,7 +922,7 @@
+@@ -922,7 +922,7 @@ The . that may precede the extension mus
        (cond
         ;; Data inherent data to the connection.
         (inherent
@@ -114,7 +113,7 @@ Subject: Emacs 24.x adjustments
                 (bget (k) (car (iget k)))
                 (bput (k v) (setcar (iget k) v)))
            (let* ((all (db-maprecords 'identity db nil nil t))
-@@ -1171,7 +1171,7 @@
+@@ -1171,7 +1171,7 @@ The . that may precede the extension mus
  ;;;
  
  (defun database-io-setup (db &optional norx)
@@ -125,7 +124,7 @@ Subject: Emacs 24.x adjustments
           (chk (si name sdef)
 --- a/lisp/db-format.el
 +++ b/lisp/db-format.el
-@@ -241,7 +241,7 @@
+@@ -241,7 +241,7 @@ variables, so that the file need not be
  (defconst db-optspec-list
    (mapcar (lambda (x)
              `(,(nth 0 x)
@@ -134,7 +133,7 @@ Subject: Emacs 24.x adjustments
                                                              frag))))
                                       `(lambda (ds val)
                                          (setf (,f ds) val)))))
-@@ -1487,7 +1487,7 @@
+@@ -1487,7 +1487,7 @@ actuality the format is being set, then
              (error "`%s' is not the name of a format." format-name)))))
      ;; Filename is now set.
  
@@ -145,7 +144,7 @@ Subject: Emacs 24.x adjustments
                     (list
 --- a/lisp/db-interfa.el
 +++ b/lisp/db-interfa.el
-@@ -391,7 +391,7 @@
+@@ -391,7 +391,7 @@ recordfieldtype-specific info."
    (interactive)
    (unless (edb--S :this-ds)
      (error "Not on a field."))
@@ -154,7 +153,7 @@ Subject: Emacs 24.x adjustments
                      (if (stringp x)
                          (list "%s" x)
                        (condition-case err
-@@ -844,7 +844,7 @@
+@@ -844,7 +844,7 @@ Hidden records are treated according to
           (idx (edb--S :index))
           (vov (edb--1D dbc-database :vov))
           (rno (edb--1D dbc-database :nrecords))
@@ -205,7 +204,7 @@ Subject: Emacs 24.x adjustments
      (if (listp pat)
 --- a/lisp/db-sort.el
 +++ b/lisp/db-sort.el
-@@ -370,7 +370,7 @@
+@@ -370,7 +370,7 @@ More specifically:
  
  ;; Insert item and trailing newline.
  (defun dbsi-format (item which)
@@ -216,7 +215,7 @@ Subject: Emacs 24.x adjustments
          (pinsert (format "%s" (cdr item)))
 --- a/lisp/db-tagged.el
 +++ b/lisp/db-tagged.el
-@@ -178,7 +178,7 @@
+@@ -178,7 +178,7 @@ Note: Do not call `database-set-fieldnam
          (D-! :continuation-output (D :continuation))
  
          ;; Performance-motivated pre-computations.
@@ -227,7 +226,7 @@ Subject: Emacs 24.x adjustments
                (concat "^" (D :pre-tag-regexp)
 --- a/lisp/db-two-dbs.el
 +++ b/lisp/db-two-dbs.el
-@@ -255,7 +255,7 @@
+@@ -255,7 +255,7 @@ nil otherwise."
                                               name1 " and " name2))))
      (dolist (buf (list loners1 loners2 discrep))
        (with-current-buffer buf (erase-buffer)))
@@ -238,7 +237,7 @@ Subject: Emacs 24.x adjustments
                        (dotimes (fno (length (database-fieldnames db)))
 --- a/lisp/db-types.el
 +++ b/lisp/db-types.el
-@@ -201,7 +201,7 @@
+@@ -201,7 +201,7 @@ Optional argument OPTSTRING is a display
            a->d (nreverse a->d)
            a->s (and a-s-differ (nreverse a->s)))
  
@@ -249,7 +248,7 @@ Subject: Emacs 24.x adjustments
              ;; valid input representation, otherwise see if it completes to a
 --- a/lisp/edb-1int-to-single.el
 +++ b/lisp/edb-1int-to-single.el
-@@ -50,7 +50,7 @@
+@@ -50,7 +50,7 @@ of possible <FIXME> occurances and sugge
                                            'cl-struct-slots))))
                    (map 'list 'cons slots (number-sequence 0 (length slots)))))
          mm extra records coding loc-block locals)
@@ -258,7 +257,7 @@ Subject: Emacs 24.x adjustments
                       (emacs-lisp-mode)))
             (mref (slot) (aref mm (cdr (assq slot mm-idx))))
             (cprop (prop &optional more) (insert (format "%s" prop)
-@@ -99,7 +99,7 @@
+@@ -99,7 +99,7 @@ of possible <FIXME> occurances and sugge
          (when (setq v (car (mref :field-priorities)))
            (cprop :field-order)
            (pp (apply 'vector
@@ -267,7 +266,7 @@ Subject: Emacs 24.x adjustments
                                             x)
                                            ((numberp x)
                                             (aref (mref :fieldnames) x))
-@@ -128,7 +128,7 @@
+@@ -128,7 +128,7 @@ of possible <FIXME> occurances and sugge
              (pp (apply 'vector v)))
            (nl))
          (let (try limit)
@@ -278,7 +277,7 @@ Subject: Emacs 24.x adjustments
                                             (point)))
 --- a/lisp/edb-meta.el
 +++ b/lisp/edb-meta.el
-@@ -70,7 +70,7 @@
+@@ -70,7 +70,7 @@ from the property `globals-to-check' of
                            (symbol-name f))
          (push f acc)))
      (insert (format " %s\n" acc)))
