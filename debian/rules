@@ -7,6 +7,7 @@ include debian/debian-vars.mk
 override_dh_clean:
 	[ ! -f GNUMakefile ] || $(MAKE) clean
 	find . -name GNUmakefile \
+		-o -name "*.elc*" \
 		-o -name "*[#~]*" \
 		| xargs -r rm
 	dh_clean
@@ -43,7 +44,6 @@ override_dh_auto_install:
 	rm -f $(INFODIR)/dir*
 
 	# Install examples
-
 	install -m 755 -d $(PKGDOCDIR)
 	tar -cf - examples | tar -C $(PKGDOCDIR) -xf -
 
