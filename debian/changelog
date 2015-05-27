@@ -1,3 +1,16 @@
+edb (1.31-4) unstable; urgency=low
+
+  * debian/copyright
+    - Update years.
+  * debian/control
+    - (Standards-Version): Update to 3.9.6.
+  * debian/patches
+    - (20): Refresh. Use cl-flet* to fix bug in edbcore.el.
+  * debian/rules
+    - (override_dh_clean): rm *.elc.
+
+ -- Jari Aalto <jari.aalto@cante.net>  Wed, 27 May 2015 18:55:16 +0300
+
 edb (1.31-3) unstable; urgency=low
 
   [ Jari Aalto ]
@@ -15,13 +28,13 @@ edb (1.31-3) unstable; urgency=low
     - Update to format 1.0
   * debian/debian-vars.mk
     - Update variables.
+  * debian/dirs
+    - Remove empty usr/share/info
   * debian/emacsen-startup
     - (edb-debian-after-find-file): Preserve point, correct hook treatment.
       Patch thanks to Kevin Ryde <user42@zip.com.au> (Closes: #671585).
   * debian/patches
     - (10): New. Use DESTDIR.
-    - (20): New. Use cl-flet.
-    - (22): New. Use called-interactively-p.
   * debian/rules
     - Udate to dh(1)
     - (override_dh_auto_install): Delete duplicate file
