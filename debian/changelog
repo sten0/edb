@@ -1,3 +1,12 @@
+edb (1.31-5) unstable; urgency=medium
+
+  * debian/control
+    - (Homepage): Update.
+    - (Standards-Version): Update to 3.9.8.
+    - (Vcs-*): Update to anonscm.debian.org. 
+
+ -- Jari Aalto <jari.aalto@cante.net>  Wed, 19 Oct 2016 02:57:17 +0300
+
 edb (1.31-4) unstable; urgency=low
 
   * debian/copyright
