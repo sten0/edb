@@ -1,24 +1,17 @@
-edb (1.31-5) unstable; urgency=medium
+edb (1.31-4) UNRELEASED; urgency=low
 
+  * debian/copyright
+    - Update URLs.
   * debian/control
     - (Homepage): Update.
     - (Standards-Version): Update to 3.9.8.
     - (Vcs-*): Update to anonscm.debian.org. 
-
- -- Jari Aalto <jari.aalto@cante.net>  Wed, 19 Oct 2016 02:57:17 +0300
-
-edb (1.31-4) unstable; urgency=low
-
-  * debian/copyright
-    - Update years.
-  * debian/control
-    - (Standards-Version): Update to 3.9.6.
   * debian/patches
     - (20): Refresh. Use cl-flet* to fix bug in edbcore.el.
   * debian/rules
     - (override_dh_clean): rm *.elc.
 
- -- Jari Aalto <jari.aalto@cante.net>  Wed, 27 May 2015 18:55:16 +0300
+ -- Jari Aalto <jari.aalto@cante.net>  Wed, 02 Nov 2016 20:33:45 +0200
 
 edb (1.31-3) unstable; urgency=low
 
