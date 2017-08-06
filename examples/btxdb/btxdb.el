@@ -1,5 +1,5 @@
 ;; btxdb.el -- BibTeX Database running on top of EDB
-;; Copyright (C) 2004,2005,2008 Thien-Thi Nguyen
+;; Copyright (C) 2004-2017 Thien-Thi Nguyen
 ;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -12,8 +12,7 @@
 ;; GNU General Public License for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with this program; if not, write to the Free Software Foundation,
-;; Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; LCD Archive Entry:
@@ -712,7 +711,8 @@ other field is updated."
       (let ((class (downcase (match-string 1)))
 	    (tag (match-string 2))
             plist)
-        (flet ((plpush (f v) (setq plist (plist-put plist f v))))
+        (cl-flet
+            ((plpush (f v) (setq plist (plist-put plist f v))))
           ;; don't allow bogus entry types which will screw up our
           ;; format file search later.
           (plpush 'class

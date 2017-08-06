@@ -1,116 +1,111 @@
-Welcome!
-========
+Welcome to EDB!
+===============
 
-	This directory contains EDB, the Emacs Database.
-	EDB was written by Michael Ernst <mernst@theory.lcs.mit.edu>,
-	and is being maintained by Thien-Thi Nguyen <ttn@gnuvola.org>.
+   This directory contains EDB, the Emacs Database.
+   EDB was written by Michael Ernst <mernst@theory.lcs.mit.edu>,
+   and is being maintained by Thien-Thi Nguyen <ttn@gnuvola.org>.
 
-	EDB homepage: <http://www.gnuvola.org/software/edb/>
+   EDB homepage: <http://www.gnuvola.org/software/edb/>
 
 
 Dependencies
 ============
 
-	GNU make that supports VPATH	-- build/install
-	GNU Emacs 22.x or later		-- build/install/run
+   GNU make that supports VPATH  -- build/install
+   GNU Emacs 22.x or later       -- build/install/run
 
 
 Installation
 ============
 
-	To install EDB, unpack the tarball, change into the resulting
-	directory (usually named edb-${VERSION}), and issue the three
-	commands:
+   To install EDB, unpack the tarball, change into the resulting
+   directory (usually named edb-${VERSION}), and issue the three
+   commands:
 
-		./configure
-		make
-		make check	# optional but recommended
-		make install
+      ./configure
+      make
+      make check      # optional but recommended
+      make install
 
-	This byte-compiles the .el files, and copies .el and .elc files
-	to ${sitelisp}/edb, and edb.info to ${infodir}, creating those
-	directories first if necessary.  Normally, these variables have
-	the values:
+   This byte-compiles the .el files, and copies .el and .elc files
+   to ${sitelisp} and ${sitelisp}/edb, and edb.info to ${infodir},
+   creating those directories first if necessary.  Normally, these
+   variables have the values:
 
-		${prefix}	/usr/local
-		${datadir}	${prefix}/share
-		${sitelisp}	${datadir}/emacs/site-lisp
-		${infodir}	${prefix}/info
+      ${prefix}       /usr/local
+      ${datadir}      ${prefix}/share
+      ${sitelisp}     ${datadir}/emacs/site-lisp
+      ${infodir}      ${prefix}/info
 
-	To use DIR instead of "/usr/local" for ${prefix} include the
-	option `--prefix DIR' to the configure script.  To choose an
-	alternate ${sitelisp}, use the option `--with-sitelisp=DIR'.
-	You can use the `--help' option to see full details.
+   To use DIR instead of "/usr/local" for ${prefix} include the
+   option ‘--prefix DIR’ to the configure script.  To choose an
+   alternate ${sitelisp}, use the option ‘--with-sitelisp=DIR’.
+   You can use the ‘--help’ option to see full details.
 
-	For backward-compatibility the normal installation includes some
-	function aliases that can be considered "namespace-polluting".
-	To arrange to not install these, you can use the configure option
-	`--disable-badnames'.  With this option, the files db-nosetf.el
-	and db-oldnames.el are not installed, and neither are the aliases:
-		maprecords
-		define-displaytype-from-displayspec
-		define-recordfieldtype-from-recordfieldspec
-		define-enum-type
-	See the manual for new names to use, instead.
+   For backward-compatibility the normal installation includes some
+   function aliases that can be considered "namespace-polluting".
+   To arrange to not install these, you can use the configure option
+   ‘--disable-badnames’.  With this option, the files db-nosetf.el
+   and db-oldnames.el are not installed, and neither are the aliases:
 
-	By default, the configure script looks for and uses the first
-	"emacs" executable found in a directory named in the PATH env
-	var.  To use another Emacs, you can either change PATH, or you
-	can specify the env var EMACS to name the new executable.  The
-	latter approach overrides the PATH search.  For example:
+      maprecords
+      define-displaytype-from-displayspec
+      define-recordfieldtype-from-recordfieldspec
+      define-enum-type
 
-		EMACS=$HOME/emacs-22/src/emacs
-		export EMACS
-		./configure ...
+   See the manual for new names to use, instead.
 
-	The specified (or found) Emacs is set in the various makefiles.
-	You can furthermore (at runtime) select another Emacs to use by
-	specifying the `EMACS' variable in the command-line for make.
-	For example:
+   By default, the configure script looks for and uses the first
+   "emacs" executable found in a directory named in the PATH env
+   var.  To use another Emacs, you can either change PATH, or you
+   can specify it by adding ‘EMACS=<executable-filename>’ to the
+   configure script invocation, as a command-line argument.  The
+   latter approach overrides the PATH search.  For example:
 
-		make check EMACS=$HOME/picky-emacs/src/emacs
+      ./configure EMACS=$HOME/hack/GNU/emacs/src/emacs
 
-	After installation, the unpacked directory can be deleted.
+   The specified (or found) Emacs is set in the various makefiles.
+   You can furthermore (at runtime) select another Emacs to use by
+   specifying the ‘EMACS’ variable in the command-line for make.
+   For example:
 
-	Note that installation does not place files directly in the
-	${sitelisp} directory, but rather a subdirectory named "edb".
-	It is assumed there exists the file ${sitelisp}/subdirs.el
-	that is responsible for adding ${sitelisp}/edb to the Emacs
-	`load-path'.  If this is not the case, you can create one to do
-	the job, with contents:
+      make check EMACS=$HOME/picky-emacs/src/emacs
 
-	(if (fboundp 'normal-top-level-add-subdirs-to-load-path)
-	    (normal-top-level-add-subdirs-to-load-path))
-
-	This has been verified to work with GNU Emacs 21.3.
+   After installation, the unpacked directory can be deleted.
 
 
 Usage
 =====
 
-	To experiment, evaluate in this directory:
+   To experiment, evaluate in this directory:
 
-	(add-to-list 'load-path default-directory)
-	(require 'database)
+      (add-to-list 'load-path (expand-file-name "lisp"))
+      (require 'database)
 
-	Then you can do Dired in subdirs `examples' and `skram', move
-	point to various data and .edb files, and use the command:
+   Then you can do Dired in subdirs ‘examples’ and ‘skram’, move
+   point to various data and .edb files, and use the command:
 
-	(defun my-dired-edb-interact ()
-	  (interactive)
-	  (let ((filename (dired-get-filename)))
-	    (if (string-match "[.]edb$" filename)
-	        (edb-interact filename nil)
-	      (db-find-file filename))))
+      (defun my-dired-edb-interact ()
+        (interactive)
+        (let ((filename (dired-get-filename)))
+          (if (string-match "[.]edb$" filename)
+              (edb-interact filename nil)
+            (db-find-file filename))))
 
-	Full details are in the documentation, highly recommended
-	for both end users and programmers.
+   Note that file skram/examples-syms.data is not distributed;
+   you can create it with the commands:
+
+      cd skram/
+      make examples-syms.data
+
+   Full details are in the documentation, highly recommended
+   for both end users and programmers.
 
 
 Reporting Bugs
 ==============
 
-	If you find a problem with EDB that is not explained in the
-	documentation, please send a bug report to <ttn@gnuvola.org>.
-	Include EDB version and as concise a test case as possible
-	(that reproduces the problem).
+   If you find a problem with EDB that is not explained in the
+   documentation, please send a bug report to <ttn@gnuvola.org>.
+   Include EDB version and as concise a test case as possible
+   (that reproduces the problem).

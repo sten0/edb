@@ -1,3 +1,22 @@
+2016-12-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Release: 1.32
+
+2016-12-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[v int] Don't bother passing ‘EMACS’ in the environment.
+
+	* ebatch.in (emacs): Use ‘@EMACS@’ as default.
+	* GNUmakefile.in (TESTSENV): Drop EMACS="$(EMACS)".
+
+2016-12-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[slog] Use ‘-L DIR’ more; munge ‘load-path’ less.
+
+	* ebatch.in (loadfrom): Delete var.
+	<top-level>: Use ‘-L "@abs_top_srcdir@/lisp"’ directly.
+	* null.test: Don't bother modifying ‘load-path’.
+
 2008-05-25  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	When deleting a record, clear highest (post-shift) vov element.
@@ -131,3 +150,8 @@
 
 	* Makefile.in: New file.
 
+
+Copyright (C) 2010-2017 Thien-Thi Nguyen
+
+Copying and distribution of this file, with or without modification,
+are permitted provided the copyright notice and this notice are preserved.

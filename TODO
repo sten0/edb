@@ -1,15 +1,15 @@
-- 1.32
+- 1.x
   - document API comprehensively
     - functions
     - variables
-  - finalize control properties for `single' schema-schema
+  - finalize control properties for ‘single’ schema-schema
 
-- 2.01
+- 2.x
   - drop
     - "internal file layout"
     - defstructs
     - special handling for format and aux files
-    - `db-find-file'
+    - ‘db-find-file’
     - various hooks / vars
     - aliases
       - maprecords
@@ -57,7 +57,7 @@
 	addressed on a case by case basis.  The goal is to introduce
 	incompatibility only where it is not so impactful to current
 	applications (the sample set being those databases in the
-	`examples' subdirectory plus any requests from afield -- to
+	‘examples’ subdirectory plus any requests from afield -- to
 	date, this latter category has been thunderously silent but who
 	knows what the future will drag in from the past).
 
@@ -101,8 +101,8 @@
 	distributed w/ EDB is to be extendable by applications:
 	"conversion specification".
 
-	Selected bits of the `displayspec', `recordfieldspec' and
-	`sepinfo' structures are to be folded into the "data source
+	Selected bits of the ‘displayspec’, ‘recordfieldspec’ and
+	‘sepinfo’ structures are to be folded into the "data source
 	specification".  Comingling of data source and data source
 	specification, as implemented in EDB 1.x using local variables,
 	is to be dropped.
@@ -117,7 +117,7 @@
 	elisp functions).
 
 	Applications do not need to know about "link" or "record index".
-	The `link' structure, ring-management code, and `displayspec'
+	The ‘link’ structure, ring-management code, and ‘displayspec’
 	structure are to be replaced by calls to ewoc.el functions (for
 	ordered views) and a congruent hash-table based implementation
 	(for unordered views).  Support for indexing by the application

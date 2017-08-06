@@ -1,6 +1,6 @@
 :EDB (single) ;;; -*- emacs-lisp -*-
 
-;; Copyright (C) 2005,2006,2007,2008 Thien-Thi Nguyen
+;; Copyright (C) 2005-2017 Thien-Thi Nguyen
 ;;
 ;; This file is part of EDB.
 ;;
@@ -15,9 +15,7 @@
 ;; for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with EDB; see the file COPYING.  If not, write to the Free
-;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-;; MA 02110-1301, USA.
+;; along with EDB.  If not, see <http://www.gnu.org/licenses/>.
 
 :name "SKRAM"
 :fields [thing kind thumbs-one thumbs-two places]
@@ -35,6 +33,10 @@ can be found in various places in the source:
 
 Prospects for its continued survival in EDB 1.x: \thumbs-one
 As for EDB 2.x, for now we'll just say "\thumbs-two\ ".
+:EOTB
+
+:report t
+\thumbs-one,width=9 \thing
 :EOTB
 
 ;;; skram.edb ends here

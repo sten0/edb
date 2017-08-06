@@ -1,5 +1,5 @@
 # GNUmakefile for EDB subdir "doc".
-# Copyright (C) 2007,2008 Thien-Thi Nguyen
+# Copyright (C) 2007-2017 Thien-Thi Nguyen
 #
 # This file is part of EDB.
 #
@@ -14,9 +14,7 @@
 # for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with EDB; see the file COPYING.  If not, write to the Free
-# Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-# MA 02110-1301, USA.
+# along with EDB.  If not, see <http://www.gnu.org/licenses/>.
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -28,7 +26,7 @@ infodir = @infodir@
 
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
-mkinstalldirs = $(top_srcdir)/install-sh -d
+MKDIR_P = @MKDIR_P@
 
 VERSION = @PACKAGE_VERSION@
 
@@ -36,10 +34,19 @@ LATEX = latex
 DVIPS = dvips
 PS2PDF = ps2pdf
 
+refcard-DVIPS-opts = -t landscape
+
 all: edb.info refcard.ps
 
 edb.info: edb.texi version.texi
 	makeinfo -o $@ $<
+
+refcard.dvi: refcard.version.tex
+
+# Suppress spurious rebuild of refcard.ps due
+# to missing refcard.dvi in the distribution.
+# (info "(make) Chained Rules")
+.INTERMEDIATE: refcard.dvi
 
 .tex.dvi:
 	$(TEXI2DVI) $<
@@ -52,39 +59,55 @@ version.texi: $(top_srcdir)/configure
 	@( echo '@set VERSION $(VERSION)' ;	\
 	   date -r $< '+@set UPDATED %F' ) > $@
 
-%.dvi: %.tex refcard.version.tex
+%.dvi: %.tex
 	$(LATEX) $<
 
+crufty := aux cp cps fn fns ky log pg toc tp vr vrs
+
 %.ps: %.dvi
-	$(DVIPS) -t landscape $<
-	$(RM) $*.{aux,log}
+	$(DVIPS) $($*-DVIPS-opts) $<
+	$(RM) $(addprefix $*., $(crufty))
 
 %.pdf: %.ps
 	$(PS2PDF) $<
 
 refcard.version.tex: $(top_srcdir)/configure
 	@echo Creating $@
-	@echo '\def\versionnumber{$(VERSION)}' > $@
-	@date '+\def\year{%Y}' -r $< >> $@
-	@date '+\def\updated{%Y-%m-%d}' -r $< >> $@
+	@printf '\\def\\versionnumber{$(VERSION)}\n' > $@
+	@printf '\\def\\year{%d}\n' $(shell date +%Y -r $<) >> $@
+	@printf '\\def\\updated{%s}\n' $(shell date +%F -r $<) >> $@
 
-prep-dist:
-	rm -f *.{aux,cp,cps,dvi,fn,ky,log,pg,toc,tp,vr}
+allsuch = $(wildcard $(addprefix *., $(1)))
 
-clean: prep-dist
-	rm -f *.ps *.pdf edb.info
+clean:
+	$(RM) $(call allsuch, dvi $(crufty))
+
+maintainerclean: clean
+	$(RM) $(call allsuch, ps pdf) edb.info
 
 ii = install-info
 
+ddi = $(DESTDIR)$(infodir)
+
+ii-args = --info-dir="$(ddi)" "$(ddi)/edb.info"
+
 install: all
-	$(mkinstalldirs) $(infodir)
-	$(INSTALL_DATA) edb.info $(infodir)
-	if ($(ii) --version &&						\
-	    $(ii) --version 2>&1 | sed 1q | grep -i -v debian)		\
-	   >/dev/null 2>&1 ; then					\
-	  $(ii) --info-dir="$(infodir)" "$(infodir)/edb.info" || : ;	\
+	$(MKDIR_P) "$(ddi)"
+	$(INSTALL_DATA) edb.info "$(ddi)"
+	if ($(ii) --version &&					\
+	    $(ii) --version 2>&1 | sed 1q | grep -i -v debian)	\
+	   >/dev/null 2>&1 ; then				\
+	  $(ii) $(ii-args) || : ;				\
 	else : ; fi
 
 installcheck:
+
+uninstall:
+	if ($(ii) --version &&					\
+	    $(ii) --version 2>&1 | sed 1q | grep -i -v debian)	\
+	   >/dev/null 2>&1 ; then				\
+	  $(ii) --delete $(ii-args) || : ;			\
+	else : ; fi
+	rm -f "$(ddi)/edb.info"
 
 # GNUmakefile.in ends here

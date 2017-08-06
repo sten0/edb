@@ -1,6 +1,6 @@
 ;;; db-file-io.el --- part of EDB, the Emacs database
 
-;; Copyright (C) 2004,2005,2006,2007,2008 Thien-Thi Nguyen
+;; Copyright (C) 2004-2017 Thien-Thi Nguyen
 
 ;; This file is part of EDB.
 ;;
@@ -15,9 +15,7 @@
 ;; for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with EDB; see the file COPYING.  If not, write to the Free
-;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-;; MA 02110-1301, USA.
+;; along with EDB.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -242,9 +240,10 @@ The . that may precede the extension must be specified explicitly.")
         (down-list 1)
         (insert "cl-struct-")
         (goto-char here))
-      (flet ((skip-zonk (s z) (let ((p (progn (forward-sexp s) (point))))
-                                (forward-sexp z)
-                                (delete-region p (point)))))
+      (cl-flet
+          ((skip-zonk (s z) (let ((p (progn (forward-sexp s) (point))))
+                              (forward-sexp z)
+                              (delete-region p (point)))))
         (when (db-skip-string-forward "; format 0.5")
           (delete-char -1)
           (insert "6")
@@ -922,9 +921,10 @@ The . that may precede the extension must be specified explicitly.")
       (cond
        ;; Data inherent data to the connection.
        (inherent
-        (flet ((iget (k) (gethash k inherent))
-               (bget (k) (car (iget k)))
-               (bput (k v) (setcar (iget k) v)))
+        (cl-flet*
+            ((iget (k) (gethash k inherent))
+             (bget (k) (car (iget k)))
+             (bput (k v) (setcar (iget k) v)))
           (let* ((all (db-maprecords 'identity db nil nil t))
                  (zonkp nil)
                  (cbuf (cond ((eq 'buffer (iget :control-type))
@@ -1171,51 +1171,52 @@ The . that may precede the extension must be specified explicitly.")
 ;;;
 
 (defun database-io-setup (db &optional norx)
-  (flet ((bad (part s name)
-              (error "Need a submatch to go with %s-regexp `%s' of %s."
-                     part s name))
-         (chk (si name sdef)
-              ;; It's good that this setting of -regexp slots doesn't happen
-              ;; until the last possible moment, when quotation-char and other
-              ;; variables that these values depend on are already set to
-              ;; their final values.
+  (cl-flet*
+      ((bad (part s name)
+            (error "Need a submatch to go with %s-regexp `%s' of %s."
+                   part s name))
+       (chk (si name sdef)
+            ;; It's good that this setting of -regexp slots doesn't happen
+            ;; until the last possible moment, when quotation-char and other
+            ;; variables that these values depend on are already set to
+            ;; their final values.
 
-              ;; If the string is the empty string, then we must have just set
-              ;; it that way, which means that we either also just set the
-              ;; regexp to nil, or we set the regexp to something we care
-              ;; about.  In either case don't mess further with the regexp.
+            ;; If the string is the empty string, then we must have just set
+            ;; it that way, which means that we either also just set the
+            ;; regexp to nil, or we set the regexp to something we care
+            ;; about.  In either case don't mess further with the regexp.
 
-              ;; The submatches could default to 0 if they're nil; but I want
-              ;; to be more paranoid than that.
-              (when (equal "" (sepinfo-pre-first-string si))
-                (setf (sepinfo-pre-first-string si) nil))
-              (cond ((sepinfo-pre-first-regexp si)
-                     (unless (sepinfo-pre-first-regexp-submatch si)
-                       (bad 'pre-first (sepinfo-pre-first-regexp si) name)))
-                    ((and (sepinfo-pre-first-string si) (not norx))
-                     (db-jam-si pre-first si)))
+            ;; The submatches could default to 0 if they're nil; but I want
+            ;; to be more paranoid than that.
+            (when (equal "" (sepinfo-pre-first-string si))
+              (setf (sepinfo-pre-first-string si) nil))
+            (cond ((sepinfo-pre-first-regexp si)
+                   (unless (sepinfo-pre-first-regexp-submatch si)
+                     (bad 'pre-first (sepinfo-pre-first-regexp si) name)))
+                  ((and (sepinfo-pre-first-string si) (not norx))
+                   (db-jam-si pre-first si)))
 
-              ;; Don't test for sep-function because the sepinfo must be valid
-              ;; for output as well as input.  On the other hand, we don't
-              ;; need sep-string to be set if a wrfr function is in use, but
-              ;; this function doesn't do any such checks.
-              (when (or (not (sepinfo-sep-string si))
-                        (and (equal "" (sepinfo-sep-string si))
-                             (not (sepinfo-sep-regexp si))))
-                (setf (sepinfo-sep-string si) sdef))
-              (cond ((sepinfo-sep-regexp si)
-                     (unless (sepinfo-sep-regexp-submatch si)
-                       (bad 'sep (sepinfo-sep-regexp si) name)))
-                    ((and (not (sepinfo-sep-function si)) (not norx))
-                     (db-jam-si sep si)))
+            ;; Don't test for sep-function because the sepinfo must be valid
+            ;; for output as well as input.  On the other hand, we don't
+            ;; need sep-string to be set if a wrfr function is in use, but
+            ;; this function doesn't do any such checks.
+            (when (or (not (sepinfo-sep-string si))
+                      (and (equal "" (sepinfo-sep-string si))
+                           (not (sepinfo-sep-regexp si))))
+              (setf (sepinfo-sep-string si) sdef))
+            (cond ((sepinfo-sep-regexp si)
+                   (unless (sepinfo-sep-regexp-submatch si)
+                     (bad 'sep (sepinfo-sep-regexp si) name)))
+                  ((and (not (sepinfo-sep-function si)) (not norx))
+                   (db-jam-si sep si)))
 
-              (when (equal "" (sepinfo-post-last-string si))
-                (setf (sepinfo-post-last-string si) nil))
-              (cond ((sepinfo-post-last-regexp si)
-                     (unless (sepinfo-post-last-regexp-submatch si)
-                       (bad 'post-last (sepinfo-post-last-regexp si) name)))
-                    ((and (sepinfo-post-last-string si) (not norx))
-                     (db-jam-si post-last si)))))
+            (when (equal "" (sepinfo-post-last-string si))
+              (setf (sepinfo-post-last-string si) nil))
+            (cond ((sepinfo-post-last-regexp si)
+                   (unless (sepinfo-post-last-regexp-submatch si)
+                     (bad 'post-last (sepinfo-post-last-regexp si) name)))
+                  ((and (sepinfo-post-last-string si) (not norx))
+                   (db-jam-si post-last si)))))
 
     ;; Some of this information may already be correctly set (especially if
     ;; we're now writing), but just in case some of the database slots have

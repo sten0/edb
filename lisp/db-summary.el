@@ -1,6 +1,6 @@
 ;;; db-summary.el --- part of EDB, the Emacs database
 
-;; Copyright (C) 2004,2005,2006,2007,2008 Thien-Thi Nguyen
+;; Copyright (C) 2004-2017 Thien-Thi Nguyen
 
 ;; This file is part of EDB.
 ;;
@@ -15,9 +15,7 @@
 ;; for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with EDB; see the file COPYING.  If not, write to the Free
-;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-;; MA 02110-1301, USA.
+;; along with EDB.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -70,7 +68,7 @@ When called from the summary buffer, this updates the summary.
 The displayed format can be set with `dbf-set-summary-format'."
   (interactive)
   (db-in-data-display-buffer
-    (cond ((= 0 (edb--1D dbc-database :nrecords))
+    (cond ((zerop (edb--1D dbc-database :nrecords))
            (delete-windows-on (edb--S :sumbuf))
            (db-message "Database is empty"))
           (t
@@ -364,7 +362,8 @@ Key bindings:
   ;; NOTE: If hidden records aren't shown in the summary (and that should be
   ;;       an option), then this is wrong.  And in that case it's better to do
   ;;       relative than absolute motion.
-  (goto-line (1+ (* (edb--1D dbc-database :sum1lines) (1- n))))
+  (goto-char (point-min))
+  (forward-line (* (edb--1D dbc-database :sum1lines) (1- n)))
   (edb--S! :point (point)))
 
 (defun dbs-move-to-proper-record (&optional index)

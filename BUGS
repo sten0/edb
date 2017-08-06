@@ -2,7 +2,7 @@ BUGS known to infest EDB (at some point).
 
 Please send bug reports not covered in this file to <ttn@gnuvola.org>.
 
-Include version (from `M-x edb-version'), a snapshot of the *Database Log*
+Include version (from ‘M-x edb-version’), a snapshot of the *Database Log*
 and *Backtrace* buffers (if available), the smallest possible set of files
 to reproduce the bug, a description of the precise actions that triggered
 the bug (starting from "emacs -q"), your observations of the actual events,
@@ -69,10 +69,10 @@ Reported-Version: 1.24
 Reported-By: ttn
 Reported-Date: 2004-10-13
 
-Most things have been pushed into `db-', `database-' or `db[a-z]*-'.
+Most things have been pushed into ‘db-’, ‘database-’ or ‘db[a-z]*-’.
 However, there are still quite a few exceptions, notably functions
-and vars in db-time.el (e.g., `parse-time-string') and in db-types.el
-(e.g., `abbreviate-state').  The latter is more of a latent conflict
+and vars in db-time.el (e.g., ‘parse-time-string’) and in db-types.el
+(e.g., ‘abbreviate-state’).  The latter is more of a latent conflict
 than an immediately pressing one.
 
 [Insert standard Emacs-single-namespace-is-a-PITA lament, here.]
@@ -84,29 +84,29 @@ Status: resolved
 Reported-Version: 1.23
 Reported-By: jsbien@mimuw.edu.pl
 Reported-Date: 2004-09-25
-Fix-Applied-Summary: Use `default-directory' in `load-path' when compiling
+Fix-Applied-Summary: Use ‘default-directory’ in ‘load-path’ when compiling
 Fix-Applied-Date: 2004-10-13
 Fix-Applied-Version: 1.24
 Resolved-Date: 2008-01-16
 
 The bug report said that db-nosetf.el was not able to be loaded.
 
-Now function `edb-byte-compile-all' unconditionally
-adds `default-directory' to `load-path'.
+Now function ‘edb-byte-compile-all’ unconditionally
+adds ‘default-directory’ to ‘load-path’.
 
 2008-01-16 ttn sez: no further activity, marking "resolved".
 
 
 Id: 4
-Summary: Invoking `db-next-field' in data display buffer throws error
+Summary: Invoking ‘db-next-field’ in data display buffer throws error
 Status: unresolved
 Reported-Version: 1.24
 Reported-By: ttn
 Reported-Date: 2004-10-13
 
-In the data display buffer, command `M-x db-next-field' throws a "Wrong type
+In the data display buffer, command ‘M-x db-next-field’ throws a "Wrong type
 argument: integer-or-marker-p, nil" error since "current-field" state has not
-yet been initialized (by calling `db-first-field', typically bound to TAB).
+yet been initialized (by calling ‘db-first-field’, typically bound to TAB).
 
 This bug is just one of many in a family.  The whole current-field tracking
 and attributes-setting is extremely cumbersome; too many independent variables
@@ -120,8 +120,8 @@ A kludge that was tried, and subsequently reverted, was to add:
     (db-first-field)
     (setq arg 0))
 
-to the beginning of `db-next-field'.  This worked for a bit but resulted in
-other errors later for other commands and then also later for `db-next-field'
+to the beginning of ‘db-next-field’.  This worked for a bit but resulted in
+other errors later for other commands and then also later for ‘db-next-field’
 itself.
 
 
@@ -172,7 +172,7 @@ Status: resolved
 Reported-Version: 1.24
 Reported-By: nr-tkz@nifty.com
 Reported-Date: 2004-11-19
-Fix-Applied-Summary: Honor new buffer-local var `edb-coding-system'
+Fix-Applied-Summary: Honor new buffer-local var ‘edb-coding-system’
 Fix-Applied-Date: 2005-01-14
 Fix-Applied-Version: 1.25
 Resolved-Date: 2008-01-16
@@ -205,7 +205,7 @@ ttn:
 
 ttn 2005-01-14 00:29:30:
 > i've added support (and slight documentation) for new buffer-local var
-> `edb-coding-system'.  1.x compatability constrains this support,
+> ‘edb-coding-system’.  1.x compatability constrains this support,
 > however, so that it does not work for all internal layout data files
 > (further discussion in bug #7).
 
@@ -224,13 +224,13 @@ if we have the following scenario:
 - data file is in internal layout format (schema and data together); and
 - data file encoding is not automatically recognized by Emacs;
 
-then the conventional method of using `universal-coding-system-argument'
-(C-x RET c) before the I/O operation (in this case `db-find-file') only
+then the conventional method of using ‘universal-coding-system-argument’
+(C-x RET c) before the I/O operation (in this case ‘db-find-file’) only
 works in cases where either:
 - there is no format file (very uncommon in the above scenario); or
 - the format file encoding is the same as for the data file.
 
-a large part of the problem lies in function `db-read-database-file' which
+a large part of the problem lies in function ‘db-read-database-file’ which
 does not properly modularize (i.e., kludgily special cases) internal layout
 format data file reading.  unfortunately, the precise sequence of events
 required for database access and EDB state init has been documented as part of
@@ -258,7 +258,7 @@ fails when obj1 and obj2 are "equal"; in that case, the return value does not
 indicate "reverse" (loses the inversion property).
 
 WRONG: (lambda (obj1 obj2) (funcall ORDFUNC obj2 obj1))
-TESTS: assume ORDFUNC is `<'
+TESTS: assume ORDFUNC is ‘<’
        obj1 obj2  result
           1    2     nil  OK
           2    1       t  OK
@@ -269,14 +269,14 @@ and take care to not disturb the order of the args passed to the ordering
 function.
 
 RIGHT: (lambda (obj1 obj2) (not (funcall ORDFUNC obj1 obj2)))
-TESTS: assume ORDFUNC is `<'
+TESTS: assume ORDFUNC is ‘<’
        obj1 obj2  result
           1    2     nil  OK
           2    1       t  OK
           3    3       t  OK
 
 Incidentally, this bugfix was part of some "EDB 1.21 Fixes" micro package
-floating around tHe net, necessitated by many years of EDB maintainer
+floating around the net, necessitated by many years of EDB maintainer
 unresponsiveness.
 
 
@@ -300,7 +300,7 @@ unresponsiveness.
 
 
 Id: 10
-Summary: Function `locate-file' not defined
+Summary: Function ‘locate-file’ not defined
 Status: resolved
 Reported-Version: 1.24
 Reported-By: ew.ng116837@online.de
@@ -310,14 +310,14 @@ Fix-Applied-Date: 2005-01-18
 Fix-Applied-Version: 1.25
 Resolved-Date: 2005-01-24
 
-The function `locate-file' is provided in GNU Emacs in cvs, and is thus not
+The function ‘locate-file’ is provided in GNU Emacs in cvs, and is thus not
 widely available.  The fix is to raise the abstraction level for callers to
-new func `db-locate-readable-file-prefer-cwd'.
+new func ‘db-locate-readable-file-prefer-cwd’.
 
 This bug was introduced in EDB 1.24 during the mad refactoring.
 
 Light testing was done on stock install of GNU Emacs 21.2, which does not
-provide `locate-file'.
+provide ‘locate-file’.
 
 
 Id: 11
@@ -346,15 +346,15 @@ Fix-Applied-Date: 2007-04-30
 Fix-Applied-Version: 1.27p2
 Resolved-Date: 2007-04-30
 
-The displayspec `\id,width=5,right-justify' renders the field `id'
+The displayspec ‘\id,width=5,right-justify’ renders the field ‘id’
 without any padding whatsoever.
 
 This is due to two bugs: (1) handling of right-justify does not set a
 proper "padding action" function; (2) parsing recognizes only the last
 option when given multiple options.
 
-To fix (1), a new (revived old) func `db-pad-left' was created and the
-entry for `right-justify' in `db-optspec-list' modified to return it.
+To fix (1), a new (revived old) func ‘db-pad-left’ was created and the
+entry for ‘right-justify’ in ‘db-optspec-list’ modified to return it.
 
 For (2), the following analysis illustrates the underlying problem:
 
@@ -387,7 +387,7 @@ to be the approach used in the parsing code, does not.
 
 To fix (2), we rework the regexp to be, essentially, "\\\\[xyz,]*";
 that is, combining the initial element w/ the options and including
-the delimiter (comma).  Then `split-string' on "," does the rest.
+the delimiter (comma).  Then ‘split-string’ on "," does the rest.
 
 Fixes have been tested w/ the BUGS.edb in the distribution.
 
@@ -405,26 +405,26 @@ Resolved-Date: 2008-01-16
 
 2007-12-11 <ttn> sez:
 
-In developing examples/www-links{,edb}, `edb-interact'
+In developing examples/www-links{,edb}, ‘edb-interact’
 would trigger some warning messages and eventually query:
 "Bad file format; try reading anyway?".  Answering "yes"
 would successfully read in the data (anyway).
 
 2007-12-12 <ttn> sez:
 
-Looks like `db-confirm-seps' computes `apparent-records'
+Looks like ‘db-confirm-seps’ computes ‘apparent-records’
 by dividing the number of visible record separators by the
 number of visible field separators, when both are the same.
 The boundary condition where there is only one field thus
 results in apparent-records being 1.
 
-Fix is to special-case that computation to take `apparent-records'
+Fix is to special-case that computation to take ‘apparent-records’
 to be directly the count of rsep matches.
 
 
 Id: 14
 Summary: There is no command to add a record after the current one
-Status: fix-applied
+Status: resolved
 Reported-Version: 1.22
 Reported-By: bob@newell.net
 Reported-Date: 2003-12-10
@@ -443,26 +443,27 @@ Resolved-Date: 2008-05-24
 
 2008-01-16 <ttn> sez:
 
-that's ugly!  looks like `database-add-record' supports append
+that's ugly!  looks like ‘database-add-record’ supports append
 (using optional arg ENDP).  we just need to bubble that up to the
-user-command.  we can either extend `db-add-record' or add a new
+user-command.  we can either extend ‘db-add-record’ or add a new
 one.  let's try the extension first and see how that goes...
 
 2008-05-24 <ttn> sez:
 
-extending `db-add-record' has been tested w/ ELIP.
+extending ‘db-add-record’ has been tested w/ ELIP.
 seems to work fine.  marking this "resolved".
 
 
 Id: 15
 Summary: Compilation fails under Windoze
-Status: fix-applied
+Status: resolved
 Reported-Version: 1.29
 Reported-By: phillip.lord@newcastle.ac.uk
 Reported-Date: 2008-03-25
-Fix-Applied-Summary: Use `call-process-region' instead of pipes
+Fix-Applied-Summary: Use ‘call-process-region’ instead of pipes
 Fix-Applied-Date: 2008-04-28
 Fix-Applied-Version: 1.30
+Resolved-Date: 2009-06-12
 
 2008-03-25 <phillip.lord@newcastle.ac.uk> sez (EDB is the
 "database dependency"):
@@ -471,24 +472,29 @@ Fix-Applied-Version: 1.30
 > windows (using cygwin make). It works fine on linux.
 
 For EDB 1.29, build process uses GNU make to mine runtime values
-out of GNUmakefile (see lisp/bfuncs `edb-bfunc-get-GNUmakefile'),
+out of GNUmakefile (see lisp/bfuncs ‘edb-bfunc-get-GNUmakefile’),
 using a shell command that includes a pipe:
 
 echo ... | make -f -
 
-For EDB 1.30, we use `call-process-region' instead, which is
+For EDB 1.30, we use ‘call-process-region’ instead, which is
 better supported under Windoze.
+
+2009-06-12 <ttn> sez:
+
+no complaints for more than a year.  marking "resolved".
 
 
 Id: 16
-Summary: Sometimes deleting a record gives `args-out-of-range' error
-Status: fix-applied
+Summary: Sometimes deleting a record gives ‘args-out-of-range’ error
+Status: resolved
 Reported-Version: 1.29
 Reported-By: phillip.lord@newcastle.ac.uk
 Reported-Date: 2008-03-31
-Fix-Applied-Summary: Fix OBOE in `db-delete-record'
+Fix-Applied-Summary: Fix OBOE in ‘db-delete-record’
 Fix-Applied-Date: 2008-05-25
 Fix-Applied-Version: 1.30
+Resolved-Date: 2009-06-12
 
 2008-03-31 <phillip.lord@newcastle.ac.uk> describes error.
 
@@ -517,7 +523,7 @@ bug has gone unnoticed for so long.
   does not change vov length; it simply decrements number of records.
 
 - Initial allocation of the vov is 10 plus the number of original
-  records (see lisp/db-file-io.el `edb--snap!').  The intent of the
+  records (see lisp/db-file-io.el ‘edb--snap!’).  The intent of the
   extra space is so that immediate small additions do not incur a
   realloc.  (Likewise, on realloc, another extra 10 slots are added.)
 
@@ -535,6 +541,40 @@ Resolution:
 - Bugfix: Compute end-index correctly.
 - Ancillary bugfix: Reset highest index (hole).
 - New test: b00.test
+
+2009-06-12 <ttn> sez:
+
+no complaints in more than a year.  marking "resolved".
+
+
+Id: 17
+Summary: ‘db-copy-region-as-kill’ does not always use ‘interprogram-cut-function’.
+Status: fix-applied
+Reported-Version: 1.31
+Reported-By: shoichi takasaki
+Reported-Date: 2009-05-01
+Fix-Applied-Summary: Use ‘interprogram-cut-function’ for new kills.
+Fix-Applied-Date: 2009-06-08
+Fix-Applied-Version: 1.32
+
+2009-05-01 <shoichi takasaki> sez:
+
+> I just wanted to inform you about one issue (but not bug) that I find
+> in "db-copy-region-as-kill" function.
+>
+> The issue (for me) is that this function doesn't run
+> "interprogram-cut-function" which is run in 'kill-new' to pass the
+> killed data to a program out of emacs.
+>
+> [snip patch]
+
+2009-06-08 <ttn> sez:
+
+patch slightly off, since it calls ‘interprogram-cut-function’
+both for old kills and new kills, thus doing a double call for
+old kills (which uses ‘kill-append’).
+
+so we call ‘interprogram-cut-function’ only for new kills.
 
 
 BUGS database ends here.

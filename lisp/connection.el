@@ -1,6 +1,6 @@
 ;;; connection.el
 
-;; Copyright (C) 2005,2006,2007,2008 Thien-Thi Nguyen
+;; Copyright (C) 2005-2017 Thien-Thi Nguyen
 
 ;; This file is part of EDB.
 ;;
@@ -15,9 +15,7 @@
 ;; for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with EDB; see the file COPYING.  If not, write to the Free
-;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-;; MA 02110-1301, USA.
+;; along with EDB.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -175,7 +173,8 @@
 
 (put 'edb--with-callable-connection 'lisp-indent-function 1)
 (defmacro edb--with-callable-connection (name &rest body)
-  `(flet ((,name (&rest args) (apply ,name args)))
+  `(cl-flet
+       ((,name (&rest args) (apply ,name args)))
      ,@body))
 
 (defun edb--connect (control-spec-source)
@@ -216,8 +215,9 @@
           (conn :V! :schema-type (car meta))
           (conn :V! :schema-options (cddr meta))
           (when (setq schema (cadr meta))
-            (flet ((bad (why) (error "Invalid (%s) schema basis: %S"
-                                     why schema)))
+            (cl-flet
+                ((bad (why) (error "Invalid (%s) schema basis: %S"
+                                   why schema)))
               (unless (symbolp schema)
                 (bad "not a symbol"))
               (unless (boundp schema)
@@ -266,7 +266,8 @@
                                         (point-max)
                                       (forward-line 1)
                                       (match-beginning 0)))
-                    (flet ((pl! (prop val) (setq pls (plist-put pls prop val))))
+                    (cl-flet
+                        ((pl! (prop val) (setq pls (plist-put pls prop val))))
                       (if datap
                           (let* ((seqr (plist-get pls :seqr))
                                  (f (or (edb--rget '(:edb1 :seq-funcs) seqr)
@@ -302,14 +303,15 @@
          (inhibit-file-name-handlers (cons 'edb--connection-file-cache
                                            inhibit-file-name-handlers))
          name desc)
-    (flet ((!! (s) (setq name (substring s (cdr (read-from-string s)))
-                         desc (let ((ls schema) look)
-                                (while (and (setq ls (memq :display ls)
-                                                  look (cadr ls))
-                                            (not (string= (plist-get look :name)
-                                                          name)))
-                                  (setq ls (cddr ls)))
-                                look))))
+    (cl-flet
+        ((!! (s) (setq name (substring s (cdr (read-from-string s)))
+                       desc (let ((ls schema) look)
+                              (while (and (setq ls (memq :display ls)
+                                                look (cadr ls))
+                                          (not (string= (plist-get look :name)
+                                                        name)))
+                                (setq ls (cddr ls)))
+                              look))))
       (case operation
         ((file-exists-p file-readable-p)
          (!! (car args))
@@ -328,7 +330,8 @@
 (defun edb--1mm<-connection (conn)
   (let ((schema (funcall conn :schema))
         v)
-    (flet ((S (prop) (plist-get schema prop)))
+    (cl-flet
+        ((S (prop) (plist-get schema prop)))
       (edb--make-v1-monolithic-mess
 
        :print-name
@@ -454,33 +457,34 @@
                    (conn :schema)))
          (mm (edb--1mm<-connection conn))
          v form)
-    (flet ((S (prop) (plist-get schema prop))
-           (maybe-quote (v) (if (or (and (consp v)
-                                         (memq (car v) '(function lambda)))
-                                    (stringp v)
-                                    (vectorp v))
-                                v
-                              (list 'quote v)))
-           (ppcur (x) (pp x (current-buffer)) (when (symbolp x) (insert "\n")))
-           (maybe-pp () (when form
-                          (cond ((vectorp form)
-                                 (insert (format "%s:\n" (aref form 0)))
-                                 (ppcur (aref form 1)))
-                                (t
-                                 ;; The local variables block must be 3000
-                                 ;; chars from the end, so printing things out
-                                 ;; to be handled "normally" loses on large
-                                 ;; eval forms.  Kludge around by listing all
-                                 ;; eval forms in a text property.  Sigh.
-                                 (let ((all (get-text-property 1 :eval-forms)))
-                                   (insert
-                                    "eval:\n"
-                                    "(eval (nth "
-                                    (format "%d" (length all))
-                                    " (get-text-property 1 :eval-forms)))\n")
-                                   (put-text-property
-                                    (point-min) (point-max)
-                                    :eval-forms (nconc all (list form)))))))))
+    (cl-flet*
+        ((S (prop) (plist-get schema prop))
+         (maybe-quote (v) (if (or (and (consp v)
+                                       (memq (car v) '(function lambda)))
+                                  (stringp v)
+                                  (vectorp v))
+                              v
+                            (list 'quote v)))
+         (ppcur (x) (pp x (current-buffer)) (when (symbolp x) (insert "\n")))
+         (maybe-pp () (when form
+                        (cond ((vectorp form)
+                               (insert (format "%s:\n" (aref form 0)))
+                               (ppcur (aref form 1)))
+                              (t
+                               ;; The local variables block must be 3000
+                               ;; chars from the end, so printing things out
+                               ;; to be handled "normally" loses on large
+                               ;; eval forms.  Kludge around by listing all
+                               ;; eval forms in a text property.  Sigh.
+                               (let ((all (get-text-property 1 :eval-forms)))
+                                 (insert
+                                  "eval:\n"
+                                  "(eval (nth "
+                                  (format "%d" (length all))
+                                  " (get-text-property 1 :eval-forms)))\n")
+                                 (put-text-property
+                                  (point-min) (point-max)
+                                  :eval-forms (nconc all (list form)))))))))
       (set-buffer (get-buffer-create (format " FORMAT FILE: %S" (S :name))))
       (fundamental-mode)
       (erase-buffer)
@@ -498,8 +502,8 @@
       (setq form nil)
       (dolist (slot (mapcar (lambda (x)
                               (intern (format "database-%s" (car x))))
-                            (reverse (get 'edb--v1-monolithic-mess
-                                          'cl-struct-slots))))
+                            (reverse (edb--struct-slot-info
+                                      'edb--v1-monolithic-mess))))
         (unless (memq slot '(database-fieldnames
                              database-recordfieldspecs
                              database-locals
@@ -518,8 +522,8 @@
       ;; fsep and rsep
       (let ((sep-slots (mapcar (lambda (x)
                                  (intern (format "sepinfo-%s" (car x))))
-                               (reverse (get 'edb--v1-sepinfo
-                                             'cl-struct-slots)))))
+                               (reverse (edb--struct-slot-info
+                                         'edb--v1-sepinfo)))))
         ;; fsep
         (setq form nil)
         (dolist (slot sep-slots)

@@ -1,6 +1,6 @@
 ;;; db-search.el --- part of EDB, the Emacs database
 
-;; Copyright (C) 2004,2005,2006,2007,2008 Thien-Thi Nguyen
+;; Copyright (C) 2004-2017 Thien-Thi Nguyen
 
 ;; This file is part of EDB.
 ;;
@@ -15,9 +15,7 @@
 ;; for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with EDB; see the file COPYING.  If not, write to the Free
-;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-;; MA 02110-1301, USA.
+;; along with EDB.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -42,12 +40,13 @@
         (p-<   "^<")
         (p->   "^>")
         (p-=   "^="))
-    (flet ((try (x) (string-match x string))
-           (sub (x) (db-parse-match-pattern x ds))
-           (p1o (x) (db-callconvert (edb--1ds-display->actual ds)
-                                    x nil nil nil))
-           (b () (substring string 0 (match-beginning 0)))
-           (e () (substring string (match-end 0))))
+    (cl-flet
+        ((try (x) (string-match x string))
+         (sub (x) (db-parse-match-pattern x ds))
+         (p1o (x) (db-callconvert (edb--1ds-display->actual ds)
+                                  x nil nil nil))
+         (b () (substring string 0 (match-beginning 0)))
+         (e () (substring string (match-end 0))))
       (cond ((try c-and) `(db-match-and ,(sub (b)) (sub (e))))
             ((try c-or)  `(db-match-or  ,(sub (b)) (sub (e))))
             ;; no infix connectives in string
@@ -63,9 +62,10 @@
 
 ;;;###autoload
 (defun db-print-match-pattern (pat ds)
-  (flet ((sub (x) (db-print-match-pattern x ds))
-         (p1o (x) (db-callconvert (edb--1ds-actual->display ds)
-                                  x nil nil)))
+  (cl-flet
+      ((sub (x) (db-print-match-pattern x ds))
+       (p1o (x) (db-callconvert (edb--1ds-actual->display ds)
+                                x nil nil)))
     (let* ((type (when (listp pat) (car pat)))
            (one (and type (cadr pat)))
            (two (and type (caddr pat))))
@@ -86,9 +86,10 @@
 
 ;;;###autoload
 (defun db-match (pat targ rs)
-  (flet ((m (x) (db-match x targ rs))
-         (rso (x) (funcall (db-rs-ordfunc rs) x targ))
-         (rsm (x) (funcall (edb--1rs-match-function rs) x targ)))
+  (cl-flet
+      ((m (x) (db-match x targ rs))
+       (rso (x) (funcall (db-rs-ordfunc rs) x targ))
+       (rsm (x) (funcall (edb--1rs-match-function rs) x targ)))
     (if (listp pat)
         (let ((one (cadr pat))
               (two (caddr pat)))
@@ -98,7 +99,7 @@
             (db-match-not (not (m one)))
             (db-match-<   (=  1 (rso one)))
             (db-match->   (= -1 (rso one)))
-            (db-match-=   (=  0 (rso one)))
+            (db-match-=   (zerop (rso one)))
             (t            (rsm pat))))
       (rsm pat))))
 

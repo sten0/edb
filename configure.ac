@@ -1,6 +1,6 @@
 # configure.ac
 #
-# Copyright (C) 2006,2007,2008 Thien-Thi Nguyen
+# Copyright (C) 2006-2017 Thien-Thi Nguyen
 #
 # This file is part of EDB.
 #
@@ -15,28 +15,41 @@
 # for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with EDB; see the file COPYING.  If not, write to the Free
-# Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-# MA 02110-1301, USA.
+# along with EDB.  If not, see <http://www.gnu.org/licenses/>.
 
-AC_INIT([EDB],[1.31],[ttn@gnuvola.org])
+AC_INIT([EDB],[1.33],[ttn@gnuvola.org])
+AC_CONFIG_AUX_DIR([build-aux])
+
+dnl At present, aclocal.m4 must live in the top-level directory,
+dnl alongside configure.ac (et al).  That's lame.  Don't bother.
+dnl TODO: Revisit decision if/when Autotools find a better way.
+m4_include([build-aux/elisp.m4])dnl
+ELISP_CONFIG_FILE([lisp/cfg.el])dnl
 
 AC_PROG_INSTALL
+AC_PROG_MKDIR_P
 
 # allow env override but do not get fooled by EMACS=t
 test t = "$EMACS" && unset EMACS
 # the next line does nothing if var EMACS is already set
 AC_CHECK_PROG([EMACS], [emacs], [emacs])
-if test "x$EMACS" = x ; then
-   AC_MSG_ERROR([emacs not found; required!])
-fi
+AS_IF([test "x$EMACS" = x],
+  [AC_MSG_ERROR([emacs not found; required!])])
+
+AC_CACHE_CHECK([if $EMACS can handle -L DIR],[edb_cv_emacs_minus_L],[
+AS_IF([$EMACS --batch --no-site-file -L . --kill >/dev/null 2>&1],
+  [edb_cv_emacs_minus_L=yes],
+  [edb_cv_emacs_minus_L=no])
+])
+AS_IF([! test yes = $edb_cv_emacs_minus_L],
+  [AC_MSG_ERROR([Sorry, EMACS=$EMACS cannot build EDB])])
 
 AC_ARG_WITH([sitelisp],
  AS_HELP_STRING([--with-sitelisp=DIR],
                 [Override the default site-lisp directory]),
- sitelisp="$withval",
- sitelisp="$datadir/emacs/site-lisp")
-AC_SUBST(sitelisp)
+ [sitelisp="$withval"],
+ [sitelisp="$datadir/emacs/site-lisp"])
+AC_SUBST([sitelisp])
 
 badnamesp=true
 AC_ARG_ENABLE([badnames],
@@ -44,7 +57,12 @@ AC_ARG_ENABLE([badnames],
                 [Do not support backward-compatible but
                  namespace-polluting aliases (see README)]),
  [test "$enableval" = no && badnamesp=false])
-AC_SUBST(badnamesp)
+AC_SUBST([badnamesp])
+
+ELISP_CHECK_FBOUNDP([with-selected-window])
+ELISP_CHECK_FBOUNDP([number-sequence])
+ELISP_CHECK_FBOUNDP([help-function-arglist],[help-fns])
+ELISP_CHECK_FEATURE([cl-macs])
 
 AC_CONFIG_FILES([
   GNUmakefile

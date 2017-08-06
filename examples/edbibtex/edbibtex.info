@@ -1,0 +1,393 @@
+This is edbibtex.info, produced by makeinfo version 6.3 from
+edbibtex.texinfo.
+
+This file documents 'edbibtex', a collection of functions for processing
+BibTeX files with EDB, Michael Ernst's Emacs Database.
+
+   Copyright (C) 1995 Michael Burschik <burschik@uni-bonn.de>
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+
+
+File: edbibtex.info,  Node: Top,  Up: (dir)
+
+'edbibtex.el' is a collection of functions which should prove useful for
+maintaining BibTeX database files using EDB, Michael Ernst's marvelous
+Emacs Database.  'edbibtex.el' contains functions for reading, writing,
+formatting and validating such files.  You should also have
+'BibTeX.dba', an EDB auxiliary file for use with BibTeX style
+bibliography files, and a set of sample formats.
+
+   I am indebted to Michael Ernst <mernst@theory.lcs.mit.edu> and
+Thorsten Ohl <ohl@physics.harvard.edu> for the inspiration their code
+provided and the information they supplied.  I would also like to thank
+Alastair Burt <burt@dfki.uni-kl.de>, James Crotinger
+<jac@moonshine.llnl.gov> and Martin Maechler
+<maechler@stat.math.ethz.ch> for bug reports.
+
+   Please send all bug reports, suggestions for improvement, threats and
+praise (if any) to: Michael Burschik <burschik@uni-bonn.de>.
+
+* Menu:
+
+* Copying::		How you can copy and share 'edbibtex'.
+* Caveats::		Where 'edbibtex' will fail you.
+* Features::		What 'edbibtex' should do for you.
+* Installation::	How to install 'edbibtex'.
+* Customization::	How to pinch and twiddle 'edbibtex'.
+* Concept Index::	Index of concepts.
+
+
+File: edbibtex.info,  Node: Copying,  Next: Caveats,  Prev: Top,  Up: Top
+
+1 Copying
+*********
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
+
+   This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+File: edbibtex.info,  Node: Caveats,  Next: Features,  Prev: Copying,  Up: Top
+
+2 Caveats
+*********
+
+* Menu:
+
+* Comments::		The fate of comments, folding information, etc.
+* Strings::		'@string' commands and string concatenation.
+
+
+File: edbibtex.info,  Node: Comments,  Next: Strings,  Up: Caveats
+
+2.1 Comments
+============
+
+Many BibTeX files tend to have comments, fancy delimiting lines or
+folding information between the entries.  I think the database reading
+functions will skip over this stuff unharmed, but they will discard all
+such additional information.  In other words:
+
+     Anything which is not recognized as a
+        BibTeX entry will be discarded.
+
+   My official position on comments is that they should be put in some
+ignored BibTeX field, such as 'ABSTRACT' or 'MY-COMMENT'.  I might write
+functions to look for comments in other places, but don't count on it.
+
+
+File: edbibtex.info,  Node: Strings,  Prev: Comments,  Up: Caveats
+
+2.2 Strings
+===========
+
+BibTeX's '@string' command is supported.  Abbreviations will be
+displayed enclosed by '#' characters, which should be safe for enough
+for TeX as long as the catcodes have not been changed.  The
+abbreviations will not, however, be written to the database file that
+way.  If abbreviations are entered in database-edit-mode, they must also
+be enclosed this way, so that 'edbibtex' will be able to recognize them
+(*note Defining Abbreviations::, for details and examples).
+
+
+File: edbibtex.info,  Node: Features,  Next: Installation,  Prev: Caveats,  Up: Top
+
+3 Features
+**********
+
+* Menu:
+
+* Defining Abbreviations::	BibTeX's @string command.
+* String Concatenation::	BibTeX's '#' operator.
+* Preambles::			BibTeX's @preamble command.
+* Validation::			Validating the database entries.
+
+
+File: edbibtex.info,  Node: Defining Abbreviations,  Next: String Concatenation,  Up: Features
+
+3.1 Defining Abbreviations
+==========================
+
+'edbibtex' is able to handle BibTeX's '@string' command.  String
+declarations are considered to be a valid entry type and are associated
+with a separate format file.
+
+   Abbreviations will be displayed enclosed by '#' characters, which
+should be safe for enough for TeX as long as the catcodes have not been
+changed.  The abbreviations will not, however, be written to the
+database file that way.  If abbreviations are entered in
+database-edit-mode, they must also be enclosed this way.
+
+   Thus, if your BibTeX database file contains the command
+
+     @string( AMS = "American Mathematical Society" )
+
+   you might use this abbreviation somewhere in your database.  Your
+display buffer should then look something like this:
+
+        author:   E.G. Anybody
+         title:   Some Remarks on Things
+     publisher:   #AMS#
+
+   Make sure you always tag your abbreviations in this way.
+
+
+File: edbibtex.info,  Node: String Concatenation,  Next: Preambles,  Prev: Defining Abbreviations,  Up: Features
+
+3.2 String Concatenation
+========================
+
+'edbibtex' supports BibTeX's string concatenation feature.  This means
+that you can write things like this:
+
+     @string( AMS = "American Mathematical Society" )
+
+     @book{Ore,
+       author = "Oystein Ore",
+       title = "Theory of Graphs",
+       series = AMS # " Colloquium Publications"
+       ... }
+
+   In your data display buffer, 'edbibtex' will display this as:
+
+       series: #AMS# Colloquium Publications
+
+   You can use any amount of concatenation.
+
+
+File: edbibtex.info,  Node: Preambles,  Next: Validation,  Prev: String Concatenation,  Up: Features
+
+3.3 Preambles
+=============
+
+BibTeX's @preamble feature, which allows you to define new macros for
+your bibliography, is also supported by 'edbibtex'.  @preamble entries
+have their own display format.
+
+
+File: edbibtex.info,  Node: Validation,  Prev: Preambles,  Up: Features
+
+3.4 Validation
+==============
+
+All entries are checked both for undefined abbreviations and for
+violations of the BibTeX entry type requirements.  This is done
+automatically when the database file is read and whenever a record is
+modified.  It can also be done interactively with the function
+'BibTeX-validate-entry', which is bound to 'C-c C-v' by default.
+
+   If you validate a string record, then 'BibTeX-string-alist' is
+updated.  Your new abbreviation is now defined and will no longer cause
+warnings.
+
+
+File: edbibtex.info,  Node: Installation,  Next: Customization,  Prev: Features,  Up: Top
+
+4 Installation
+**************
+
+'edbibtex' consists of the following files:
+
+  1. The main code file: 'edbibtex.el'
+
+  2. A byte compile script: 'compile.el'
+
+  3. An EDB auxiliary file: 'bibtex.dba'
+
+  4. Format files: 'article.fmt', 'bibtex.fmt', 'book.fmt',
+     'booklet.fmt', 'inbook.fmt', 'incollection.fmt',
+     'inproceedings.fmt', 'manual.fmt', 'mastersthesis.fmt', 'misc.fmt',
+     'phdthesis.fmt', 'preamble.fmt', 'proceedings.fmt', 'string.fmt',
+     'techreport.fmt', 'unpublished.fmt'
+
+  5. Documentation: 'edbibtex.texinfo'
+
+  6. A makefile: 'Makefile'
+
+   Edit 'Makefile', then type 'make all' and 'make install'.
+
+   If you haven't got make, byte-compile 'edbibtex.el' and put it
+somewhere in your load path.  You can do this by either loading
+'compile.el' or by loading 'edbibtex.el' before byte-compiling
+'edbibtex.el'.  Make a copy of 'bibtex.dba', change its name to fit the
+name of your BibTeX database and put it somewhere it will be found by
+EDB. If, for example, your database is called 'PhD-Thesis.bibliography',
+then rename the copy of 'BibTeX.dba' to 'PhD-Thesis.dba'.
+
+   Put the format files somewhere in EDB's 'db-format-file-path'.  It is
+also a good idea to have a format file with the same base name as your
+database, so that you will not be prompted for a format every time you
+load it.  This file should be a generic format file like 'bibtex.fmt'.
+Copy this format file and call it 'PhD-Thesis.fmt' or whatever.
+
+   Reading and writing BibTeX database files is complicated and
+time-consuming.  If you are thinking of maintaining database files
+containing more than two or three hundred records, you should think
+about keeping two versions: workday versions for use with EDB (in EDB's
+internal layout) and Sunday versions for BibTeX to work with (in
+BibTeX's file layout).  You can control the on-disk representation of
+your database files with 'db-toggle-internal-file-layout'.
+
+
+File: edbibtex.info,  Node: Customization,  Next: Concept Index,  Prev: Installation,  Up: Top
+
+5 Customization
+***************
+
+The file 'BibTeX.dba' is used to set a number of per-database variables
+that modify the behaviour of 'EDB' and 'edbibtex'.  Before you do
+anything else, make sure that you have a copy of 'bibtex.dba' hidden
+away in some safe place.  Make a copy of the file and rename it so that
+it will fit your database file (e.g., 'PhD-Thesis.dba') and customize
+that copy only.
+
+   A number of constants and variables that should be database
+independent are defined in 'edbibtex.el' itself.
+
+* Menu:
+
+* Entry Types::			Valid BibTeX entry types.
+* Fields::			Valid BibTeX field names.
+* Abbreviations::		Pre-defined abbreviations.
+* Multiple Formats::		Using entry type dependent formats.
+
+
+File: edbibtex.info,  Node: Entry Types,  Next: Fields,  Up: Customization
+
+5.1 Entry Types
+===============
+
+'BibTeX-entry-type-alist' is an association list containing all valid
+BibTeX entry types and the format files associated with them.  You
+shouldn't want to change the entry types, but you might want to give
+other names to your format files.
+
+   Note that the list of valid entry types includes '@string' and
+'@preamble' entries.
+
+   'BibTeX-entry-type-alist' is defined in 'edbibtex.el'.
+
+
+File: edbibtex.info,  Node: Fields,  Next: Abbreviations,  Prev: Entry Types,  Up: Customization
+
+5.2 Fields
+==========
+
+'BibTeX-field-alist' is an association list containing all standard
+BibTeX entry fields (BibTeX version 0.99a) and a few additional fields
+that happened to pop up in my own BibTeX database files or Thorsten
+Ohl's example file.  You might want to add a few of your own, depending
+on what information you require and what style you are using.
+
+   'BibTeX-field-alist' is defined in 'edbibtex.el'.
+
+
+File: edbibtex.info,  Node: Abbreviations,  Next: Multiple Formats,  Prev: Fields,  Up: Customization
+
+5.3 Abbreviations
+=================
+
+'BibTeX-string-alist' is an association list containing a few standard
+abbreviations and their expansions.  You can add whatever you like, or
+set it to 'nil'.
+
+   This association list will be updated whenever a string entry is read
+from the database file or a newly added string entry is validated (*note
+Validation::, for details).
+
+   'BibTeX-string-alist' is defined in 'edbibtex.el'.
+
+
+File: edbibtex.info,  Node: Multiple Formats,  Prev: Abbreviations,  Up: Customization
+
+5.4 Multiple Formats
+====================
+
+If the per-database variable 'BibTeX-multiple-format' is set to 'nil',
+then only a generic format will be used to display records.  If
+'BibTeX-multiple-format' was set from the auxiliary file, then this
+format will be the one defined as 'GENERIC'; otherwise it will be the
+format of the record on display when the variable was set.  In any case,
+however, you can change the format with 'db-change-format'.
+
+   If 'BibTeX-multiple-format' is set to anything other than 'nil',
+'db-change-format' will have no effect at all; the format of an entry
+will depend on the format file associated with its entry type.
+
+   If 'BibTeX-use-default-format' is set to something other than 'nil',
+then the format of a newly added entry (i.e., an entry without a valid
+entry type) will be the default format (i.e., the format of the entry
+currently on display).  You can change this format with
+'BibTeX-set-format'.  If 'BibTeX-use-default-format' is set to 'nil',
+you will be prompted for an appropriate format.
+
+
+File: edbibtex.info,  Node: Concept Index,  Prev: Customization,  Up: Top
+
+Concept Index
+*************
+
+ [index ]
+* Menu:
+
+* Abbreviations:                         Abbreviations.         (line 6)
+* Caveats:                               Caveats.               (line 6)
+* Comments:                              Comments.              (line 6)
+* Copying:                               Copying.               (line 6)
+* Customization:                         Customization.         (line 6)
+* Defining Abbreviations:                Defining Abbreviations.
+                                                                (line 6)
+* Entry Types:                           Entry Types.           (line 6)
+* Features:                              Features.              (line 6)
+* Fields:                                Fields.                (line 6)
+* Installation:                          Installation.          (line 6)
+* Multiple Formats:                      Multiple Formats.      (line 6)
+* Preambles:                             Preambles.             (line 6)
+* String Concatenation:                  String Concatenation.  (line 6)
+* Validation:                            Validation.            (line 6)
+* What doesn't work:                     Caveats.               (line 6)
+
+
+
+Tag Table:
+Node: Top932
+Node: Copying2147
+Node: Caveats2863
+Node: Comments3096
+Node: Strings3750
+Node: Features4315
+Node: Defining Abbreviations4630
+Node: String Concatenation5667
+Node: Preambles6300
+Node: Validation6606
+Node: Installation7189
+Node: Customization9197
+Node: Entry Types10004
+Node: Fields10503
+Node: Abbreviations11022
+Node: Multiple Formats11554
+Node: Concept Index12684
+
+End Tag Table

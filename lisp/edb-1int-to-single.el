@@ -1,6 +1,6 @@
 ;;; edb-1int-to-single.el
 
-;; Copyright (C) 2006,2007,2008 Thien-Thi Nguyen
+;; Copyright (C) 2006-2017 Thien-Thi Nguyen
 
 ;; This file is part of EDB.
 ;;
@@ -15,9 +15,7 @@
 ;; for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with EDB; see the file COPYING.  If not, write to the Free
-;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-;; MA 02110-1301, USA.
+;; along with EDB.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -39,33 +37,34 @@ The output buffer may have several \"<FIXME>\" tokens in it,
 indicating places where further attention (a nice way to say
 \"manual tweaking\") is required to complete the translation.
 
-See info node `(edb)edb-1int-to-single' for the complete list
+See info node `(edb) edb-1int-to-single' for the complete list
 of possible <FIXME> occurances and suggested remedies."
   (interactive "fTranslate EDB 1.x \"internal file layout\": ")
   (let ((fixme "<FIXME>")
         ;; todo: for EDB 2.x, replace computation w/ (its) constant value
         (mm-idx (let ((slots (mapcar (lambda (ent)
                                        (intern (format ":%s" (car ent))))
-                                     (get 'edb--v1-monolithic-mess
-                                          'cl-struct-slots))))
+                                     (edb--struct-slot-info
+                                      'edb--v1-monolithic-mess))))
                   (map 'list 'cons slots (number-sequence 0 (length slots)))))
         mm extra records coding loc-block locals)
-    (flet ((elm () (let ((emacs-lisp-mode-hook nil))
-                     (emacs-lisp-mode)))
-           (mref (slot) (aref mm (cdr (assq slot mm-idx))))
-           (cprop (prop &optional more) (insert (format "%s" prop)
-                                                (if more
-                                                    (format " %S" more)
-                                                  "")
-                                                "\n"))
-           (nlnl (&optional stuff) (insert (if stuff
-                                               (format "%s" stuff)
-                                             "")
-                                           "\n\n"))
-           (nl () (insert "\n"))
-           (backslash-hat (c) (cond ((= ?\n c) (insert c))
-                                    ((> 32 c) (insert "\\^" (+ c 64)))
-                                    (t (insert c)))))
+    (cl-flet
+        ((elm () (let ((emacs-lisp-mode-hook nil))
+                   (emacs-lisp-mode)))
+         (mref (slot) (aref mm (cdr (assq slot mm-idx))))
+         (cprop (prop &optional more) (insert (format "%s" prop)
+                                              (if more
+                                                  (format " %S" more)
+                                                "")
+                                              "\n"))
+         (nlnl (&optional stuff) (insert (if stuff
+                                             (format "%s" stuff)
+                                           "")
+                                         "\n\n"))
+         (nl () (insert "\n"))
+         (backslash-hat (c) (cond ((= ?\n c) (insert c))
+                                  ((> 32 c) (insert "\\^" (+ c 64)))
+                                  (t (insert c)))))
       (with-temp-buffer
         (elm)
         (insert-file-contents filename)
@@ -99,12 +98,13 @@ of possible <FIXME> occurances and suggested remedies."
         (when (setq v (car (mref :field-priorities)))
           (cprop :field-order)
           (pp (apply 'vector
-                     (flet ((ok (x) (cond ((symbolp x)
-                                           x)
-                                          ((numberp x)
-                                           (aref (mref :fieldnames) x))
-                                          (t
-                                           (error "badness")))))
+                     (cl-flet
+                         ((ok (x) (cond ((symbolp x)
+                                         x)
+                                        ((numberp x)
+                                         (aref (mref :fieldnames) x))
+                                        (t
+                                         (error "badness")))))
                        (mapcar (lambda (spec)
                                  (cond ((and (consp spec)
                                              (not (consp (cdr spec))))
@@ -128,19 +128,20 @@ of possible <FIXME> occurances and suggested remedies."
             (pp (apply 'vector v)))
           (nl))
         (let (try limit)
-          (flet ((yes (c) (when c
-                            (cprop :display t)
-                            (setq limit (+ (cadr (insert-file-contents try))
-                                           (point)))
-                            (when (re-search-forward "\f*\nLocal Variables:\n"
-                                                     limit 1)
-                              (goto-char limit)
-                              (setq loc-block (buffer-substring-no-properties
-                                               (match-end 0) limit))
-                              (delete-region (match-beginning 0) limit))
-                            (unless (bolp)
-                              (insert "\n"))
-                            t)))
+          (cl-flet
+              ((yes (c) (when c
+                          (cprop :display t)
+                          (setq limit (+ (cadr (insert-file-contents try))
+                                         (point)))
+                          (when (re-search-forward "\f*\nLocal Variables:\n"
+                                                   limit 1)
+                            (goto-char limit)
+                            (setq loc-block (buffer-substring-no-properties
+                                             (match-end 0) limit))
+                            (delete-region (match-beginning 0) limit))
+                          (unless (bolp)
+                            (insert "\n"))
+                          t)))
             (cond ((yes (and (setq try (assq :format-file extra))
                              (setq try (expand-file-name
                                         (cdr try)

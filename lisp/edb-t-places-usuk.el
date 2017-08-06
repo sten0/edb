@@ -1,6 +1,6 @@
 ;;; edb-t-places-usuk.el
 
-;; Copyright (C) 2005,2006,2007,2008 Thien-Thi Nguyen
+;; Copyright (C) 2005-2017 Thien-Thi Nguyen
 
 ;; This file is part of EDB.
 ;;
@@ -15,9 +15,7 @@
 ;; for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with EDB; see the file COPYING.  If not, write to the Free
-;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-;; MA 02110-1301, USA.
+;; along with EDB.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -47,6 +45,14 @@
    "\\|"))
 
 (defsubst edb-t-places-usuk:postal-code-p (s)
+  "Return non-nil if string S matches a US/UK postal code.
+This is one of:
+  US zip code    -- \"NNNNN\" or \"NNNNNNNNN\" or \"NNNNN-NNNN\"
+  UK postal code -- \"LNLNLN\" or \"LNL NLN\"
+  other          -- \"NX\"
+where N is a digit (0-9), L is an uppercase letter (A-Z)
+and X is zero or more N or L.  Note that the UK postal code
+may have a space between the third and fourth character."
   (string-match edb-t-places-usuk:postal-code-regexp s))
 
 ;; Full state-alist and associated functions added by
@@ -106,9 +112,9 @@
     ("WI" . "Wisconson")
     ("WV" . "West Virginia")
     ("WY" . "Wyoming"))
-  "An alist of ABBREV and FULLNAME of each of the United States, and its
-territories.  Used by \"edb-t-places-usuk:full-state-name\" and
-\"edb-t-places-usuk:abbreviate-state\".")
+  "Alist of ABBREV and FULLNAME for each US state or territory.
+Used by `edb-t-places-usuk:full-state-name' and
+`edb-t-places-usuk:abbreviate-state'.")
 
 (defun edb-t-places-usuk:statep (obj)
   "Return non-nil if OBJ is a valid state abbreviation."

@@ -1,3 +1,35 @@
+2017-06-17  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Release: 1.33
+
+2016-12-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] Use ‘zerop’ more.
+
+	* geneal.edb (geneal-individual-description)
+	(geneal-record-ref-=): ...here.
+
+2016-12-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Release: 1.32
+
+2016-12-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[ex] Require ‘edb-t-timedate1’.
+
+	* www-links.edb: ...here.
+
+2016-11-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[slog] Use cl-{flet,flet*,loop,labels,multiple-value-bind}.
+
+	U(X) ≡ "Use ‘cl-X’".
+	* geneal.edb (:choose-display)
+	(geneal-individual-description): U (flet).
+	(geneal-family-description): U (flet*).
+	* rolo-jik.dba (rolodex-rrfr): U (flet).
+	* rolo-jik.edb (rolodex-read-record): Likewise.
+
 2007-12-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	* tepdb.dba (tep-report): Make into a func; update callers.
@@ -442,3 +474,9 @@
 	edbibtex/mastersthesis.fmt, edbibtex/misc.fmt, edbibtex/phdthesis.fmt,
 	edbibtex/preamble.fmt, edbibtex/proceedings.fmt, edbibtex/string.fmt,
 	edbibtex/techreport.fmt, edbibtex/unpublished.fmt: Likewise.
+
+
+Copyright (C) 2010-2017 Thien-Thi Nguyen
+
+Copying and distribution of this file, with or without modification,
+are permitted provided the copyright notice and this notice are preserved.

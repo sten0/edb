@@ -8,7 +8,6 @@
                      (with-current-buffer "*Buffer List*"
                        (buffer-string))))
 
-(add-to-list 'load-path (expand-file-name "lisp" (car load-path)))
 (require 'edb-meta)
 (edb-meta)
 (message "%s" (buffer-string))

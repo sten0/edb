@@ -1,6 +1,6 @@
 ;;; db-format.el --- part of EDB, the Emacs database
 
-;; Copyright (C) 2004,2005,2006,2007,2008 Thien-Thi Nguyen
+;; Copyright (C) 2004-2017 Thien-Thi Nguyen
 
 ;; This file is part of EDB.
 ;;
@@ -15,9 +15,7 @@
 ;; for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with EDB; see the file COPYING.  If not, write to the Free
-;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-;; MA 02110-1301, USA.
+;; along with EDB.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -224,7 +222,7 @@ variables, so that the file need not be read again.")
        (mapcar (lambda (ent)
                  (cons (intern (format ":%s" (symbol-name (car ent))))
                        (incf idx)))
-               (cdr (get 'edb--1ds 'cl-struct-slots)))))
+               (cdr (edb--struct-slot-info 'edb--1ds)))))
 
 
 ;;
@@ -241,10 +239,11 @@ variables, so that the file need not be read again.")
 (defconst db-optspec-list
   (mapcar (lambda (x)
             `(,(nth 0 x)
-              ,(flet ((dset (frag) (let ((f (intern (format "edb--1ds-%s"
-                                                            frag))))
-                                     `(lambda (ds val)
-                                        (setf (,f ds) val)))))
+              ,(cl-flet
+                   ((dset (frag) (let ((f (intern (format "edb--1ds-%s"
+                                                          frag))))
+                                   `(lambda (ds val)
+                                      (setf (,f ds) val)))))
                  ;; Settor-or-accessor is either a settor function, a
                  ;; slotname, or a list of slotnames.  In the latter two
                  ;; cases, it's first converted into a settor.
@@ -860,14 +859,21 @@ If invoked twice in succession, move to end of field."
   (db-forward-word (- arg)))
 
 (defun db-copy-region-as-kill (beg end)
-  "Save the region as if killed, but don't kill it."
+  "Save the region as if killed, but don't kill it.
+This calls `interprogram-cut-function' (if non-nil)
+on the extracted text."
   (interactive "r")
   (let ((text (db-unindentify (buffer-substring beg end))))
     (if (eq last-command 'db-kill-region)
         (kill-append text (< end beg))
       (push text kill-ring)
       (when (> (length kill-ring) kill-ring-max)
-        (setcdr (nthcdr (1- kill-ring-max) kill-ring) nil))))
+        (setcdr (nthcdr (1- kill-ring-max) kill-ring) nil))
+      ;; This only needs to be done in the else-clause of the
+      ;; parent `if' expression since `kill-append' already DTRT.
+      ;; TODO: Replace entire else-clause w/ `kill-new'.
+      (when interprogram-cut-function
+        (funcall interprogram-cut-function text))))
   (setq this-command 'db-kill-region)
   (setq kill-ring-yank-pointer kill-ring))
 
@@ -1487,30 +1493,31 @@ actuality the format is being set, then reset."
             (error "`%s' is not the name of a format." format-name)))))
     ;; Filename is now set.
 
-    (flet ((mkspec (sumfmt sumfun)
-                   ;; All of these items vary from format to format within a
-                   ;; particular data display buffer.
-                   (list
-                    (edb--S :format-file)
-                    ;; These can vary between data display buffers which
-                    ;; happen to be using the same format file to specify the
-                    ;; layout of the record's fields.  That is, these are
-                    ;; specific to a particular data display buffer, not to a
-                    ;; format, because they have to do with what is actually
-                    ;; being displayed and/or because we might expect the user
-                    ;; to change them after reading in the format.  This is
-                    ;; why we can't just associate this information with the
-                    ;; format file, but have to save it on a
-                    ;; per-data-display-buffer basis.
-                    sumfmt
-                    sumfun
-                    (edb--S :shown)
-                    (edb--S :search-defaults))))
+    (cl-flet
+        ((mkspec (sumfmt sumfun)
+                 ;; All of these items vary from format to format within a
+                 ;; particular data display buffer.
+                 (list
+                  (edb--S :format-file)
+                  ;; These can vary between data display buffers which
+                  ;; happen to be using the same format file to specify the
+                  ;; layout of the record's fields.  That is, these are
+                  ;; specific to a particular data display buffer, not to a
+                  ;; format, because they have to do with what is actually
+                  ;; being displayed and/or because we might expect the user
+                  ;; to change them after reading in the format.  This is
+                  ;; why we can't just associate this information with the
+                  ;; format file, but have to save it on a
+                  ;; per-data-display-buffer basis.
+                  sumfmt
+                  sumfun
+                  (edb--S :shown)
+                  (edb--S :search-defaults))))
 
       ;; First save away current format.
       ;; No need to do anything with filename.
       (let ((curname (edb--S :format-name)))
-        (when (and (interactive-p)
+        (when (and (called-interactively-p 'any)
                    (not curname)
                    (y-or-n-p "Give the current format a name? "))
           (setq curname (read-string "Name for current format: "))
@@ -1588,7 +1595,7 @@ actuality the format is being set, then reset."
                   dbf-format-name-spec-alist)
             (erase-buffer))))
 
-      (when (interactive-p)
+      (when (called-interactively-p 'any)
         (db-display-record (dbf-displayed-record) t)))))
 
 
