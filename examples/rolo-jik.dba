@@ -67,8 +67,9 @@
            'remarks (semis->newlines remarks)
            'date (semis->newlines date))
      (let (pl)
-       (flet ((plpush (f v) (setq pl (plist-put
-                                      pl f (semis->newlines v)))))
+       (cl-flet
+           ((plpush (f v) (setq pl (plist-put
+                                    pl f (semis->newlines v)))))
          (while (and extras (re-search-forward "\\(.+\\)\n" nil t))
            (let ((extra (match-string 1)))
              (cond ((string-match "^Birthday:[ \t]*\\(.*\\)" extra)

@@ -1,3 +1,13 @@
+2016-12-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Release: 1.32
+
+2016-11-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[slog] Use cl-{flet,flet*,loop,labels,multiple-value-bind}.
+
+	* btxdb.el (btxdb:rrfr): Use ‘cl-flet’.
+
 2006-07-12  Thien-Thi Nguyen  <ttn@surf.glug.org>
 
 	* btxdb.el (btxdb:read-comments): Fix omission bug:
@@ -350,4 +360,7 @@ Fri Dec 25 21:53:10 1992  Thorsten Ohl  (ohl@chico)
 	* Almost usable prototype.
 
 
-ChangeLog,v 1.18 1993/11/20 22:22:53 ohl Exp
+Copyright (C) 2010-2017 Thien-Thi Nguyen
+
+Copying and distribution of this file, with or without modification,
+are permitted provided the copyright notice and this notice are preserved.

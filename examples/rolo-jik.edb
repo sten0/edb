@@ -1,6 +1,6 @@
 :EDB (single) ;;; -*- emacs-lisp -*-
 
-;; Copyright (C) 2005,2008 Thien-Thi Nguyen
+;; Copyright (C) 2005-2017 Thien-Thi Nguyen
 ;;
 ;; This file is part of EDB.
 ;;
@@ -15,9 +15,7 @@
 ;; for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with EDB; see the file COPYING.  If not, write to the Free
-;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-;; MA 02110-1301, USA.
+;; along with EDB.  If not, see <http://www.gnu.org/licenses/>.
 
 :name "Jik's Rolodex"
 
@@ -86,8 +84,9 @@
            'remarks (semis->newlines remarks)
            'date (semis->newlines date))
      (let (pl)
-       (flet ((plpush (f v) (setq pl (plist-put
-                                      pl f (semis->newlines v)))))
+       (cl-flet
+           ((plpush (f v) (setq pl (plist-put
+                                    pl f (semis->newlines v)))))
          (while (and extras (re-search-forward "\\(.+\\)\n" nil t))
            (let ((extra (match-string 1)))
              (cond ((string-match "^Birthday:[ \t]*\\(.*\\)" extra)

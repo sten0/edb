@@ -1,0 +1,271 @@
+;;; bfuncs --- some -*-emacs-lisp-*- for "emacs -batch" invocation
+
+;;; Copyright (C) 2008-2017 Thien-Thi Nguyen
+
+;; This file is part of EDB.
+;;
+;; EDB is free software; you can redistribute it and/or modify it under
+;; the terms of the GNU General Public License as published by the Free
+;; Software Foundation; either version 3, or (at your option) any later
+;; version.
+;;
+;; EDB is distributed in the hope that it will be useful, but WITHOUT
+;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+;; FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+;; for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with EDB.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; This file, deliberately named w/o .el suffix, is not installed.
+;; It contains various thunks for invocation from the GNUmakefile.
+
+;;; Code:
+
+(unless noninteractive
+  (error "File not intended for interactive use -- see GNUmakefile"))
+
+(setq vc-handled-backends nil)          ; documented disabling method
+(setq make-backup-files nil)            ; keep tidy
+
+(require 'cl)
+
+
+;;; Support for prefixed ‘message’
+
+;;; Implementation Notes:
+;;; * Intercept ‘message’ completely (rather than simply wrapping it)
+;;;   in order to suppress blank lines ‘message’d by other code.
+;;;   TODO: Find/implement empty-message-suppression in Emacs proper.
+;;; * It would be nice to support ‘DEBUG=1’ (find-file "../HACKING")
+;;;   for "make check" but at the moment, the testing infrastructure
+;;;   loses that env var along the way somewhere...
+
+(defvar who nil)
+
+(fset 'message/original
+      (symbol-function 'message))
+
+(fset 'message
+      (lambda (fmt &rest args)
+        (let ((s (apply #'format fmt args)))
+          (unless (string= "" s)
+            (funcall #'message/original "%s: %s" who s)))))
+
+
+(defun make-hacksup ()
+  (let ((files (mapcar 'expand-file-name command-line-args-left))
+        (who 'make-hacksup)
+        form struct-names explicit indents indents-1)
+    ;; first pass
+    (dolist (file files)
+      (find-file file)
+      (goto-char (point-min))
+      (while (setq form (ignore-errors (read (current-buffer))))
+        (unless (consp form) (setq form nil))
+        (case (car form)
+          (defstruct
+            (let ((conc (cadr form)))
+              (setq conc
+                    (if (consp conc)
+                        (or (cadr (assq :conc-name (cdr conc)))
+                            (format "%s-" (car conc)))
+                      (format "%s-" conc)))
+              (push (let ((s (format "%sset-" conc)))
+                      (cons s (length s)))
+                    struct-names)
+              (dolist (slot (cddr form))
+                (push (make-symbol (format "%sset-%s" conc
+                                           (if (consp slot)
+                                               (car slot)
+                                             slot)))
+                      indents-1))))
+          (defmacro
+            (let ((name (cadr form))
+                  (maybe-declare (cdddr form)))
+              (setq maybe-declare (if (stringp (car maybe-declare))
+                                      (cadr maybe-declare)
+                                    (car maybe-declare)))
+              (when (and (consp maybe-declare)
+                         (eq 'declare (car maybe-declare)))
+                (let ((n (cadr (assq 'indent (cdr maybe-declare)))))
+                  (when n (push `(put ',name 'lisp-indent-function ,n)
+                                indents))))))
+          (put
+           (let ((name (cadr form))
+                 (prop (caddr form)))
+             (when (and (consp name) (eq 'quote (car name)))
+               (setq name (cadr name)))
+             (when (and (consp prop) (eq 'quote (car prop)))
+               (setq prop (cadr prop)))
+             (when (memq prop '(lisp-indent-hook lisp-indent-function))
+               (push form indents)
+               (push name explicit)))))))
+    ;; second pass
+    (dolist (file files)
+      (find-file file)
+      (goto-char (point-min))
+      (while (setq form (ignore-errors (read (current-buffer))))
+        (unless (consp form) (setq form nil))
+        (when (memq (car form) '(defun defsubst))
+          (let* ((name (cadr form))
+                 (nstr (symbol-name name)))
+            (unless (memq name explicit)
+              (when (some (lambda (pair)
+                            (eq t (compare-strings
+                                   nstr       0 (cdr pair)
+                                   (car pair) 0 (cdr pair))))
+                          struct-names)
+                (push name indents-1))))))
+      (kill-buffer nil))
+    ;; write it out
+    (find-file "hacksup.el")
+    (erase-buffer)
+    (let ((standard-output (current-buffer)))
+      (mapc 'princ '(";;; hacksup.el --- mellifluous munging\n"
+                     ";;;    (this file is not installed)\n\n"
+                     ";; indentation\n"))
+      (pp `(mapc (lambda (func)
+                   (put func 'lisp-indent-function 1))
+                 ',indents-1))
+      (mapc 'pp indents)
+      (princ "\n;;; hacksup.el ends here\n"))
+    (save-buffer)
+    (kill-buffer nil)))
+
+(defun proper (x)
+  (when (vectorp x)
+    (setq x (append x nil)))
+  (when (consp x)
+    (let* ((last (last x))
+           (final (cdr last)))
+      (when final
+        (setcdr last (list final)))))   ; DWR: MUTATION
+  x)
+
+(defun flatten (x)
+  (if (atom x)
+      (list x)
+    (apply #'append (mapcar #'flatten (proper x)))))
+
+(defun make-syms ()
+  (setq who 'make-syms)
+  (emacs-lisp-mode)
+  (let ((out (pop command-line-args-left))
+        (joy (pop command-line-args-left))
+        (all (make-hash-table :test 'eq)))
+    (with-temp-buffer
+      (insert-file-contents joy)
+      (setq joy nil)
+      ;; ignore ‘thumbs-one’ (value: ‘ok’, ‘maybe’) for now
+      (while (re-search-forward "^\\(\\S-+\\)\\s-+\\(\\S-+\\)$" nil t)
+        (push (intern (match-string 2))
+              joy)))
+    (message "%d files to scan" (length command-line-args-left))
+    (dolist (filename (sort command-line-args-left #'string<))
+      (setq filename (file-relative-name filename))
+      (message "Scanning %s" filename)
+      (insert-file-contents filename)
+      (while (< (point) (point-max))
+        (let ((one (ignore-errors (read (current-buffer)))))
+          (unless (stringp one)
+            (case one
+              (nil
+               (goto-char (point-max)))
+              ((:display :report)
+               (setq one (read (current-buffer))
+                     one (or (and (consp one)
+                                  (plist-get one :EOTB))
+                             ":EOTB"))
+               (search-forward (concat "\n" one "\n")))
+              (t
+               (dolist (x (flatten one))
+                 (when (and (symbolp x) (memq x joy))
+                   (incf (gethash x all 0)))))))))
+      (erase-buffer))
+    (let (tem)
+      (maphash (lambda (name count)
+                 (push (cons name count)
+                       tem))
+               all)
+      (setq all tem))
+    (message "%d symbols" (length all))
+    (dolist (pair (sort all (lambda (a b)
+                              (string< (car a) (car b)))))
+      (insert (format "%5d\t\%s"
+                      (cdr pair)
+                      (car pair))
+              "\n"))
+    (write-file out)))
+
+(defun make-skram ()
+  (emacs-lisp-mode)
+  (let ((out (expand-file-name "skram.data"))
+        (indexed (make-hash-table :test 'eq))
+        (kind (make-hash-table :test 'eq))
+        (who 'make-skram)
+        acc form type name bufs)
+    (dolist (idx '(Function Variable))
+      (message "Scanning %s Index..." idx)
+      (with-temp-buffer
+        ;; This two-arg `info' call is equivalent to the pre-Emacs 22
+        ;; form (progn (info NODE-NAME) (setq buffer-read-only nil)).
+        (info (format "(%s)%s Index"
+                      (expand-file-name "edb.info" "../doc")
+                      idx)
+              (current-buffer))
+        (goto-char (point-min))
+        (search-forward "* Menu:")
+        (while (re-search-forward "^[*] \\(\\S-+\\): " (point-max) t)
+          (puthash (intern (match-string 1)) t indexed))))
+    (message "%d indexed" (hash-table-count indexed))
+    (dolist (file (mapcar 'expand-file-name command-line-args-left))
+      (push (find-file file) bufs)
+      (goto-char (point-min))
+      (while (ignore-errors (setq form (read (current-buffer))))
+        (setq type (when (consp form) (symbol-name (car form)))
+              name (when type (cadr form)))
+        (when (and type name
+                   (not (string-match "^define-" type))
+                   (string-match "^def" type))
+          (setq name (cond ((atom name)
+                            name)
+                           ((eq 'quote (car name))
+                            (cadr name))
+                           (t
+                            (car name))))
+          (unless (gethash name kind)
+            (puthash name (car form) kind))
+          (pushnew (list name
+                         (file-name-nondirectory file))
+                   acc :key 'car))))
+    (dolist (buf bufs)
+      (with-current-buffer buf
+        (let ((file (file-name-nondirectory buffer-file-name))
+              case-fold-search)
+          (goto-char (point-min))
+          (dolist (ent acc)
+            (unless (member file (cdr ent))
+              (when (and (search-forward (symbol-name (car ent)) (point-max) t)
+                         (memq (char-before (match-beginning 0))
+                               '(?( ?) ?' 32)))
+                (push file (cdr ent))
+                (goto-char (point-min))))))
+        (kill-buffer nil)))
+    (erase-buffer)
+    (fundamental-mode)
+    (dolist (ent acc)
+      (let ((name (pop ent)))
+        (insert (format "%s\n:%s\n:%s\n:future unclear\n:"
+                        name (gethash name kind)
+                        (if (gethash name indexed) "ok" "maybe"))))
+      (dolist (file ent)
+        (insert file "\n"))
+      (insert "\n"))
+    (let (make-backup-files)
+      (write-file out))
+    (kill-buffer nil)))
+
+;;; bfuncs ends here

@@ -1,6 +1,6 @@
 ;;; db-tagged.el --- part of EDB, the Emacs database
 
-;; Copyright (C) 2004,2005,2006,2007,2008 Thien-Thi Nguyen
+;; Copyright (C) 2004-2017 Thien-Thi Nguyen
 
 ;; This file is part of EDB.
 ;;
@@ -15,9 +15,7 @@
 ;; for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with EDB; see the file COPYING.  If not, write to the Free
-;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-;; MA 02110-1301, USA.
+;; along with EDB.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -164,8 +162,9 @@ Note: Do not call `database-set-fieldnames-to-list' if using this function."
       ;; Override the defaults.
       (apply 'edb--mputhash details attrs)
 
-      (macrolet ((D   (k)   `(gethash ,k details))
-                 (D-! (k v) `(unless (D ,k) (setf (D ,k) ,v))))
+      (macrolet
+          ((D   (k)   `(gethash ,k details))
+           (D-! (k v) `(unless (D ,k) (setf (D ,k) ,v))))
 
         ;; Compute downstream defaults.
         (D-! :pre-tag-regexp (regexp-quote (D :pre-tag)))
@@ -178,7 +177,8 @@ Note: Do not call `database-set-fieldnames-to-list' if using this function."
         (D-! :continuation-output (D :continuation))
 
         ;; Performance-motivated pre-computations.
-        (flet ((P! (k &rest ls) (edb--1D! database k ls)))
+        (cl-flet
+            ((P! (k &rest ls) (edb--1D! database k ls)))
           (P! :tagged-read-kargs
               ;; trx
               (concat "^" (D :pre-tag-regexp)
@@ -211,30 +211,32 @@ Note: Do not call `database-set-fieldnames-to-list' if using this function."
               ;; contin
               (D :continuation-output)
               ;; all
-              (loop with nam
-                    with tag
-                    with nm2no = (edb--1D database :nm2no)
-                    with fno
-                    for spec in fspecs
-                    if (setq tag (cadr spec))
-                    collect (progn
-                              (setq nam (car spec)
-                                    fno (gethash (if (consp nam)
-                                                     (car nam)
-                                                   nam)
-                                                 nm2no))
-                              (vector tag fno
-                                      (aref
-                                       (db-rs-slice
-                                        database
-                                        'edb--1rs-actual->stored)
-                                       fno))))
+              (cl-loop
+               with nam
+               with tag
+               with nm2no = (edb--1D database :nm2no)
+               with fno
+               for spec in fspecs
+               if (setq tag (cadr spec))
+               collect (progn
+                         (setq nam (car spec)
+                               fno (gethash (if (consp nam)
+                                                (car nam)
+                                              nam)
+                                            nm2no))
+                         (vector tag fno
+                                 (aref
+                                  (db-rs-slice
+                                   database
+                                   'edb--1rs-actual->stored)
+                                  fno))))
               ;; aft
               (D :post-write-function)))))))
 
 (defun db-tagged-convert/index ()
   (let ((details (edb--1D database :tagged-details)))
-    (macrolet ((D (k) `(gethash ,k details)))
+    (macrolet
+        ((D (k) `(gethash ,k details)))
       ;; Work with actual objects.
       (when (and (D :tagged-field-spec)
                  (not (D :converted-p)))
@@ -290,7 +292,7 @@ Note: Do not call `database-set-fieldnames-to-list' if using this function."
             val  (if a->s
                      (funcall a->s v)
                    v))
-      (unless (= 0 (length val))
+      (unless (zerop (length val))
         (setq i 0
               cnt (if (equal "" tag)
                       sep

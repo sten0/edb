@@ -1,6 +1,6 @@
 ;;; edb-t-timedate1.el
 
-;; Copyright (C) 2005,2006,2007,2008 Thien-Thi Nguyen
+;; Copyright (C) 2005-2017 Thien-Thi Nguyen
 
 ;; This file is part of EDB.
 ;;
@@ -15,9 +15,7 @@
 ;; for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with EDB; see the file COPYING.  If not, write to the Free
-;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-;; MA 02110-1301, USA.
+;; along with EDB.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -93,9 +91,9 @@
     (if (> month 2)
         (progn
           (decf day-of-year (/ (+ 23 (* 4 month)) 10))
-          (if (or (and (=  (% year   4) 0)
-                       (/= (% year 100) 0))
-                  (= (% year 400) 0))
+          (if (or (and (zerop      (% year   4))
+                       (not (zerop (% year 100))))
+                  (zerop (% year 400)))
               (incf day-of-year))))
     day-of-year))
 
@@ -374,7 +372,7 @@ but return null date in case arg S is nil."
     (edb-t-timedate1:make-empty-date)))
 
 (defvar edb-t-timedate1:parse-date-default 'empty
-  "A symbol: `empty' or 'current-date', specifying what date string
+  "A symbol: `empty' or `current-date', specifying what date string
 `edb-t-timedate1:parse-date-default-function' should return, and
 `edb-t-timedate1:parse-date-string' should use when passed a nil argument.")
 
@@ -805,7 +803,7 @@ If DATE is nil, return the empty string."
   [ "\\([0-9]?[0-9]\\)\\(:\\| ?[ap]m\\)"
     "\\([0-5][0-9]\\)\\(:\\| ?[ap]m\\|\\Sw\\|$\\)"
     "\\([0-5][0-9]\\)\\( *[ap]m\\|\\Sw\\|$\\)" ]
-  "An array of regexps used by edb-t-timedate1:parse-time-string,
+  "An array of regexps used by `edb-t-timedate1:parse-time-string',
 indexed by the current parse state to obtain the appropriate regexp.")
 
 
@@ -887,7 +885,7 @@ to use if its input is nil."
 (defun edb-t-timedate1:format-time-24 (time)
   "Format TIME (a three element list) into a 24 hour time string in the
 format HH:MM:SS.  If an element of the list is nil, that component is
-not edited.  Typically, the seconds element is hidden or set to nil to
+omitted.  Typically, the seconds element is hidden or set to nil to
 produce a time format with only HH:MM.
 See `edb-t-timedate1:format-time-24-hhmm'."
   (let ((hh (edb-t-timedate1:time-hours time))
@@ -903,7 +901,7 @@ See `edb-t-timedate1:format-time-24-hhmm'."
 (defun edb-t-timedate1:format-time-12 (time)
   "Format TIME (a 3 element list) into a 12 hour time string in the
 format HH:MM:SS PM.  If an element of the list is nil, that component is
-not edited.  Typically, the seconds element is hidden or set to nil to
+omitted.  Typically, the seconds element is hidden or set to nil to
 produce a time format with only HH:MM.
 See `edb-t-timedate1:format-time-12-hhmm'."
   (let ((hh (edb-t-timedate1:time-hours time))

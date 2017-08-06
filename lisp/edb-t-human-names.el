@@ -1,6 +1,6 @@
 ;;; edb-t-human-names.el
 
-;; Copyright (C) 2005,2006,2007,2008 Thien-Thi Nguyen
+;; Copyright (C) 2005-2017 Thien-Thi Nguyen
 
 ;; This file is part of EDB.
 ;;
@@ -15,9 +15,7 @@
 ;; for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with EDB; see the file COPYING.  If not, write to the Free
-;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-;; MA 02110-1301, USA.
+;; along with EDB.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -35,9 +33,9 @@
 ;;
 
 (defun edb-t-human-names:order-last-names (n1 n2)
-  "Return -1, 0, or 1 depending on whether last name N1 is lexographically
-less than, equal to, or greater than N2."
-  ;; Note stringency of equality test:  capitalization and spacing matter.
+  "Compare N1 and N2 lexographically; return -1, 0, or 1.
+Equality (result 0) uses `equal', thus capitalization and spacing matter.
+For other results, use `edb-t-human-names:canonicalize-name' first."
   (cond ((equal n1 n2)
          0)
         ((string-lessp (edb-t-human-names:canonicalize-name n1)
@@ -47,7 +45,7 @@ less than, equal to, or greater than N2."
          1)))
 
 (defun edb-t-human-names:canonicalize-name (s)
-  ;; Remove spaces and quotation marks, and ignore capitalization.
+  "Return S sans spaces and apostrophes, and downcased."
   (let ((result ""))
     (while (string-match "[ ']+" s)
       (setq result (concat result (substring s 0 (match-beginning 0)))
@@ -75,10 +73,12 @@ less than, equal to, or greater than N2."
 It is by no means comprehensive.")
 
 (defun edb-t-human-names:same-first-name-p (n1 n2)
+  "Return non-nil if N1 and N2 could be nicknames of each other."
   (or (edb-t-human-names:nicknamep n1 n2)
       (edb-t-human-names:nicknamep n2 n1)))
 
 (defun edb-t-human-names:order-first-names (n1 n2)
+  "Compare first names of N1 and N2; return -1, 0, 1."
   (let ((m1 (db-string-split-first-word n1))
         (m2 (db-string-split-first-word n2)))
     (cond ((or
@@ -91,6 +91,7 @@ It is by no means comprehensive.")
            1))))
 
 (defun edb-t-human-names:nicknamep (nickname fullname)
+  "Return non-nil if NICKNAME is valid for FULLNAME."
   (or (string-match (concat "^" (regexp-quote nickname)) fullname)
       (member nickname (cdr (assoc (car (db-string-split-first-word fullname))
                                    edb-t-human-names:nicknames)))))
@@ -101,6 +102,9 @@ It is by no means comprehensive.")
 ;;
 
 (defun edb-t-human-names:standardize-name (name)
+  "Return NAME, standardized in various ways.
+This removes honorifics and trailing titles (such as PhD),
+and adds periods after initials."
   ;; remove leading honorifics
   (when (string-match (concat "^\\(\\(Dr\\|Mrs?\\|Prof\\|1?Lt\\)\\.?"
                               "\\|Miss\\|Ensign\\|Doctor\\) ") name)
@@ -117,10 +121,12 @@ It is by no means comprehensive.")
   name)
 
 (defvar edb-t-human-names:jr-assoc-list ; preferred suffixes
-  '(("3d" . "3rd")))
+  '(("3d" . "3rd"))
+  "Association list mapping given to preferred suffix.
+See `edb-t-human-names:name->name-jr'.")
 
 (defun edb-t-human-names:name->name-jr (name)
-  ;; Return (suffixless-name suffix).
+  "Decompose NAME; return (SUFFIXLESS-NAME SUFFIX)."
   (if (string-match ",? +\\(jr\\.?\\|sr\\.?\\|3r?d\\|[45]th\\|I+\\)$" name)
       (list (substring name 0 (match-beginning 0))
             (let ((jr (substring name (match-beginning 1))))
@@ -129,7 +135,7 @@ It is by no means comprehensive.")
     (list name "")))
 
 (defun edb-t-human-names:name->first-last-jr (fullname)
-  ;; Return (fname lname jr).
+  "Decompose FULLNAME; return (FIRST-NAME LAST-NAME SUFFIX)."
   (let* ((jr (edb-t-human-names:name->name-jr
               (edb-t-human-names:standardize-name fullname)))
          (ls (db-string-split-last-word (car jr) "\\(La\\|de\\) [A-Z-]+")))

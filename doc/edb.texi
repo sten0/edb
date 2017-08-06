@@ -1,11 +1,14 @@
 \input texinfo
 @c %**start of header
 @setfilename edb.info
+@documentencoding UTF-8
 @settitle EDB -- The Emacs Database
+@ifinfo
 @paragraphindent 0
+@end ifinfo
 @c %**end of header
 
-@c Copyright (C) 2004,2005,2006,2007,2008 Thien-Thi Nguyen
+@c Copyright (C) 2004-2017 Thien-Thi Nguyen
 
 @dircategory Emacs
 @direntry
@@ -41,10 +44,13 @@ translation approved by the Free Software Foundation.
 @page
 @vskip 0pt plus 1filll
 
-Copyright @copyright{} 2004--2008 Thien-Thi Nguyen
+Copyright @copyright{} 2004--2017 Thien-Thi Nguyen
 
 @insertcopying
 @end titlepage
+
+@summarycontents
+@contents
 
 @c ---------------------------------------------------------------------------
 @node Top
@@ -81,6 +87,7 @@ Programmer Manual
 * Customization::
 * Database representation::
 * Naming conventions::
+* Convenience libraries::
 * In case of trouble::
 
 Indices
@@ -251,6 +258,7 @@ Highly customizable via the underlying programming language, Emacs Lisp;
 many hooks and useful variables are provided to make this even easier.
 @end itemize
 
+@noindent
 EDB is more ambitious --- and therefore more complex --- than its
 forerunners (such as Forms Mode by Johan Vromans <jv@@mh.nl>).  While
 other packages don't provide as much functionality as EDB, they may be
@@ -356,6 +364,7 @@ items within a structure?  Why do we tolerate languages that give
 us the one without the other?  ---Alan Perlis
 @end quotation
 
+@noindent
 [I believe Perlis is saying that the computation model for hardware,
 where everything happens in parallel, is pretty interesting.  Maybe EDB
 is not so interesting, but that's just a SMOP away...  ---ttn]
@@ -386,6 +395,7 @@ form to your @file{~/.emacs} file:
   (autoload 'db-find-file el blurb t))
 @end lisp
 
+@noindent
 Now, when you start up Emacs, you will already be able to execute
 @code{edb-interact} and/or @code{db-find-file}; EDB will be
 loaded automatically.
@@ -475,6 +485,7 @@ string, the name of a format file to use.
 
 @cindex saving to disk
 @cindex writing to disk
+@noindent
 You can use @code{db-save-database} and @code{db-write-database-file}
 (normally bound to @kbd{C-x C-s} and @kbd{C-x C-w}, respectively, in Database
 View mode) to save databases in memory to the file from
@@ -564,6 +575,7 @@ In the latter case, Emacs switches to the associated data display buffer.
 You are offered the chance to save the changes you have made.
 @end table
 
+@noindent
 For invocation with @code{db-find-file}, the tutorial is still applicable if
 you use @kbd{M-x db-find-file examples/forms-demo.dat} for the first step
 instead of the @kbd{C-x C-f} and @kbd{M-x edb-interact}.
@@ -612,9 +624,10 @@ mode.)
 The mode line indicates which mode you are in.  It looks something like:
 
 @example
--***- machine-dbase        (Database Edit Abbrev 42/431)---All------------
+-***- machine-dbase        (Database Edit Abbrev 42/431)---All-------
 @end example
 
+@noindent
 The mode line consists of three modification indicators, the
 name of the database file being manipulated (in this case,
 @file{machine-dbase}), mode information within parentheses, and
@@ -720,6 +733,7 @@ Hiding is ignored unless optional argument @var{respect-hiding} is specified.
 @end deffn
 @end table
 
+@noindent
 There are two special hybrid commands that show more of the current record
 if there's more to see and otherwise show the next (or previous) record.
 
@@ -787,6 +801,7 @@ This undoes all changes since the database was last saved.
 @end deffn
 @end table
 
+@noindent
 You can also undo changes to the current field; @xref{Undoing
 changes to a field}.
 
@@ -821,6 +836,7 @@ Install the current record in the database; make any changes permanent.
 @end deffn
 @end table
 
+@noindent
 Committing a record makes the changes permanent only insofar as they
 become part of the in-memory representation of the database.  The
 on-disk version is not affected unless you overwrite it by using
@@ -894,6 +910,7 @@ Offer to save any changes.  Prefix arg means don't offer.
 @end deffn
 @end table
 
+@noindent
 For backward compatability, there is also the command @code{db-exit}.
 
 @deffn {Command} db-exit [kill]
@@ -922,6 +939,7 @@ With a nonzero prefix argument, set it modifiable.
 With a zero prefix argument, set it non-modifiable.
 @end deffn
 
+@noindent
 The data display buffer is in Database Edit mode whenever a field of the
 current record is being edited.  All printing characters insert
 themselves, and the usual editing commands can be performed on the field
@@ -997,6 +1015,7 @@ A similar effect can be had by invoking @kbd{C-x u} multiple times.
 @end deffn
 @end table
 
+@noindent
 From Database View mode, you can simultaneously revert every modified
 field of a record to its original value; @xref{Undoing all changes to a
 record}.
@@ -1031,6 +1050,7 @@ When called interactively, @var{arg} defaults to 1.
 Move to the first or last field (@pxref{Changing to Database Edit mode}).
 @end table
 
+@noindent
 Also see the keystrokes @kbd{C-n} and @kbd{C-p}, described below.
 
 
@@ -1072,12 +1092,16 @@ among these are:
 @table @kbd
 @item C-d
 @code{delete-char}
+
 @item @key{DEL}
 @code{backward-delete-char}
+
 @item M-d
 @code{kill-word}
+
 @item M-@key{DEL}
 @code{backward-kill-word}
+
 @item C-k
 @code{kill-line}
 @end table
@@ -1125,6 +1149,7 @@ If hiding is in effect, hidden records are ignored.
 @end deffn
 @end table
 
+@noindent
 The same keystroke in Database View mode permits specification of patterns
 which depend upon the contents of several fields:
 
@@ -1139,6 +1164,7 @@ fields of a record simultaneously.
 @end deffn
 @end table
 
+@noindent
 For a description of marking, @xref{Marking and hiding}.
 
 @section Search patterns
@@ -1239,6 +1265,7 @@ With a prefix argument, don't confirm the sort order.
 @end deffn
 @end table
 
+@noindent
 Ordinarily, calling this function invokes the sort interface, an
 easy-to-use tool for specifying which fields should be treated as sort
 keys, and in what order.  In a database whose records have fields
@@ -1259,6 +1286,7 @@ purposes of the sort, the sort interface display would look like
 ==== Hidden records to end:  No
 @end example
 
+@noindent
 In addition to which fields should be sorted by, the sort interface
 permits specification of how hidden records should be treated.
 
@@ -1272,6 +1300,7 @@ non-hidden records.
 @end deffn
 @end table
 
+@noindent
 To change the relative order of fields, and whether they're significant or
 not, use the following commands.
 
@@ -1294,6 +1323,7 @@ In the list of significant fields, ``drag'' the field under point
 up (more important) and down (less important), respectively.
 @end table
 
+@noindent
 To specify how a particular field should be ordered, use the following
 commands.
 
@@ -1323,6 +1353,7 @@ than its second argument and @code{nil} otherwise.
 @end deffn
 @end table
 
+@noindent
 Each database has a default sort order specified by the @code{:field-order}
 control property (@pxref{Control properties reference}),
 used when setting up the
@@ -1383,6 +1414,7 @@ In the future, the default sort order will come from the database.
 @end deffn
 @end table
 
+@noindent
 The sort interface returns a field priorities list to be used when
 sorting.
 
@@ -1396,6 +1428,7 @@ original one), the database is marked as modified.
 If non-@code{nil}, then sorting a database marks it as modified too.
 @end defvar
 
+@noindent
 When using control properties, you should use a @code{:locals} variable
 by the same name.
 
@@ -1461,6 +1494,7 @@ When called from the summary buffer, this updates the summary.
 @end deffn
 @end table
 
+@noindent
 When a summary is created, the summary display format appears in the
 summary buffer once for each record, with appropriate values substituted
 for its display specifications.
@@ -1581,6 +1615,7 @@ With a zero prefix argument, set it to be unhidden.
 @end deffn
 @end table
 
+@noindent
 The searching commands, when called with a prefix argument, mark each
 matching record (@pxref{Searching}).
 
@@ -1596,6 +1631,7 @@ following command to cause the unmarked ones to become hidden.
 Enable hiding, hide all unmarked records, and clear all mark bits.
 @end deffn
 
+@noindent
 The converse operation transfers information from the hide bits to the mark
 bits.
 
@@ -1603,6 +1639,7 @@ bits.
 Mark all unhidden records.  Also clears all hide bits.
 @end deffn
 
+@noindent
 It is also possible to clear all the mark or hide bits.
 
 @deffn {Command} db-unmark-all
@@ -1613,6 +1650,7 @@ Clear the mark bit of every record.
 Clear the hide bit of every record.
 @end deffn
 
+@noindent
 Generally, to set or clear either the mark or hide bits of an arbitrary
 record of a database, you need to obtain the appropriate @dfn{tag}
 with @code{edb-tag}, passing it and the record to one of the functions
@@ -1637,6 +1675,7 @@ Set @var{tag} for @var{record}.
 Clear @var{tag} for @var{record}.
 @end defun
 
+@noindent
 For example, this function sets the mark bit on those records
 (@pxref{Mapping over the database}) for which @var{predicate} returns non-nil:
 
@@ -1747,6 +1786,7 @@ When called interactively, prompts for @var{report-filename}.
 @end deffn
 @end table
 
+@noindent
 The way a report looks is specified in precisely the same as are display
 formats and summary formats (@pxref{How information is displayed}).
 This information must be placed in a file; you cannot type it
@@ -1843,6 +1883,7 @@ specified (@pxref{Control properties reference}).  If there is only one
 @code{:display} and it is without a name, its name is taken as @file{t}.
 @end defvar
 
+@noindent
 These values can be set in the auxiliary or format files so that you can
 choose a format name (with completion) instead of having to remember a
 filename.  If the selected format's specifier is a filename, then after
@@ -1944,6 +1985,7 @@ current database.
 Create another data display buffer in which to view this database.
 @end deffn
 
+@noindent
 If you edit the same record in more than one data display buffer, only
 the last one committed (by calling @code{db-accept-record}, moving to
 another record, saving the database, etc.)@: has an effect.
@@ -1979,6 +2021,7 @@ into a control file (or buffer) that begins with the magic text:
 :EDB (single BASIS) ;;; -*- emacs-lisp -*-
 @end example
 
+@noindent
 Actually, the @kbd{;;; -*- emacs-lisp -*-} is optional; it is sufficient that
 on the first non-comment, non-blank line,
 the first four characters are colon and @kbd{EDB}, followed by a space
@@ -2059,6 +2102,7 @@ values.  The elaboration method depends on the form:
 @item For all other cases, @code{eval} the form.
 @end itemize
 
+@noindent
 This allows (certain) control property values to be computed at connection
 time.  For example, here are two equivalent ways to set the @code{:fields}
 control property:
@@ -2071,6 +2115,7 @@ control property:
 :fields (vector 'time 'place)
 @end example
 
+@noindent
 Here is another example which shows four functionally-equivalent ways to set
 the @code{:write-record} control property:
 
@@ -2091,6 +2136,7 @@ the @code{:write-record} control property:
 :write-record (lambda (time place) ...)
 @end example
 
+@noindent
 Although the ways are functionally equivalent, each has its consequences.
 The first way allows you to use a byte-compiled function (presuming it is
 defined in @file{my-edb-setup.el} and you byte-compile that file).
@@ -2174,6 +2220,7 @@ In other words:
                 (aref v 2)))
 @end lisp
 
+@noindent
 should have a non-nil value.  Be careful!  (At this time, EDB does not check
 this relationship; you have to check it yourself.  Omitting or specifying the
 wrong @var{write-string} silently corrupts the data during write.  This laxity
@@ -2424,6 +2471,7 @@ Middle: \middle
 Age:    \age
 @end example
 
+@noindent
 The backslash followed by a field name indicates that the field's contents
 should be inserted there.  For more information about specifying display
 formats, @xref{How information is displayed}.
@@ -2452,6 +2500,7 @@ Middle: \middle
 Age:    \age
 @end example
 
+@noindent
 (Alternatively, we can insert the file @file{names.edb} from the EDB
 distribution's @file{examples} subdirectory, or simply visit it.)
 
@@ -2517,6 +2566,7 @@ Set @var{property} to have @var{newvalue} for the current buffer.
 Optional third arg @var{buffer} specifies another one to use as ``current''.
 @end defun
 
+@noindent
 The following table describes the available control properties.  The
 default value is the one used when setting up the buffer.
 
@@ -2560,6 +2610,7 @@ http://www.gnuvola.org/software/
 http://www.gnuvola.org/software/edb/
 @end example
 
+@noindent
 It's easy to construct a minimal @file{www-links.edb} to grok this (note that
 (parenthesized) line numbers are for discussion, and should not appear in the
 actual working file):
@@ -2573,6 +2624,7 @@ actual working file):
 :EOTB                   (6)
 @end example
 
+@noindent
 Line 1 is boilerplate and will be assumed henceforth.  Line 2 names the
 database.  Line 3 declares that each record is composed of one field, whose
 name is @code{url}.  The field type's is taken (implicitly) as @code{string}.
@@ -2613,6 +2665,7 @@ To effect this new design in a new data file, we can evaluate the form:
     (forward-char 1)))
 @end example
 
+@noindent
 Next we copy @file{www-links.edb} to @file{www-links2.edb} and make the
 following modifications:
 
@@ -2626,6 +2679,7 @@ following modifications:
 :EOTB                           (7)
 @end example
 
+@noindent
 Line 1 updates the title.  Line 2 declares the ordering in the data file and
 names the second field @code{title}, with type (implicitly) @code{string} as
 for @code{url}.  Line 3 declares the field separator.  Lines 4 through 7
@@ -2648,6 +2702,7 @@ In this subsection, we further extend the database to include two fields:
 @item comments (notes, critiques, etc)
 @end itemize
 
+@noindent
 For the date, we use a custom data type @code{suredate}, defined as:
 
 @example
@@ -2656,6 +2711,7 @@ For the date, we use a custom data type @code{suredate}, defined as:
   :stored->actual 'edb-t-timedate1:parse-date-string)
 @end example
 
+@noindent
 Comments are just another string, but there is a catch: we would like to
 support multi-line comments, such as:
 
@@ -2666,6 +2722,7 @@ to maintain it, for these reasons:
  - requires javascript, which w3m doesn't do
 @end example
 
+@noindent
 The implication is that we can no longer use one record per line, as some
 records may contain the newline character in the @code{comments} field.  So,
 let's choose formfeed (aka @code{^L} aka @code{C-l} aka ``control l'').
@@ -2683,6 +2740,7 @@ To effect this new design in a new data file, we can evaluate the form:
       (forward-char 1))))
 @end example
 
+@noindent
 Next, we create @code{www-links3.edb}, modifying the control property
 @code{:name}, as usual, and adding @code{edb-define-recordfieldtype} as
 described above.  The rest of the file looks like:
@@ -2704,6 +2762,7 @@ Comments:
 :summary-format "\\last-check,width=11 \\title"
 @end example
 
+@noindent
 Note that the @code{last-check} field is declared with type @code{suredate} in
 @code{:fields}, is displayed with the @code{date-iso} format in the
 @code{:display} text block; and is explicitly included (with maximum width of
@@ -2735,6 +2794,7 @@ The most important information about a record field is
 @cindex record field type, compared to displaytype
 @cindex displaytype, compared to record field type
 
+@noindent
 This information is separated into a display specification and a record
 field specification.  The display specification determines how a field's
 contents are displayed and parsed onscreen (say, in a data display
@@ -2795,6 +2855,7 @@ if bound, or @code{string} otherwise.
 @end defun
 
 @vindex db-default-field-type
+@noindent
 Some notes on the deprecated variable @code{db-default-field-type}: There has
 been some confusion over usage of this variable; the ideas of ``default
 value'' and of ``buffer-local variable'' do not mix well together, especially
@@ -2822,6 +2883,7 @@ is created and then modified by @var{override}, a sequence of alternating
 keywords and values, and finally added to a global list.  Return @var{name}.
 @end defun
 
+@noindent
 @xref{Predefined record field types}, for a list of symbols useful for
 the @var{source} argument.  @xref{Record field attributes}, for a list
 of keywords useful as part of the @var{override} argument.
@@ -2843,6 +2905,7 @@ a form to be evaluated that results in a string.
 This should be called after the field names have been set up.
 @end defun
 
+@noindent
 Examples of record field type creation and installation can be found in the
 file @file{db-types.el}, the source for most of the predefined types.
 
@@ -3157,6 +3220,7 @@ something like
 ;; Database file written by EDB; format 0.7
 @end lisp
 
+@noindent
 followed by two Emacs Lisp forms: a vector (the database structure),
 and an alist of various miscellaneous attributes.
 The rest of the file is a sequence of vectors (the records of
@@ -3187,6 +3251,7 @@ With a nonzero prefix argument, set it to use internal file layout.
 With a zero prefix argument, set it not to use internal file layout.
 @end deffn
 
+@noindent
 After a database has been saved in internal file layout, then any forms
 in the auxiliary or format files that set database slots can be removed
 if desired; this is not necessary, however.
@@ -3227,6 +3292,7 @@ Additional format files and the auxiliary file, if any, are @emph{not}
 consulted.
 @end deffn
 
+@noindent
 The local variables block in the primary format file can have either
 @code{eval: FORM} pseudo-variables or @code{VAR: VAL} specifications.
 If an @code{:eval} form looks like a function call for one of these functions:
@@ -3236,6 +3302,7 @@ database-set-fieldnames-to-list --- "redundant" comment
 dbf-set-summary-format --- translate to :summary-format
 @end lisp
 
+@noindent
 then @code{edb-1int-to-single} handles it specially (as indicated).  An
 informative comment is also output to help keep track of things.  If, on the
 other hand, the @code{eval:} form is not recognized, it is added to the output
@@ -3253,6 +3320,7 @@ dbf-format-name-spec-alist
 edb-data-coding
 @end lisp
 
+@noindent
 (i.e., commented out), and all others translated into @code{:locals}.
 
 Here are all the control properties written.  Those in the first column are
@@ -3266,6 +3334,7 @@ always written, while those in the second are conditionally written.
                   :locals
 @end example
 
+@noindent
 These short lists show that there are many control properties that
 @code{edb-1int-to-single} does not even attempt to infer.  Indeed, even when
 it tries its best, the output buffer is likely to contain several @FF tokens,
@@ -3419,6 +3488,7 @@ and without including the decimal number in the separating text:
 :record-separator ["\\(\n\\)[0-9]+\\.[0-9]+" 1 "\n"]
 @end lisp
 
+@noindent
 Be careful to use a correct value for separator strings.  For instance, if
 your record separator is a form feed on a line by itself, you probably want to
 set @code{:record-separator} to @samp{"\f\n"}, or possibly @samp{"\n\f\n"},
@@ -3438,6 +3508,7 @@ would suffice:
         [nil nil]]
 @end lisp
 
+@noindent
 [[[ This following example should go away when writing is converted from ``all
 or nothing'' to ``selective update''.
 
@@ -3457,6 +3528,7 @@ For instance, in db-before-read-hooks, use a function such as
             (buffer-substring (point-min) (point))))))
 @end lisp
 
+@noindent
 or even put
 
 @lisp
@@ -3469,6 +3541,7 @@ or even put
                           (point-max))))
 @end lisp
 
+@noindent
 as is in your auxiliary file.
 ]]]
 
@@ -3478,6 +3551,7 @@ If all records have five lines (say), you can use:
 :record-separator-function (db-make-n-line-sep-function 5)
 @end lisp
 
+@noindent
 This is also useful when both the field separator and the record
 separator are the newline character.
 
@@ -3518,6 +3592,7 @@ colons are prohibited from appearing in the field text).
 :field-separator ":"
 @end lisp
 
+@noindent
 Strings containing non-printing characters are another good bet, but
 this method relies on luck and the hope that the chosen separators
 will never appear in data.
@@ -3544,6 +3619,7 @@ written out.
 @end itemize
 
 @cindex substitution, in reading a database file
+@noindent
 Substitution is the replacement of potentially ambiguous strings by
 other ones.  For instance, when writing tab-separated text, each
 occurrence of the newline character in a field could be replaced by
@@ -3580,6 +3656,7 @@ file, but you don't know how many there are.
 :cruft [[nil ["\n*\\'" 0 "\n"]] [nil nil]]
 @end lisp
 
+@noindent
 does not work, because the post-last-record regexp is searched for
 backward from the end of the buffer, and (because of the way that
 @code{regexp-search-backward} is implemented) the backwards regexp match
@@ -3590,6 +3667,7 @@ is
 :cruft [[nil ["[^\n]\\(\n*\\'\\)" 1 "\n"]] [nil nil]]
 @end lisp
 
+@noindent
 @xref{Control properties reference}.
 
 
@@ -3609,7 +3687,9 @@ When:  Now
 What: This!
 @end example
 
-which indicates a record in which the `where', `when', and `here' fields
+@noindent
+which indicates a record in which the
+@code{where}, @code{when}, and @code{here} fields
 have the specified values.
 
 Tagged files are a special case of files in nonregular layout;
@@ -3638,6 +3718,7 @@ Note: Do not call @code{database-set-fieldnames-to-list}
 if you call this function.
 @end defun
 
+@noindent
 Calling @code{db-tagged-setup} sets the database's field names,
 installs appropriate functions for reading and writing the database,
 and allows you to set attributes specific to a tagged database.  For
@@ -3888,6 +3969,7 @@ Home at Midnight for Sleep
 Other places at Other times for Other things
 @end example
 
+@noindent
 In order to read and write this database, place the following code in
 the auxiliary file (@pxref{Reading from disk}):
 
@@ -3909,12 +3991,14 @@ the auxiliary file (@pxref{Reading from disk}):
           " for " (db-record-field record 'purpose)))
 @end lisp
 
+@noindent
 The auxiliary file would also specify the database's field names:
 
 @lisp
 (database-set-fieldnames-to-list database '(place time purpose))
 @end lisp
 
+@noindent
 as well as possibly other information such as the summary format or the
 name of the default format file.  See the example database auxiliary
 file @file{arb-demo.dba} for a concrete example of this.
@@ -3946,6 +4030,7 @@ Einsteinbirthday03141879
 Botswanaindepend09301966
 @end example
 
+@noindent
 The auxiliary file contains the following:
 
 @lisp
@@ -3988,6 +4073,7 @@ The auxiliary file contains the following:
           sized-field-alist))
 @end lisp
 
+@noindent
 This example is actually a bit too simple.  Some of the fields could be
 made non-strings, field constraints should keep the fields the right
 length, and @code{sized-field-alist} should be a database-local
@@ -4150,6 +4236,7 @@ Pay:     \\\salary,min-width=4:  too much!
 Address: \address,indent is home sweet home
 @end example
 
+@noindent
 This display format is valid if the database contains fields called
 @samp{name}, @samp{occupation}, @samp{salary}, and @samp{address}; any
 other fields are not displayed.  Some typical records would be displayed
@@ -4162,12 +4249,16 @@ Address: 123 Main St.
          Anyplace, USA is home sweet home
 @end example
 
+@noindent
+and
+
 @example
 JANE ROE, baker
 Pay:     \4444444:  too much!
 Address: 675 Massachusetts Avenue is home sweet home
 @end example
 
+@noindent
 The optional information includes the type of this display field and
 formatting directives for it; if the type is present, then it must come
 first among the displayspec's optional specifications.  Each optional
@@ -4305,30 +4396,42 @@ date; other characters are inserted as-is.
 @table @samp
 @item %d
 day of month --- 1 to 31 (one or two digits)
+
 @item %dd
 day of month --- 01 to 31 (always two digits)
+
 @item %m
 month of year - 1 to 12 (one or two digits)
+
 @item %mm
 month of year - 01 to 12 (always two digits)
+
 @item %mon
 month name (abbreviated) - Jun
+
 @item %month
 full month name - June
+
 @item %yy
 last 2 digits of year - 00 to 99
+
 @item %year
 year as 4 digits --- 0000 to 9999
+
 @item %jday
 Julian day of year --- 1 to 366
+
 @item %wday
 day of week --- 0 to 6 (Sunday = 0)
+
 @item %day
 day of week name --- ``Sun'' to ``Sat''
+
 @item %weekday
 full day of week name --- ``Sunday'' to ``Saturday''
 @end table
 
+@noindent
 See the variables @code{edb-t-timedate1:format-date-sub-syms-alist} and
 @code{edb-t-timedate1:format-date-sub-syms-regexp}.
 
@@ -4360,6 +4463,7 @@ are meant to be used in a display spec, such as:
 \datefield,date-mmddyy
 @end example
 
+@noindent
 The formatting for
 each @code{date-@var{foo}} is done by a function
 @code{edb-t-timedate1:format-date-@var{foo}}, for example
@@ -4461,6 +4565,7 @@ may be used in place of a one-element list containing just it.
 Optional argument @var{optstring} is a displayspec option string.
 @end defun
 
+@noindent
 When a record field's type is an enum type, it can be
 assumed that the value in the record field is
 one of the valid representations.  (Similarly, when a field's type is
@@ -4475,6 +4580,7 @@ week or the empty string:
   '("Monday" "Tuesday" "Wednesday" "Thursday" "Friday" ""))
 @end lisp
 
+@noindent
 If it is possible for the field value to be @code{nil} (but not the
 empty string) after reading the database, and @code{nil} should be
 displayed as @samp{Unknown} (and that string parsed into a value of
@@ -4568,7 +4674,7 @@ This boolean value determines whether the second and subsequent lines
 should align with the beginning of the first one or should be flush
 left, in column 0.  It is set and unset with the @code{indent} and
 @code{noindent} slotsetters.  The first of the following displays has
-indent set, and the second does not:
+indent set:
 
 @example
 Name:    John Doe
@@ -4576,12 +4682,16 @@ Address: 123 Main St.
          Anyplace, USA
 @end example
 
+@noindent
+and the second does not:
+
 @example
 Name:    John Doe
 Address: 123 Main St.
 Anyplace, USA
 @end example
 
+@noindent
 This causes alignment of the first character of subsequent lines with
 the first character of the first line; it does not do anything clever
 with whitespace in the field value, nor does it align different lines
@@ -4761,6 +4871,7 @@ List of directories (strings) to search, in order, for auxiliary files not
 found in the directory with their associated databases.
 @end defvar
 
+@noindent
 The auxiliary file is evaluated in the data display buffer and so can
 set variables local to that buffer, such as hooks (@pxref{Hooks and
 customization functions}).  The database itself can be manipulated via
@@ -4807,6 +4918,7 @@ List of directories (strings) to search, in order, for format files not
 found in the directory with their associated databases.
 @end defvar
 
+@noindent
 Code in the format file is useful for customizations specific to a
 particular format (such as setting variables which are local to the
 data display buffer); they can also be used for database-specific
@@ -4901,6 +5013,7 @@ Normal hook run when Database Edit mode is entered.
 Normal hook run when switching to Database Summary mode.
 @end defvar
 
+@noindent
 When using control properties, you should use @code{:locals} variables
 with the same name instead of setting the Emacs Lisp variables either
 directly or with @code{add-hook}.  For example, here is a @file{.edb}
@@ -4940,6 +5053,7 @@ The function takes one argument, the record.
 This is a good place to put calls to @code{db-change-format}.
 @end defvar
 
+@noindent
 Here is an example of how you might use this:
 
 @lisp
@@ -4951,6 +5065,7 @@ Here is an example of how you might use this:
 (setq dbf-before-display-record-function 'set-format-from-data)
 @end lisp
 
+@noindent
 This uses two different display formats, depending on the value of one
 field of a record.  As you move from record to record in the database,
 each one is shown using the appropriate display format.  A preferable
@@ -4964,6 +5079,7 @@ file,
         ("profit format" . "~/acct/db/profit.fmt")))
 @end lisp
 
+@noindent
 See the example file @file{arb-demo.dba} for an example of this.
 @code{dbf-format-name-spec-alist} need not specify the full pathnames if
 the format files are located in the same directory as the database or if
@@ -5006,6 +5122,7 @@ Normal hook run whenever a display field is entered.
 The displayspec index is @code{dbf-this-field-index}.
 @end defvar
 
+@noindent
 Note: For a @code{.edb} file (when using @code{edb-interact}),
 use the technique described in @ref{Database mode hooks}.
 
@@ -5079,6 +5196,7 @@ instance:
 (setq db-new-record-function 'set-update-date)
 @end lisp
 
+@noindent
 The display format change hooks are called when you change a record
 field value.  There are separate change hooks that run the first time
 any field is modified, whenever any field is modified, and whenever a
@@ -5106,6 +5224,7 @@ This variable is set automatically when the control property
 @end defvar
 
 @cindex last modification field
+@noindent
 Here is an example of code to update the last modification field of a
 record, assuming its type is date:
 
@@ -5137,6 +5256,7 @@ and returns @code{t} if the record should be redisplayed.
 @end defun
 
 @cindex dependent field values
+@noindent
 It is easy to make a field's value dependent on that of another field.
 For instance, suppose a salesman's commission should be 10% of the
 selling price of an item, and both fields are of type number.
@@ -5152,6 +5272,7 @@ done as follows:
 (dbf-set-change-function 'selling-price 'set-commission)
 @end lisp
 
+@noindent
 There are two things to notice about this example.  First, we need not
 set @code{dbf-redisplay-entire-record-p}, as
 @code{dbf-displayed-record-set-field} does that automatically.  Second, if
@@ -5173,6 +5294,7 @@ It is called after the original record values are copied
 to the working record.
 @end defvar
 
+@noindent
 Another function is invoked when changes to a record are
 committed --- that is, when changes to the record which is being displayed
 are copied back into its original in the database.
@@ -5183,6 +5305,7 @@ The function takes the record as an argument.
 Its return value is ignored.
 @end defvar
 
+@noindent
 Note: To achieve the same effect as setting these two variables for a
 @code{.edb} file (when using @code{edb-interact}), use the technique
 described in @ref{Database mode hooks}.
@@ -5203,6 +5326,7 @@ When doing a lengthy computation, display a progress message in
 the echo area every this many records.  If @code{nil}, don't inform.
 @end defvar
 
+@noindent
 Note: For a @code{.edb} file (when using @code{edb-interact}),
 use the technique described in @ref{Database mode hooks}.
 
@@ -5229,6 +5353,7 @@ described in this chapter.
 This is a buffer-local variable that contains the @dfn{current database}.
 @end defvar
 
+@noindent
 Given a record, it is not possible to determine which database (if any)
 it belongs to.  The database-to-record connection is one-way.
 
@@ -5263,6 +5388,7 @@ return a list of the results;
 otherwise return @code{nil}.
 @end defun
 
+@noindent
 There is also the alias @code{maprecords} for old code.
 (If you can help it, use @code{db-maprecords} instead.)
 
@@ -5312,6 +5438,7 @@ or a list whose car is the keyword @code{:alist} and whose cdr is an alist
 mapping field names to their values.
 @end defun
 
+@noindent
 When you create a new record by using @code{db-add-record}
 (@pxref{Adding and removing records}), @code{db-new-record-function} is
 invoked (@pxref{Display format change hooks}), the number of records in
@@ -5344,6 +5471,7 @@ Check constraints first unless optional
 fifth argument @var{nocheck} is non-@code{nil}.
 @end defun
 
+@noindent
 There are also special commands for manipulating the current
 record --- that is, the one that appears in the data display buffer.
 These functions require fewer arguments, flag that a redisplay of the
@@ -5420,11 +5548,11 @@ structure itself.
 @item dbc-
 Indicates a variable local to the data display buffer which refers to
 the current database (the database being manipulated by that data
-display buffer).  The `c' stands for ``current.''
+display buffer).  The @code{c} stands for ``current.''
 
 @item dbf-
 Indicates a variable local to the data display buffer which controls
-some aspect of formatting.  The `f' stands for ``format''; many such
+some aspect of formatting.  The @code{f} stands for ``format''; many such
 variables are intimately related to the format, and the data display
 buffer used to be called the format buffer.
 
@@ -5462,6 +5590,7 @@ Auxiliary files contain arbitrary Emacs Lisp code; they can be used to
 define functions, set variables, or operate directly on the database.
 @end table
 
+@noindent
 Other suffixes --- or none at all --- can be easily used; for instance,
 see variables @code{db-format-file-suffixes} and
 @code{db-aux-file-suffixes} (@pxref{Auxiliary files}).
@@ -5474,6 +5603,138 @@ For more information, @xref{Invoking EDB}.
 There is only one minor naming convention for types: @code{BASE-or-nil}
 usually means that handling for the type is very similar to handling for type
 @var{base} with special handling in case the value is @code{nil}.
+
+
+@node Convenience libraries
+@chapter Convenience libraries
+
+EDB ships with several libraries to ease application development.
+One of them, @file{edb-t-timedate1.el}, also provides
+record field types (@pxref{Predefined record field types}),
+and display types (@pxref{Predefined displaytypes}).
+This chapter describes the others, which provide ordinary
+Lisp data structures and functions normally for use with the
+@code{string} record field type.
+
+Although they are ``by no means comprehensive'' and make assumptions
+based on their (English-language) roots, they can be extended to some
+extent by customizing their data structures.
+
+@section @file{edb-t-human-names.el}
+
+This library deals with English-language human names, represented
+as a single string with @dfn{first name} and @dfn{last name} components,
+and sometimes @dfn{honorifics} (prefix) and @dfn{suffixes} as well.
+Components are space-separated, except for the suffix, which is
+introduced by a comma and space.
+
+@subsection Last names
+
+@defun edb-t-human-names:order-last-names n1 n2
+This compares names @var{n1} and @var{n2} and is a suitable ordering
+function (@pxref{Sorting}).
+@end defun
+
+@defun edb-t-human-names:canonicalize-name name
+Return a string made by removing spac and apostrophe chars,
+and downcasing @var{name}.
+@end defun
+
+@subsection First names
+
+@defvar edb-t-human-names:nicknames
+This is a list of nicknames which are not prefixes of the full name.
+Each element has the form @code{(@var{full} @var{nick}@dots{})},
+for example:
+
+@example
+("Richard" "Dick" "Dicky" "Rick" "Ricky" "Rico")
+@end example
+@end defvar
+
+@defun edb-t-human-names:same-first-name-p n1 n2
+Return non-@code{nil} if @var{n1} and @var{n2} could be nicknames
+of each other (per @code{edb-t-human-names:nicknames}).
+@end defun
+
+@defun edb-t-human-names:order-first-names n1 n2
+This finds the first names of @var{n1} and @var{n2} and returns
+-1, 0 or 1.  For equality,
+this uses @code{edb-t-human-names:same-first-name-p}.
+This is a suitable ordering function (@pxref{Sorting}).
+@end defun
+
+@defun edb-t-human-names:nicknamep nickname fullname
+This consults @code{edb-t-human-names:nicknames} and returns
+non-@code{nil} if @var{nickname} is valid for @var{fullname}.
+@end defun
+
+@subsection Full names
+
+@defun edb-t-human-names:standardize-name name
+This removes honorifics and trailing titles (such as @samp{PhD})
+from @var{name}, and adds periods after initials.
+@end defun
+
+@defvar edb-t-human-names:jr-assoc-list
+This is an association list mapping given to preferred suffix.
+See @code{edb-t-human-names:name->name-jr}.
+@end defvar
+
+@defun edb-t-human-names:name->name-jr name
+This decomposes @var{name} and returns a two-element list:
+@code{(@var{suffixless-name} @var{suffix})}.
+@end defun
+
+@defun edb-t-human-names:name->first-last-jr name
+This decomposes @var{name} and returns a three-element list:
+@code{(@var{first-name} @var{last-name} @var{suffix})}.
+@end defun
+
+@section @file{edb-t-places-usuk.el}
+
+This library deals with US/UK postal codes
+and US state names/abbreviations.
+
+@defun edb-t-places-usuk:postal-code-p s
+This returns non-@code{nil} if string @var{s}
+matches a US/UK postal code.  This is one of:
+
+@example
+US zip code    -- "NNNNN" or "NNNNNNNNN" or "NNNNN-NNNN"
+UK postal code -- "LNLNLN" or "LNL NLN"
+other          -- "NX"
+@end example
+
+where @samp{N} is a digit (0-9), @samp{L} is an uppercase letter (A-Z)
+and @samp{X} is zero or more @samp{N} or @samp{L}.  Note that the UK
+postal code may have a space between the third and fourth character.
+@end defun
+
+@defvar edb-t-places-usuk:state-alist
+This is an association list mapping @var{abbrev}
+to @var{fullname} for each US state or territory.
+@end defvar
+
+@defun edb-t-places-usuk:statep obj
+This returns non-@code{nil} if @var{obj} is a valid state
+abbreviation, i.e., a string of two chars found in
+@code{edb-t-places-usuk:state-alist}.
+@end defun
+
+@defun edb-t-places-usuk:full-state-name abbrev
+This returns the full name associated with @var{abbrev}
+in @code{edb-t-places-usuk:state-alist}, or @code{nil}
+if no such association exists.
+For the search upcase @var{abbrev}.
+@end defun
+
+@defun edb-t-places-usuk:abbreviate-state state
+This returns the abbreviation associated with @var{state}
+in @code{edb-t-places-usuk:state-alist}, or @code{nil}
+if no such association exists.
+For the search, capitalize @var{state}.
+@end defun
 
 
 @node In case of trouble
@@ -5541,6 +5802,4 @@ likely to change from one release of EDB to the next; do not rely on it.
 @c To prevent the Concept Index's last page from being numbered "i".
 @page
 
-@summarycontents
-@contents
 @bye

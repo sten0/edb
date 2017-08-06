@@ -1,6 +1,6 @@
 :EDB (single) ;;; -*- emacs-lisp -*-
 
-;; Copyright (C) 2006,2008 Thien-Thi Nguyen
+;; Copyright (C) 2006-2017 Thien-Thi Nguyen
 ;;
 ;; This file is part of EDB.
 ;;
@@ -15,9 +15,7 @@
 ;; for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with EDB; see the file COPYING.  If not, write to the Free
-;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-;; MA 02110-1301, USA.
+;; along with EDB.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -168,9 +166,10 @@
 (lambda (type addr addr-ptr)
   ;; Automatically choose the appropriate format for the current record.
   ;; Hackishly, we also cross set some fields...
-  (flet ((upd () (when (and (null addr-ptr) (< 0 (length addr)))
-                   (dbf-this-record-set-field
-                    'addr-ptr (db-string->integer addr)))))
+  (cl-flet
+      ((upd () (when (and (null addr-ptr) (< 0 (length addr)))
+                 (dbf-this-record-set-field
+                  'addr-ptr (db-string->integer addr)))))
     (case type
       (individual (upd) "individual")
       (family (upd) "family")
@@ -534,10 +533,11 @@ signal error."
 
 (defun geneal-individual-description (rcd)
   (concat
-   (flet ((maybe (pfx fld sfx)
-                 (let ((tmp (db-record-field rcd fld)))
-                   (and tmp (< 0 (length tmp))
-                        (concat pfx tmp sfx)))))
+   (cl-flet
+       ((maybe (pfx fld sfx)
+               (let ((tmp (db-record-field rcd fld)))
+                 (and tmp (< 0 (length tmp))
+                      (concat pfx tmp sfx)))))
      (concat
       (maybe " "  'prefix-name "")
       (maybe " "  'first-name  "")
@@ -549,11 +549,11 @@ signal error."
    (let ((rx "^\\([-0-9a-z]+-\\)?\\([12]?[0-9][0-9][0-9]\\)\\((.+)\\)?$")
          b d)
      (setq b (db-record-field rcd 'date-of-birth)
-           b (cond ((= 0 (length b)) nil)
+           b (cond ((zerop (length b)) nil)
                    ((string-match rx b) (match-string 2 b))
                    (t b))
            d (db-record-field rcd 'date-of-death)
-           d (cond ((= 0 (length d)) nil)
+           d (cond ((zerop (length d)) nil)
                    ((string-match rx d) (match-string 2 d))
                    (t d)))
      (cond ((and b d) (concat " (" b "-" d ")"))
@@ -562,11 +562,12 @@ signal error."
            (t nil)))))
 
 (defun geneal-family-description (rcd)
-  (flet ((full (r) (concat (db-record-field r 'first-name)
-                           " "
-                           (db-record-field r 'last-name)))
-         (half (which) (let ((r (db-record-field rcd which)))
-                         (if r (full r) "(?)"))))
+  (cl-flet*
+      ((full (r) (concat (db-record-field r 'first-name)
+                         " "
+                         (db-record-field r 'last-name)))
+       (half (which) (let ((r (db-record-field rcd which)))
+                       (if r (full r) "(?)"))))
     (concat " "     (half 'husband)
             " and " (half 'wife))))
 
@@ -622,7 +623,7 @@ A nil reference always comes \"before\" any other."
 
 (defun geneal-record-ref-= (a b)
   "Return t if the records A and B are the same, nil otherwise."
-  (= (geneal-record-ref-order a b) 0))
+  (zerop (geneal-record-ref-order a b)))
 
 (defun geneal-record-ref-< (a b)
   "Returns t if the record A comes before B, nil otherwise.

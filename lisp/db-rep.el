@@ -1,6 +1,6 @@
 ;;; db-rep.el --- part of EDB, the Emacs database
 
-;; Copyright (C) 2004,2005,2006,2007,2008 Thien-Thi Nguyen
+;; Copyright (C) 2004-2017 Thien-Thi Nguyen
 
 ;; This file is part of EDB.
 ;;
@@ -15,9 +15,7 @@
 ;; for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with EDB; see the file COPYING.  If not, write to the Free
-;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-;; MA 02110-1301, USA.
+;; along with EDB.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -30,9 +28,10 @@
 
 (edb--define-child-hash 1D db (edb--G :1singles)
                         (let ((new (make-hash-table :size 7)))
-                          (flet ((ahash () (make-hash-table
-                                            :test 'eq
-                                            :weakness 'key)))
+                          (cl-flet
+                              ((ahash () (make-hash-table
+                                          :test 'eq
+                                          :weakness 'key)))
                             (edb--mputhash new
                                            :markedp (ahash)
                                            :hiddenp (ahash))
@@ -268,7 +267,7 @@ this variable is deprecated) if bound, or `string' otherwise."
        (mapcar (lambda (ent)
                  (cons (intern (format ":%s" (symbol-name (car ent))))
                        (incf idx)))
-               (cdr (get 'edb--v1-rs 'cl-struct-slots)))))
+               (cdr (edb--struct-slot-info 'edb--v1-rs)))))
 
 
 (defun db-rs-sortfunc (rs &optional reversep)

@@ -1,6 +1,6 @@
 ;;; edb-meta.el
 
-;; Copyright (C) 2006,2007,2008 Thien-Thi Nguyen
+;; Copyright (C) 2006-2017 Thien-Thi Nguyen
 
 ;; This file is part of EDB.
 ;;
@@ -15,9 +15,7 @@
 ;; for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with EDB; see the file COPYING.  If not, write to the Free
-;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-;; MA 02110-1301, USA.
+;; along with EDB.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -70,49 +68,50 @@ from the property `globals-to-check' of symbol `edb-meta'."
                           (symbol-name f))
         (push f acc)))
     (insert (format " %s\n" acc)))
-  (flet ((w/face (string face)
-                 (propertize string 'face face))
-         (fo (o &optional keyp)
-             (case (type-of o)
-               (vector (cond ((edb--1ds-p o) "[ds]")
-                             ((edb--v1-rs-p o) "[rs]")
-                             ((= (length (get 'edb--v1-monolithic-mess
-                                              'cl-struct-slots))
-                                 (length o))
-                              (format "[mm%s]" (if (stringp (aref o 0))
-                                                   (format ": %S" (aref o 0))
-                                                 "")))
-                             (t (format "v%d" (length o)))))
-               (symbol (cond ((not o) "")
-                             ((or keyp (keywordp o)) (symbol-name o))
-                             (t (format "'%s" o))))
-               (hash-table "#")
-               (integer (format "%d" o))
-               (compiled-function "{f}")
-               (marker "m")
-               (string (format "%S%d" "" (length o)))
-               (buffer (format "<%s>" (buffer-name o)))
-               (cons (if (eq 'lambda (car o))
-                         "(f)"
-                       (format "()%d" (safe-length o))))
-               (t (w/face "???" 'font-lock-warning-face))))
-         (fk (k)
-             (if (symbolp k)
-                 (symbol-name k)
-               (fo k)))
-         (d (level header ht)
-            (let (kids)
-              (insert "\n" (make-string (* 2 level) 32) header)
-              (maphash (lambda (k v)
-                         (let ((k-str (fo k t)))
-                           (insert " " (w/face k-str 'font-lock-builtin-face)
-                                   (fo v))
-                           (when (hash-table-p v)
-                             (push (cons k-str v) kids))))
-                       ht)
-              (insert "\n")
-              (dolist (kid (nreverse kids))
-                (d (1+ level) (car kid) (cdr kid))))))
+  (cl-labels
+      ((w/face (string face)
+               (propertize string 'face face))
+       (fo (o &optional keyp)
+           (case (type-of o)
+             (vector (cond ((edb--1ds-p o) "[ds]")
+                           ((edb--v1-rs-p o) "[rs]")
+                           ((= (length (edb--struct-slot-info
+                                        'edb--v1-monolithic-mess))
+                               (length o))
+                            (format "[mm%s]" (if (stringp (aref o 0))
+                                                 (format ": %S" (aref o 0))
+                                               "")))
+                           (t (format "v%d" (length o)))))
+             (symbol (cond ((not o) "")
+                           ((or keyp (keywordp o)) (symbol-name o))
+                           (t (format "'%s" o))))
+             (hash-table "#")
+             (integer (format "%d" o))
+             (compiled-function "{f}")
+             (marker "m")
+             (string (format "%S%d" "" (length o)))
+             (buffer (format "<%s>" (buffer-name o)))
+             (cons (if (eq 'lambda (car o))
+                       "(f)"
+                     (format "()%d" (safe-length o))))
+             (t (w/face "???" 'font-lock-warning-face))))
+       (fk (k)
+           (if (symbolp k)
+               (symbol-name k)
+             (fo k)))
+       (d (level header ht)
+          (let (kids)
+            (insert "\n" (make-string (* 2 level) 32) header)
+            (maphash (lambda (k v)
+                       (let ((k-str (fo k t)))
+                         (insert " " (w/face k-str 'font-lock-builtin-face)
+                                 (fo v))
+                         (when (hash-table-p v)
+                           (push (cons k-str v) kids))))
+                     ht)
+            (insert "\n")
+            (dolist (kid (nreverse kids))
+              (d (1+ level) (car kid) (cdr kid))))))
     (d 0 (fo 'edb--global-state t) edb--global-state))
   (insert "\n")
   (dolist (sym (get 'edb-meta 'globals-to-check))

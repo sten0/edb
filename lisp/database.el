@@ -1,10 +1,10 @@
 ;;; database.el --- EDB, the Emacs database
 
-;; Copyright (C) 2004,2005,2006,2007,2008 Thien-Thi Nguyen
+;; Copyright (C) 2004-2017 Thien-Thi Nguyen
 
 ;; Keywords: EDB, database, forms
-;; Version: 1.31
-;; Release-Date: 2008-05-26
+;; Version: 1.33
+;; Release-Date: 2017-06-17
 
 ;; This file is part of EDB.
 ;;
@@ -19,9 +19,7 @@
 ;; for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with EDB; see the file COPYING.  If not, write to the Free
-;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-;; MA 02110-1301, USA.
+;; along with EDB.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -29,16 +27,21 @@
 
 ;;; Code:
 
+(when load-file-name
+  (add-to-list 'load-path (expand-file-name
+                           "edb" (file-name-directory
+                                  load-file-name))))
+
 (require 'edbcore)
 
-(defconst edb-version "1.31")
+(defconst edb-version "1.33")
 
 (defun edb-version ()
   "Return a string describing the version of EDB that is running.
 When called interactively, display the string in the echo area."
   (interactive)
-  (let ((v (format "EDB %s of 2008-05-26" edb-version)))
-    (when (interactive-p)
+  (let ((v (format "EDB %s of 2017-06-17" edb-version)))
+    (when (called-interactively-p 'interactive)
       (message "%s" v))
     v))
 
@@ -53,12 +56,13 @@ the same as CONTROL's (or CONTROL's `buffer-file-name' if CONTROL is a
 buffer), with extension one of \".data\", \".dat\", or \"\" (empty string),
 in that order."
   (interactive
-   (flet ((r (p1 p2) (let ((filename (read-file-name
-                                      (format "%s file (type RET %s): "
-                                              p1 p2)
-                                      nil "")))
-                       (unless (string= "" filename)
-                         filename))))
+   (cl-flet
+       ((r (p1 p2) (let ((filename (read-file-name
+                                    (format "%s file (type RET %s): "
+                                            p1 p2)
+                                    nil "")))
+                     (unless (string= "" filename)
+                       filename))))
      (list (or (r "Control" "for this buffer")
                (current-buffer))
            (r "Data" "to have EDB search for it"))))
@@ -86,9 +90,10 @@ in that order."
     (unless data
       (setq data (when c-fname
                    (let ((stem (file-name-sans-extension c-fname)))
-                     (flet ((try (ext) (let ((f (concat stem ext)))
-                                         (when (file-exists-p f)
-                                           f))))
+                     (cl-flet
+                         ((try (ext) (let ((f (concat stem ext)))
+                                       (when (file-exists-p f)
+                                         f))))
                        (or (try ".data")
                            (try ".dat")
                            (try "")))))))

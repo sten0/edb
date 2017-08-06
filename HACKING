@@ -1,4 +1,4 @@
--*-outline-*-
+                                                    -*- org -*-
 
 * hacksup.el
 
@@ -16,6 +16,8 @@ For small changes, please include a suitable ChangeLog entry of the form:
 
 YYYY-MM-DD  J. Random Hacker  <j.r.hacker@some.node>  (tiny change)
 
+	[foo] Generalize ‘foo’ handling.
+
 	* FILE.el (func-1): Fix foo handling.
 	(func-2): Take additional arg quux, baaz.  Update callers.
 	(func-3): Likewise.
@@ -26,19 +28,35 @@ installed.  This example is also slightly suboptimal in that there are many
 different changes included together (for the sake of demonstration).  It is
 better to instead separate each change to its own patch + ChangeLog entry.
 
-To make the patch, use "diff -u" against either a fresh cvs checkout (best),
-or the latest release (next best).  Patches against older releases will be
-considered at lower priority, if at all.
+To make the patch, use "git format-patch" against a fresh checkout (best),
+or "diff -u" against the latest release (next best).  Patches against
+older releases will be considered at lower priority, if at all.
 
-* public repository
+* coding standards
+*** no trailing whitespace
+*** untabify
+*** ChangeLog
+***** format: while hacking, ttn-style; on release, scrunch to GNU
+***** changes titled with suffix "; nfc." can be excluded
+*** tests/*.test
+    #+BEGIN_SRC emacs-lisp
+      (pushnew '("edb[^/]*/tests/.+\\.test$" . emacs-lisp-mode)
+               auto-mode-alist
+               :test 'equal)
+    #+END_SRC
+*** bootstrap
+***** gnulib-tool must be somewhere on PATH
+***** do "sh autogen.sh"
+*** copyright policy
+***** update every year, unconditionally
+***** (if (< 2 (- END BEGIN)) RANGE INDIVIDUAL)
 
-To get a source tree:
+* etc
+#+LINK: rh       https://bugzilla.redhat.com/show_bug.cgi?id=
+#+LINK: dbts     http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=
 
- $ git clone http://www.gnuvola.org/wip/edb.git
+
+Copyright (C) 2004-2017 Thien-Thi Nguyen
 
-Once you have a source tree:
-
- $ sh autogen.sh
-
-See autogen.sh comments for which tool versions are recommended to install on
-your system (minimally -- probably later versions work, too).
+Copying and distribution of this file, with or without modification,
+are permitted provided the copyright notice and this notice are preserved.

@@ -1,6 +1,6 @@
 ;;; bfuncs --- some -*-emacs-lisp-*- for "emacs -batch" invocation
 
-;;; Copyright (C) 2005,2006,2007,2008 Thien-Thi Nguyen
+;;; Copyright (C) 2005-2017 Thien-Thi Nguyen
 
 ;; This file is part of EDB.
 ;;
@@ -15,9 +15,7 @@
 ;; for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with EDB; see the file COPYING.  If not, write to the Free
-;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-;; MA 02110-1301, USA.
+;; along with EDB.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -29,32 +27,66 @@
 (unless noninteractive
   (error "File not intended for interactive use -- see GNUmakefile"))
 
+(setq vc-handled-backends nil)          ; documented disabling method
+
 (require 'cl)
 (require 'pp)
 
 (defun edb-bfunc-get-GNUmakefile (var)
-  (interactive "sVar: ")
-  (let ((ans (with-temp-buffer
-               (insert "zup:\n\t@echo \"$(" var ")\"\n")
-               (call-process-region (point-min) (point-max) "make" t t nil
-                                    "--no-print-directory"
-                                    "-f" "GNUmakefile" "-f" "-" "zup")
-               (buffer-substring (point-min) (1- (point-max))))))
-    (if (interactive-p)
-        (message "%s" ans)
-      (split-string ans))))
+  (with-temp-buffer
+    (insert "zup:\n\t@echo \"$(" var ")\"\n")
+    (call-process-region (point-min) (point-max)
+                         "make" t t nil
+                         "--no-print-directory"
+                         "-f" "GNUmakefile"
+                         "-f" "-"
+                         "zup")
+    (split-string
+     (buffer-substring (point-min)
+                       (1- (point-max))))))
+
+(defun edb-bfunc-configuration ()
+  (with-temp-buffer
+    (emacs-lisp-mode)
+    (insert "()")
+    (forward-char -1)
+    (insert-file-contents "cfg.el")
+    (forward-char -1)
+    (read (current-buffer))))
 
 (defun edb-bfunc-make-edbcore ()
   (let ((writep (not (file-exists-p "edbcore.el")))
         (badnamesp (equal '("true") (edb-bfunc-get-GNUmakefile "badnamesp")))
+        (cfg (edb-bfunc-configuration))
         (ls (edb-bfunc-get-GNUmakefile "edbcore-components")))
     (unless writep
       (dolist (file ls)
         (setq writep (or writep (file-newer-than-file-p file "edbcore.el")))))
     (when writep
       (with-temp-buffer
+        (emacs-lisp-mode)
         (dolist (file ls)
           (insert-file-contents file)
+
+          ;; If the file's first line ends in " | need-trim...",
+          ;; process top-level forms preceded by ";;; cfg: FUNC".
+          ;; If FUNC is in ‘cfg’, remove the definition.
+          ;; Also, handle ";;; !cfg: SYMBOL"; if SYMBOL is NOT
+          ;; in ‘cfg’, remove the definition.
+          (when (looking-at "^;;;.+[^ ]\\( +| need-trim *\\)$")
+            (delete-region (match-beginning 1) (match-end 1))
+            (while (re-search-forward "^;;; \\(!*\\)cfg: \\(.+\\)$" nil t)
+              (let ((twiddle (if (zerop (length (match-string 1)))
+                                 #'identity
+                               #'not))
+                    (func (intern (match-string 2)))
+                    (beg (line-beginning-position)))
+                (when (funcall twiddle (memq func cfg))
+                  (forward-sexp 1)
+                  (message "Removing conditional definition: (%s) %s"
+                           file func))
+                (forward-line 1)
+                (delete-region beg (point)))))
           (goto-char (point-max)))
         (insert "\n(provide 'edbcore)")
         (let (b e acc)
@@ -91,6 +123,16 @@
 
 (defun edb-bfunc-make-all ()
   (edb-bfunc-make-edbcore)
+
+  ;; Avoid some spurious warnings.
+  (setq byte-compile-warnings
+        '(not
+          ;; "global/dynamic var `VAR' lacks a prefix",
+          ;; VAR ∈ {database, ignored}
+          lexical
+          ;; "cl package required at runtime"
+          cl-functions))
+
   (let ((dir (car load-path))
         (els (edb-bfunc-get-GNUmakefile "installed-el-files")))
     (unless (file-directory-p dir)
@@ -114,7 +156,7 @@
 
       ;; If any compilation happens, touch all the old .elc
       ;; files to fool -- aka "interoperate with" -- make(1).
-      (unless (= 0 count)
+      (unless (zerop count)
         (apply 'call-process "touch" nil nil nil fake))
 
       (message "Done (Total of %d file%s compiled)"

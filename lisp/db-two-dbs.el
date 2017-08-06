@@ -1,6 +1,6 @@
 ;;; db-two-dbs.el --- part of EDB, the Emacs database
 
-;; Copyright (C) 2004,2005,2006,2007,2008 Thien-Thi Nguyen
+;; Copyright (C) 2004-2017 Thien-Thi Nguyen
 
 ;; This file is part of EDB.
 ;;
@@ -15,9 +15,7 @@
 ;; for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with EDB; see the file COPYING.  If not, write to the Free
-;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-;; MA 02110-1301, USA.
+;; along with EDB.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -52,8 +50,8 @@
            (rno2 (edb--1D db2 :nrecords))
            (vov2 (edb--1D db2 :vov))
            (zix2 0)
-           (done1 (= 0 rno1))
-           (done2 (= 0 rno2))
+           (done1 (zerop rno1))
+           (done2 (zerop rno2))
            r1 r2 r-order)
       (while (not (or done1 done2))
         (setq r1 (aref vov1 zix1)
@@ -67,7 +65,7 @@
                (funcall lone2 r2)
                (incf zix2)
                (when (= zix2 rno2) (setq done2 t)))
-              ((= 0 r-order)
+              ((zerop r-order)
                (funcall corr r1 r2)
                (incf zix1)
                (incf zix2)
@@ -255,14 +253,15 @@ nil otherwise."
                                              name1 " and " name2))))
     (dolist (buf (list loners1 loners2 discrep))
       (with-current-buffer buf (erase-buffer)))
-    (flet ((print-r (r db)
-                    (let ((names (database-fieldnames db)))
-                      (princ "\n")
-                      (dotimes (fno (length (database-fieldnames db)))
-                        (princ (format "%s:  %s\n" (aref names fno)
-                                       (aref r fno))))))
-           (print-l1 (r) (db-in-buffer loners1 (print-r r db1)))
-           (print-l2 (r) (db-in-buffer loners2 (print-r r db2))))
+    (cl-flet*
+        ((print-r (r db)
+                  (let ((names (database-fieldnames db)))
+                    (princ "\n")
+                    (dotimes (fno (length (database-fieldnames db)))
+                      (princ (format "%s:  %s\n" (aref names fno)
+                                     (aref r fno))))))
+         (print-l1 (r) (db-in-buffer loners1 (print-r r db1)))
+         (print-l2 (r) (db-in-buffer loners2 (print-r r db2))))
       (db-process-two-databases
        db1 db2 'print-l1 'print-l2
        (lambda (r1 r2)

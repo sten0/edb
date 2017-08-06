@@ -1,6 +1,6 @@
 ;;; db-interfa.el --- part of EDB, the Emacs database
 
-;; Copyright (C) 2004,2005,2006,2007,2008 Thien-Thi Nguyen
+;; Copyright (C) 2004-2017 Thien-Thi Nguyen
 
 ;; This file is part of EDB.
 ;;
@@ -15,9 +15,7 @@
 ;; for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with EDB; see the file COPYING.  If not, write to the Free
-;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-;; MA 02110-1301, USA.
+;; along with EDB.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -391,14 +389,15 @@ recordfieldtype-specific info."
   (interactive)
   (unless (edb--S :this-ds)
     (error "Not on a field."))
-  (flet ((try (x) (when x
-                    (if (stringp x)
-                        (list "%s" x)
-                      (condition-case err
-                          (list "%s" (eval x))
-                        (error
-                         (list "Help form: %S\nfailed with error: %S"
-                               x err)))))))
+  (cl-flet
+      ((try (x) (when x
+                  (if (stringp x)
+                      (list "%s" x)
+                    (condition-case err
+                        (list "%s" (eval x))
+                      (error
+                       (list "Help form: %S\nfailed with error: %S"
+                             x err)))))))
     (let* ((fidx (edb--1ds-record-index (edb--S :this-ds)))
            (one (let ((fh (edb--1D dbc-database :field-help)))
                   (and fh (try (aref fh fidx)))))
@@ -668,7 +667,7 @@ With a zero prefix argument, set it not to use internal file layout."
                (not (zerop (prefix-numeric-value arg)))
              (not (edb--1D dbc-database :togp)))))
     (edb--1D! dbc-database :togp v)
-    (when (interactive-p)
+    (when (called-interactively-p 'interactive)
       (message "Use of internal file layout now %sabled"
                (if v "en" "dis")))))
 
@@ -844,7 +843,8 @@ Hidden records are treated according to db-hide-p."
          (idx (edb--S :index))
          (vov (edb--1D dbc-database :vov))
          (rno (edb--1D dbc-database :nrecords))
-         (new (flet ((new-idx (delta) (1+ (% (+ rno delta -1 idx) rno))))
+         (new (cl-flet
+                  ((new-idx (delta) (1+ (% (+ rno delta -1 idx) rno))))
                 (if (or hidep markedp)
                     ;; slow path
                     (let ((sign (if up 1 -1))
@@ -1215,7 +1215,7 @@ Confirms before each replacement."
 
     (db-maprecords
      (lambda (record)
-       (when (= 0 (funcall ordfunc ov (aref record ridx)))
+       (when (zerop (funcall ordfunc ov (aref record ridx)))
          (db-display-record record t)
          (db-skip-string-forward (aref iftxt 0))
          (edb--S! :this-fidx 0)
