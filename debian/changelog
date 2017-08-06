@@ -1,5 +1,6 @@
-edb (1.31-4) UNRELEASED; urgency=low
+edb (1.33-1) UNRELEASED; urgency=medium
 
+  [ Jari Aalto ]
   * debian/copyright
     - Update URLs.
   * debian/control
@@ -11,7 +12,10 @@ edb (1.31-4) UNRELEASED; urgency=low
   * debian/rules
     - (override_dh_clean): rm *.elc.
 
- -- Jari Aalto <jari.aalto@cante.net>  Wed, 02 Nov 2016 20:33:45 +0200
+  [ Nicholas D Steeves ]
+  * New upstream version 1.33
+
+ -- Nicholas D Steeves <nsteeves@gmail.com>  Sun, 06 Aug 2017 15:19:02 -0400
 
 edb (1.31-3) unstable; urgency=low
 
