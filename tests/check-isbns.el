@@ -1,6 +1,6 @@
 ;;; check-isbns.el --- part of EDB, the Emacs database
 
-;; Copyright (C) 2004,2005,2006,2007,2008 Thien-Thi Nguyen
+;; Copyright (C) 2004-2017 Thien-Thi Nguyen
 
 ;; Author: Bertrand Petit <elrond@imladris.frmug.fr.net>
 ;;	Michael Ernst <mernst@theory.lcs.mit.edu>
@@ -18,9 +18,7 @@
 ;; for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with EDB; see the file COPYING.  If not, write to the Free
-;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-;; MA 02110-1301, USA.
+;; along with EDB.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 

@@ -1,3 +1,618 @@
+2017-06-17  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Release: 1.33
+
+	* configure.ac (AC_INIT): Bump version to "1.33" for release.
+
+2017-06-16  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[skram int] Use dispatch command as ‘who’.
+
+	* skram/bfuncs-edb (who): Don't set on load.
+	(dispatch): Set ‘who’ here.
+
+2017-06-16  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[doc] Improve edb-t-timedate1.el documentation.
+
+	* lisp/edb-t-timedate1.el
+	(edb-t-timedate1:parse-time-regexp-array): Use backtick/apostrophe quotes.
+	(edb-t-timedate1:format-time-24): Say "omitted" in docstring.
+	(edb-t-timedate1:format-time-12): Likewise.
+
+2017-06-16  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[doc] Improve edb-t-places-usuk.el documentation.
+
+	* lisp/edb-t-places-usuk.el
+	(edb-t-places-usuk:postal-code-p): Add docstring.
+	(edb-t-places-usuk:state-alist): Rewrite docstring.
+	* doc/edb.texi (Convenience libraries):
+	Add section for edb-t-places-usuk.el
+
+2017-06-16  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[skram] Fix bug: Recognize indexed symbols w/ embedded ‘:’.
+
+	* skram/bfuncs (make-skram): Update regexp used to match
+	edb.info index entries to allow ‘:’ in the symbol name.
+
+2017-06-16  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[doc] Improve edb-t-human-names.el documentation.
+
+	* doc/edb.texi (Convenience libraries): Add extensibility blurb;
+	add section for edb-t-human-names.el.
+	* lisp/edb-t-human-names.el
+	(edb-t-human-names:order-last-names): Rewrite docstring.
+	(edb-t-human-names:canonicalize-name): Add docstring.
+	(edb-t-human-names:same-first-name-p, edb-t-human-names:order-first-names)
+	(edb-t-human-names:nicknamep, edb-t-human-names:standardize-name)
+	(edb-t-human-names:jr-assoc-list, edb-t-human-names:name->name-jr)
+	(edb-t-human-names:name->first-last-jr): Likewise.
+
+2017-06-16  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[doc] Add chapter for edb-t-*.el files.
+
+	* doc/edb.texi (Top): Add "Convenience functions" to menu.
+	(Convenience libraries): New node/chapter.
+
+2017-06-16  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[skram] Ignore examples symbols not in EDB API.
+
+	* skram/skram.edb: Add :report text-block.
+	* skram/bfuncs-edb (report-1): New func.
+	* skram/bfuncs (make-syms): Gather EDB API elements from file
+	in command-line args; filter scanned symbols against that list.
+	* skram/GNUmakefile.in (examples-syms.data):
+	Add skram.report at head of dependency list.
+	(skram.report): New target.
+	(clean): Also delete examples-syms.data, skram.report.
+
+2017-06-16  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[skram] Avoid making backup files.
+
+	* skram/bfuncs (make-backup-files): Clear this var on load.
+
+2017-06-16  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[skram int] Refactor "derive" support.
+
+	* skram/bfuncs-edb: Rename from bfuncs-derive.
+	(derive): Delete func.
+	(dispatch): New func.
+	* skram/GNUmakefile.in (e-edb): New var.
+	(derive): Use $(e-edb).
+
+2017-05-17  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[doc] Add blank lines.
+
+	* doc/edb.texi (Editing a field): ...between table items.
+	(Predefined displaytypes): Likewise, for ‘edb-t-timedate1:format-date’.
+
+2017-04-18  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[skram] Collect symbols data for examples/.{dba,edb}.
+
+	* skram/examples-syms.edb: New file.
+	* skram/bfuncs (proper, flatten, make-syms): New funcs.
+	* skram/GNUmakefile.in (examples-source): New var.
+	(examples-syms.data): New target.
+
+2017-04-18  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[doc] Add space between info filename and node name.
+
+	* lisp/edb-1int-to-single.el (edb-1int-to-single):
+	...here, in the docstring.
+
+2017-04-18  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[skram] Support prefixed ‘message’.
+
+	* skram/bfuncs (who): New var.
+	(message/original): New func.
+	(message): Override function slot.
+	(make-hacksup): ‘let’-bind ‘who’.
+	(make-skram): Likewise; also, add some ‘message’ calls.
+	* skram/bfuncs-derive <top-level>: Set ‘who’.
+
+2017-04-10  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[doc] Use backtick-apostrophe quoting in docstrings.
+
+	* lisp/edb-t-timedate1.el (edb-t-timedate1:parse-date-default):
+	Quote ‘current-time’ w/ backtick-apostrophe in docstring.
+
+2017-04-10  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[doc] Declare manual to be UTF-8.
+
+	* doc/edb.texi <header>: Add ‘@documentencoding UTF-8’.
+
+2017-03-29  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[inst] Install database.el{c} in ${sitelisp}.
+
+	* lisp/database.el: Before anything, if ‘load-file-name’
+	is non-nil, add subdir "edb" of its directory to ‘load-path’.
+	* lisp/GNUmakefile.in (ddsi): New var.
+	(ddi): Use $(ddsi).
+	(install): After installing database.el and database.elc,
+	move them into $(ddsi) and touch $(ddi)/.nosearch.
+	(installcheck): Use ‘-L $(ddsi)’.
+	(uninstall): Before anything else, delete database.el and
+	database.elc from $(ddsi).
+
+2017-03-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build int] Use cache var prefix "elisp" in elisp m4 macros.
+
+	* build-aux/elisp.m4: Bump serial to "4".
+	(_ELISP_PREP): For cache var prefix, do ‘s/edb/elisp/’.
+
+2016-12-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] Use ‘zerop’ more.
+
+	* lisp/bfuncs (edb-bfunc-make-all): Use ‘zerop’.
+	* lisp/db-interfa.el (db-field-query-replace): Likewise.
+	* lisp/db-search.el (db-match): Likewise.
+	* lisp/db-sort.el (database-sort): Likewise.
+	* lisp/db-summary.el (db-summary): Likewise.
+	* lisp/db-tagged.el (db-tagged-write): Likewise.
+	* lisp/db-two-dbs.el (db-process-two-databases): Likewise.
+	* lisp/edb-t-timedate.el (edb-t-timedate1:date->day-of-year): Likewise.
+
+2016-12-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Release: 1.32
+
+	* configure.ac (AC_INIT): Bump version to "1.32" for release.
+
+2016-12-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[dist] Also distribute edbibtex documentation.
+
+	* GNUmakefile.in (extradist):
+	Add examples/edbibtex/edbibtex.info.
+
+2016-12-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[slog] Use ‘-L DIR’ more; munge ‘load-path’ less.
+
+	* README: Fix bug: mention subdir ‘lisp/’.
+	* lisp/GNUmakefile (abs_top_srcdir): New var.
+	($(installed-elc-files)): Use ‘-L $(abs_top_srcdir)/lisp’.
+
+2016-12-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[slog] Use ‘cl-struct-slot-info’ if available.
+
+	* lisp/state.el (edb--struct-slot-info): Check for
+	‘cl-struct-slot-info’ availability at byte-compile time;
+	use it if so; otherwise, use the traditional ‘get’ approach.
+
+2016-12-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build] Check for feature ‘cl-macs’; require it if available.
+
+	* configure.ac (cl-macs): New ELISP_CHECK_FEATURE.
+	* lisp/system.el <top-level>: Require ‘cl-macs’
+	for both evaluation and compilation.
+
+2016-12-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build] Also handle ‘!cfg’ directives.
+
+	This is a continuation of 2016-11-06, "[build]
+	Move edbcore ‘fboundp’ checks to configure time".
+
+	* lisp/bfuncs (edb-bfunc-make-edbcore):
+	Also look for ";;; !cfg: SYMBOL" and if SYMBOL is
+	not in the configuration, remove the following form.
+
+2016-12-24  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[skram int] Split out ‘derive’ into its own file.
+
+	This is so that the ‘(require 'database)’ can be at top-level,
+	which makes newer Emacsen happy.
+
+	* skram/bfuncs-derive: New file.
+	* skram/bfuncs (derive): Delete func.
+	* skram/GNUmakefile.in (derive): Load via ‘-l’
+	bfuncs-derive prior to calling func ‘derive’.
+
+2016-12-23  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build] Don't involve the configure script in cl-lib substitutes.
+
+	This is conceptually a continuation of 2016-12-23,
+	"[build] If ‘cl-lib’ is not available, provide
+	some substitutes".
+
+	* configure.ac (cl-lib): Drop ELISP_CHECK_FEATURE.
+	* lisp/system.el: Don't bother w/ configuration var
+	‘featurep-cl-lib’; instead, use the return value of
+	the 4-arg ‘require’ form as the gating condition.
+
+2016-12-23  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[slog] Require ‘help-fns’.
+
+	* lisp/system.el: ...here.
+
+2016-12-23  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[slog] Avoid ‘string-to-int’.
+
+	* lisp/db-types.el (integer): ...here in both displaytype
+	and recordfieldtype; instead, use ‘string-to-number’.
+
+2016-12-23  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[slog] Fix bug: Avoid ‘cl-multiple-value-bind’.
+
+	Bug introduced 2016-11-02, "[slog] Use
+	cl-{flet,flet*,loop,labels,multiple-value-bind}".
+
+	It is incorrect to use ‘cl-multiple-value-bind’ w/o an attendant
+	‘values’-producing call.  We could use ‘cl-destructuring-bind’
+	here but that would be the only instance in the entire code base,
+	so... ‘loop’ to the rescue!  :-D
+
+	* BUGS.edb (:fields): Replace ‘mapcar’ +
+	‘lambda’ + ‘cl-multiple-value-bind’ with ‘cl-loop’.
+
+2016-12-23  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build] If ‘cl-lib’ is not available, provide some substitutes.
+
+	* configure.ac (cl-lib): New ELISP_CHECK_FEATURE.
+	* lisp/system.el (cl-loop, cl-labels, cl-flet*, cl-flet):
+	If configuration var ‘featurep-cl-lib’ is not set,
+	define these aliases for various ‘cl’-provided items.
+
+2016-12-23  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build int] New m4 macro: ELISP_CHECK_FEATURE
+
+	* buid-aux/elisp.m4: Bump serial to "3".
+	(ELISP_CHECK_FEATURE): New AC_DEFUN.
+
+2016-12-23  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build int] In ELISP_* m4 macros, log ‘$EMACS --batch’ out/err.
+
+	* build-aux/elisp.m4: Bump serial to "2".
+	(ELISP_CHECK): For ‘$EMACS --batch’, redirect
+	file descriptors ‘1’ and ‘2’ to to file descriptor ‘5’.
+
+2016-11-06  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build] Move edbcore ‘fboundp’ checks to configure time.
+
+	* lisp/system.el (with-selected-window, number-sequence)
+	(help-function-arglist): Convert top-level ‘(unless ...)’
+	expression to a stylized comment ‘;;; cfg: SYMBOL’ followed
+	by a normal ‘defun’ form.
+	* lisp/bfuncs (edb-bfunc-configuration): New func.
+	(edb-bfunc-make-edbcore): Convert direct ‘fboundp’ check
+	to a lookup of the SYMBOL found in the stylized comment
+	against the list returned by ‘edb-bfunc-configuration’.
+	* configure.ac: Include build-aux/elisp.m4.
+	(ELISP_CONFIG_FILE): New macro call.
+	(with-selected-window): New ELISP_CHECK_FBOUNDP call.
+	(number-sequence, help-function-arglist): Likewise.
+
+2016-11-06  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build int] Add support for ELISP_* m4 macros.
+
+	* build-aux/elisp.m4: New file.
+
+2016-11-05  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build] Move install-sh into build-aux/.
+
+	* autogen.sh: If build-aux/ does not exist, ‘mkdir’ it.
+	(actually): Make 2nd arg ‘dst’ optional;
+	if omitted, use value of 1st arg ‘src’.
+	<top-level>: Arrange to copy install-sh into build-aux/.
+	* GNUmakefile.in (extradist): Update location of install-sh.
+	* configure.ac (AC_CONFIG_AUX_DIR): New macro call.
+
+2016-11-05  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[int] Add abstraction: edb--struct-slot-info
+
+	* lisp/state.el (edb--struct-slot-info): New func.
+	* lisp/connection.el (edb--1format-buffer<-connection): Use it.
+	* lisp/db-format.el (edb--1ds kwidx): Likewise.
+	* lisp/db-rep.el (edb--v1-rs kwidx): Likewise.
+	* lisp/edb-1int-to-single.e; (edb-1int-to-single): Likewise.
+	* lisp/edb-meta.el (edb-meta): Likewise.
+
+2016-11-04  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build int] Add full m4-quoting.
+
+	* configure.ac: ...here.
+
+2016-11-03  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[doc] Use @code{foo} instead of `foo'.
+
+	* doc/edb.texi (Tagged file layout): ...here, for field names.
+	(Naming conventions): ...here, for prefix component chars.
+
+2016-11-03  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[dist] Also create .tar.lz on ‘make dist’.
+
+	* GNUmakefile.in (dist): Add commands to create .tar.lz.
+
+2016-11-03  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build] Add support for ‘make distdir’.
+
+	* GNUmakefile.in (distdir): New target.
+	(dist): Depend on ‘distdir’; rewrite actions.
+
+2016-11-03  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build] Remove doc/*.{ps,pdf,info} on ‘make maintainerclean’.
+
+	* doc/GNUmakefile.in (clean): Rename target from ‘prep-dist’.
+	(maintainerclean): Rename target from ‘clean’.
+	* lisp/GNUmakefile.in (maintainerclean): New target.
+	* GNUmakefile.in (maintainerclean): Don't depend on ‘clean’;
+	instead, depend on ‘recursive-maintainerclean’.
+
+2016-11-03  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build] Avoid unnecessary refcard.ps rebuild in the distribution.
+
+	* doc/GNUmakefile.in (.INTERMEDIATE): New target.
+
+2016-11-03  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build int] Avoid curly-brace globbing in makefile actions.
+
+	It used to be that ‘*.{foo,bar,baz}’ would expand to
+	‘*.foo *.bar *.baz’ but that is no longer the case.
+
+	* doc/GNUmakefile.in (crufty, allsuch): New vars.
+	(%.ps:%.dvi, prep-dist, clean): Replace curly-brace
+	glob w/ expression involving ‘crufty’ and ‘allsuch’.
+
+2016-11-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build] Remove superfluous defuns at byte-compile time.
+
+	* lisp/bfuncs (edb-bfunc-make-edbcore):
+	If the file's first line ends in " | need-trim...", look
+	for all top-level forms ‘(unless (fboundp FUNC) ...)’ and
+	remove them if FUNC is indeed already ‘fboundp’.
+	* lisp/system.el: Add 1st-line marker comment.
+
+2016-11-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build int] Use ‘AS_IF’.
+
+	* configure.ac: ...here, to replace naked Bourne
+	shell ‘if’..‘fi’ and ‘if’..‘else’..‘fi’ sequences.
+
+2016-11-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build] Suppress "global/dynamic var `VAR' lacks a prefix" warning.
+
+	* lisp/bfuncs (edb-bfunc-make-all):
+	Add ‘lexical’ to value of ‘byte-compile-warnings’.
+
+2016-11-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build] Suppress "cl package required at runtime" warning.
+
+	* lisp/bfuncs (edb-bfunc-make-all):
+	Jam ‘byte-compile-warnings’ to ‘(not cl-functions)’.
+
+2016-11-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[slog] Avoid ‘goto-line’.
+
+	* lisp/db-summary.el (dbs-goto-nth-summary): ...here;
+	instead, use ‘goto-line’ and ‘forward-line’.
+
+2016-11-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[slog] Avoid ‘interactive-p’.
+
+	Apparently ‘interactive-p’ is obsolete since Emacs 23.2.
+
+	* lisp/database.el (edb-version): Use ‘called-interactively-p’.
+	* lisp/db-format.el (db-change-format): Likewise.
+	* lisp/db-interfa.el (db-toggle-internal-file-layout): Likewise.
+
+2016-11-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[build int] Drop interactive support for ‘edb-bfunc-get-GNUmakefile’.
+
+	* lisp/bfuncs (edb-bfunc-get-GNUmakefile): Rewrite.
+
+2016-11-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[slog] Use cl-{flet,flet*,loop,labels,multiple-value-bind}.
+
+	U(X) ≡ "Use ‘cl-X’".
+	* BUGS.edb (:fields): U (multiple-value-bind).
+	(:record-defaults): U (flet).
+	* lisp/connection.el (edb--with-callable-connection)
+	(edb--connect, edb--connection-file-cache): U (flet).
+	(edb--1format-buffer<-connection): U (flet*).
+	* lisp/database.el (edb-interact): U (flet).
+	* lisp/db-file-io.el (db-read-database-internal-file-layout): U (flet).
+	(db-write-1, database-io-setup): U (flet*).
+	* lisp/db-format.el (db-optspec-list, db-change-format): U (flet).
+	* lisp/db-interfa.el (db-field-help, db-select-next-record): Likewise.
+	* lisp/db-rep.el (edb--define-child-hash 1D db): Likewise.
+	* lisp/db-search.el (db-parse-match-pattern)
+	(db-print-match-pattern, db-match): Likewise.
+	* lisp/db-sort.el (dbsi-format): Likewise.
+	* lisp/db-tagged.el (db-tagged-setup): U (flet); U (loop).
+	* lisp/db-two-dbs.el (database-compare-hack): U (flet*).
+	* lisp/db-types.el (edb-define-enumtype): U (flet).
+	* lisp/edb-1int-to-single.el (edb-1int-to-single): Likewise.
+	* lisp/edb-meta.el (edb-meta): U (labels).
+
+2016-11-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[skram] Fix bug: Look for *.el in $(el-src).
+
+	Regression introduced 2008-01-22, "Move edb.texi
+	into subdir `doc'; move .el to subdir "lisp"".
+
+	* skram/GNUmakefile.in (derive): Use ‘$(el-src)’.
+
+2016-11-02  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[maint] Add abstraction: el-src
+
+	* skram/GNUmakefille.in (el-src): New var.
+	(elisp): Use it.
+
+2016-11-01  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[maint] Avoid backslash in echo args.
+
+	Apparently ‘\v’ causes problems under some Make/Bash combinations.
+
+	* doc/GNUmakefile.in (refcard.version.tex): Use ‘printf’ and
+	‘$(shell date +...)’ instead of ‘echo’ and naked ‘date +...’.
+
+2016-11-01  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[maint] Don't worry about "CVS state summary".
+
+	* GNUmakefile.in (cvs-state-summary): Remove rule.
+
+2012-04-08  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	[maint] Use gnulib for install-sh, INSTALL.
+
+	* autogen.sh: Don't use ../.common/symlink-am-files.
+	(actually): New func.
+	(install-sh, INSTALL): Install via ‘actually’.
+
+2009-06-08  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Make `db-copy-region-as-kill' always use `interprogram-cut-function'.
+
+	* lisp/db-format.el (db-copy-region-as-kill):
+	Use `interprogram-cut-function' for new kills.
+	Suggested by shoichi takasaki.
+
+2008-07-13  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	In skram/, speed up "make skram.data".
+
+	* skram/bfuncs (make-skram): Use hash tables
+	for tracking "indexed" and "kind" information.
+
+2008-07-12  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Make manual paragraph boundaries prettier for non-info output.
+
+	* doc/edb.texi: Only set @paragraphindent for info output.
+	Throughout, add many many @noindent lines.
+
+2008-07-12  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Make manual buildable in postscript and PDF.
+
+	* doc/GNUmakefile.in (refcard-DVIPS-opts): New var.
+	(refcard.dvi): Depend on refcard.version.tex.
+	(%.dvi:%.tex): Remove refcard.version.tex from rhs.
+	(%.ps:%.dvi): Don't hardcode dvips(1) opts; use $($*-DVIPS-opts)
+	instead; also delete $*.{cp,cps,fn,fns,ky,pg,toc,tp,vr,vrs}.
+	(prep-dist): Also delete *.{fns,vrs}.
+
+2008-07-12  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Support "make uninstall".
+
+	* lisp/GNUmakefile.in (uninstall): New target.
+	* doc/GNUmakefile.in (ii-args): New var.
+	(install): Use $(ii-args).
+	(uninstall): New target.
+	* GNUmakefile.in (uninstall): New target.
+
+2008-07-12  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Use makefile facilities to manage skram/ symlinks.
+
+	* skram/GNUmakefile.in (%.fmt): New pattern rule.
+	(sk2, sk3, sk4): Depend on sk2.fmt, sk3.fmt and sk4.fmt,
+	respectively; remove redundant symlink test/command.
+	(clean): Also delete sk[234].fmt.
+
+2008-07-12  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Move skram/ elisp bits into skram/bfuncs.
+
+	* skram/bfuncs: Require `cl'.
+	(make-hacksup, make-skram, derive): New funcs.
+	* skram/GNUmakefile.in (hacksup.el): Use `-f make-hacksup'.
+	(skram.data): Use `-f make-skram'.
+	(wily-emacs): Delete var.
+	(derive): New var.
+	(sk2): Use $(derive).
+	(sk3, sk4): Likewise.
+	* skram/make-hacksup.el: Delete file.
+	* skram/make-skram.el: Delete file.
+
+2008-07-12  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Detect if Emacs is too old at configure time.
+
+	* configure.ac (edb_cv_emacs_minus_L): New cache var.
+	Set to "yes" if Emacs supports `-L DIR', otherwise "no".
+	If "no", emit error message and exit failurefully.
+
+2008-07-12  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	For "make", move VC neutering out of makefile into bfuncs.
+
+	* lisp/bfuncs: Clear `vc-handled-backends' here.
+	* lisp/GNUmakefile.in (EXTRABATCHOPTS): Delete var.
+	(ebatch): Add option `--no-site-file'.
+	($(installed-elc-files)): No longer clear `vc-handled-backends' here.
+	* skram/bfuncs: New file.
+	* skram/GNUmakefile.in (EXTRABATCHOPTS): Delete var.
+	(ebatch): Add option `--no-site-file' and load "$(srcdir)/bfuncs".
+
+2008-07-11  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	For "make dist", don't handle symlinks in tar(1) command.
+
+	* GNUmakefile.in (dist): Omit `h' flag from tar(1) command.
+
+2008-05-27  Thien-Thi Nguyen  <ttn@gnuvola.org>
+
+	Support DESTDIR for "make install" and "make installcheck".
+
+	* lisp/GNUmakefile.in (edb-elc-dir): Delete var.
+	(ddi): New var.
+	(install, installcheck): Use $(ddi).
+	* doc/GNUmakefile.in (ddi): New var.
+	(install): Use $(ddi).
+	Suggested by Leo.
+
 2008-05-26  Thien-Thi Nguyen  <ttn@gnuvola.org>
 
 	Release: 1.31
@@ -7781,3 +8396,8 @@
 Local variables:
 coding: utf-8
 End:
+
+Copyright (C) 2010-2017 Thien-Thi Nguyen
+
+Copying and distribution of this file, with or without modification,
+are permitted provided the copyright notice and this notice are preserved.

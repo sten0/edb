@@ -1,6 +1,6 @@
 ;;; www-links3.edb                              -*-emacs-lisp-*-
 
-;; Copyright (C) 2008 Thien-Thi Nguyen
+;; Copyright (C) 2008-2017 Thien-Thi Nguyen
 ;;
 ;; This file is part of EDB.
 ;;
@@ -15,13 +15,13 @@
 ;; for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with EDB; see the file COPYING.  If not, write to the Free
-;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-;; MA 02110-1301, USA.
+;; along with EDB.  If not, see <http://www.gnu.org/licenses/>.
 
 :EDB (single)
 
 :name "WWW Links (Everything)"
+
+(require 'edb-t-timedate1)
 
 (edb-define-recordfieldtype 'suredate 'date
   :actual->stored 'edb-t-timedate1:format-date-iso

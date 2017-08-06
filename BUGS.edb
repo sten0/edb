@@ -1,6 +1,6 @@
 ;;; BUGS.edb                                            -*- emacs-lisp -*-
 
-;; Copyright (C) 2007,2008 Thien-Thi Nguyen
+;; Copyright (C) 2007-2017 Thien-Thi Nguyen
 ;;
 ;; This file is part of EDB.
 ;;
@@ -15,9 +15,7 @@
 ;; for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with EDB; see the file COPYING.  If not, write to the Free
-;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-;; MA 02110-1301, USA.
+;; along with EDB.  If not, see <http://www.gnu.org/licenses/>.
 
 :EDB (single)
 
@@ -39,32 +37,33 @@
 :tagged-setup
 `
 (:fields
- ,(mapcar
-   (lambda (args)
-     (multiple-value-bind (desc name type) args
-       (list (cons name type) (capitalize (symbol-name name)) desc)))
-   '(("serial number of the bug"
-      id integer)
-     ("one-line description of the buggy behavior"
-      summary one-line-string)
-     ("one of: unresolved, fix-applied, resolved"
-      status status)
-     ("released version of EDB that demonstrates this bug"
-      reported-version string)
-     ("either \"ttn\" or someone's email address"
-      reported-by string)
-     ("when reported (and hopefully entered into BUGS :-)"
-      reported-date iso-date)
-     ("one-line description of the fix"
-      fix-applied-summary one-line-string)
-     ("when status changed to fix-applied"
-      fix-applied-date iso-date)
-     ("version at and after which no longer demonstrate the bug"
-      fix-applied-version string)
-     ("when status changed to resolved"
-      resolved-date iso-date)
-     ("notes"
-      notes string)))
+ ,(cl-loop
+   for (desc name type)
+   in '(("serial number of the bug"
+         id integer)
+        ("one-line description of the buggy behavior"
+         summary one-line-string)
+        ("one of: unresolved, fix-applied, resolved"
+         status status)
+        ("released version of EDB that demonstrates this bug"
+         reported-version string)
+        ("either \"ttn\" or someone's email address"
+         reported-by string)
+        ("when reported (and hopefully entered into BUGS :-)"
+         reported-date iso-date)
+        ("one-line description of the fix"
+         fix-applied-summary one-line-string)
+        ("when status changed to fix-applied"
+         fix-applied-date iso-date)
+        ("version at and after which no longer demonstrate the bug"
+         fix-applied-version string)
+        ("when status changed to resolved"
+         resolved-date iso-date)
+        ("notes"
+         notes string))
+   collect (list (cons name type)
+                 (capitalize (symbol-name name))
+                 desc))
  ;; overriding attributes
  :pre-tag-regexp      ""
  :separator-regexp    ":[ \t]*"
@@ -92,8 +91,9 @@
 
 :record-defaults
 (lambda ()
-  (flet ((read/def (prompt def) (read-from-minibuffer
-                                 prompt def nil nil nil def)))
+  (cl-flet
+      ((read/def (prompt def) (read-from-minibuffer
+                               prompt def nil nil nil def)))
     (let ((date (edb-t-timedate1:parse-date-string
                  (read/def "When: " (current-time-string))))
           (user (read/def "Reported by: " (format "%s@%s"

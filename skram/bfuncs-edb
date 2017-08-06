@@ -1,0 +1,55 @@
+;;; bfuncs-edb --- some -*-emacs-lisp-*- for "emacs -batch" invocation
+
+;;; Copyright (C) 2008-2017 Thien-Thi Nguyen
+
+;; This file is part of EDB.
+;;
+;; EDB is free software; you can redistribute it and/or modify it under
+;; the terms of the GNU General Public License as published by the Free
+;; Software Foundation; either version 3, or (at your option) any later
+;; version.
+;;
+;; EDB is distributed in the hope that it will be useful, but WITHOUT
+;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+;; FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+;; for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with EDB.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; This file, deliberately named w/o .el suffix, is not installed.
+;; It contains thunk ‘dispatch’ for invocation from the GNUmakefile.
+;; Available funcs have names ending in "-1".
+
+;;; Code:
+
+(unless noninteractive
+  (error "File not intended for interactive use -- see GNUmakefile"))
+
+(setq vc-handled-backends nil)          ; documented disabling method
+
+(require 'cl)
+(require 'database)
+
+(defun derive-1 (infile outfile flag name)
+  (db-find-file infile)
+  (db-toggle-internal-file-layout (string-to-number flag))
+  (setf (database-print-name dbc-database) name)
+  (db-write-database-file outfile))
+
+(defun report-1 (infile outfile control)
+  (edb-interact control infile)
+  (call-interactively #'db-report)
+  (message "buffer: %s (%d lines)"
+           (current-buffer)
+           (count-lines (point-min) (point-max)))
+  (write-file outfile))
+
+(defun dispatch ()
+  (apply (intern (concat (setq who (pop command-line-args-left))
+                         "-1"))
+         command-line-args-left))
+
+;;; bfuncs-edb ends here

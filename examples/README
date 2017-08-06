@@ -18,7 +18,7 @@ arb-demo.home-fmt
 
 arb-demo-regexp		The same database as that above, but with its layout
 arb-demo-regexp.dba	specified by a set of regular expressions.  When you
-			do `db-find-file' on arb-demo-regexp, EDB will ask
+			do ‘db-find-file’ on arb-demo-regexp, EDB will ask
 			for its display format; you should use arb-demo.fmt.
 
 eicsw.dat	Alan Stebbens's EIC software database, which uses enumerated

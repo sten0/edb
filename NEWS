@@ -1,7 +1,176 @@
 NEWS for EDB, the Emacs Database
 
-Copyright (C) 2004,2005,2006,2007,2008 Thien-Thi Nguyen
+Copyright (C) 2004-2017 Thien-Thi Nguyen
 See the end for copying conditions.
+
+
+- 1.33 | 2017-06-17
+
+  - Installation change: ‘database.el[c]’ in ‘${sitelisp}’
+
+    Previously, "make install" created, and copied all *.el[c] to,
+    directory ‘${sitelisp}/edb/’ with the expectation that there
+    exist file ‘${sitelisp}/subdirs.el’ (or equivalent) to add
+    ‘${sitelisp}/edb’ to ‘load-path’.
+
+    Now, "make install" copies ‘database.el[c]’ to ‘${sitelisp}/’
+    (and the rest to ‘${sitelisp}/edb/’, as previously).  On load,
+    ‘database.el[c]’ adds ‘${sitelisp}/edb’ to ‘load-path’.
+
+    Furthermore, "make install" touches ‘${sitelisp}/edb/.nosearch’
+    to inhibit the (possibly pre-existing) subdirs.el from nosing
+    about there.
+
+    The overall result of this change is to make casual installation
+    under non-standard ‘${sitelisp}’ more likely to work out of the
+    box.  It's enough to have ‘${sitelisp}’ already in ‘load-path’:
+
+     $ ./configure --prefix /tmp/ignore --with-sitelisp=/tmp/eval
+     $ make all check install installcheck
+     $ emacs -q -Q -L /tmp/eval --eval "(require 'database)"
+     $ make uninstall      # or reboot to clear /tmp  :-P
+
+    That's it!  Hopefully, this encourages play and feedback.
+
+    Another benefit of this approach is one less directory in
+    ‘load-path’ (be nice to old/slow computers and their users) for
+    sessions that do not require EDB.  Presume less, resume more!
+
+  - Documentation changes
+
+    - New chapter: Convenience libraries
+
+      The EDB manual now includes (info "(edb) Convenience libraries")
+      to document ‘edb-t-human-names.el’ and ‘edb-t-places-usuk.el’
+      data structures and functions.
+
+    - Manual declared UTF-8, more spacious
+
+      This basically means the Info format output now sports nice
+      single quotation marks: not `this', not 'this', but ‘THIS’.
+
+      Also, there are more blank lines between non-trivial table items
+      (see <http://www.gnuvola.org/u/2017/05/17h22.html> for details).
+
+  - SKRAM changes
+
+    - Accountability via prefixed ‘message’
+
+      In ‘skram/’, the Emacs Lisp ‘bfuncs’ (and new file ‘bfuncs-edb’)
+      functions use a prefixed ‘message’ to let you know who is doing
+      what.  This is (marginally :-D) more interesting than before.
+
+    - New database: ‘examples-syms.edb’
+
+      After configuration and "make", you can try:
+
+       $ cd skram
+       $ make examples-syms.data
+
+      and play with ‘examples-syms.edb’ there.  This database contains
+      EDB API elements used by ‘*.{edb,dba}’ files under ‘examples/’.
+      This process also demonstrates programmatic report generation
+      (file ‘skram/skram.report’).
+
+    - More "ok"
+
+      Thanks to the new chapter in the manual (see above), the number
+      of skram.data entries with ‘thumbs-one’ value "ok" has increased
+      from 121 (20.4%) to 151 (25.5%) -- woo hoo!
+
+  - Tools used for bootstrap/maintenance
+
+    upgraded:
+
+     GNU gnulib 2017-05-28 11:51:08
+
+    as before:
+
+     GNU Autoconf 2.69
+     GNU Automake 1.15
+     GNU texinfo 6.3
+
+
+- 1.32 | 2016-12-24
+
+  - Changes in distribution / build
+
+    - New tarball format: .tar.lz
+
+      (This is in addition to the .tar.gz file.)
+
+      If you have GNU tar, you can use "tar xf" and it will DTRT.
+      If not, you can use "lzip -dc TARBALL | tar xf -" to unpack
+      the .tar.lz, or "gzip -dc TARBALL | tar xf -" for the .tar.gz.
+
+    - New support for ‘DESTDIR’
+
+      Both "make install" and "make installcheck" are now sensitive to
+      ‘DESTDIR’.  This is to support distro packaging.
+
+    - New support for "make uninstall"
+
+      Note that this is also sensitive to ‘DESTDIR’ (see above).
+
+    - Portability tweaks
+
+      EDB now cleanly builds and passes "make check" for those Emacs
+      versions that have cl-lib and lexical binding, while retaining
+      (we hope) full functionality for those w/o.  This release was
+      lightly tested w/ GNU Emacs 23.4, 24.3, 24.4, 25.1 and a late
+      2016 checkout from the Git repo.
+
+      Here, "cleanly" means w/o errors and warnings -- automatically
+      suppressed are the "cl package required at runtime" warning, and
+      the "global/dynamic var `VAR' lacks a prefix" warning (for VAR ∈
+      {database, ignored}).
+
+      If you see any errors or warnings, that's a bug -- please report!
+
+    - Spurious refcard.ps rebuild suppressed
+
+      Previously, "make" would spuriously rebuild doc/refcard.ps, a
+      potentially errorful situation if you don't have the right TeX
+      tools installed.  Now, doc/refcard.ps rebuild on "make" only
+      happens if doc/refcard.tex changes.
+
+  - Changes in functionality
+
+    - Bugfix: ‘db-copy-region-as-kill’
+
+      Previously, ‘db-copy-region-as-kill’ (bound to ‘M-w’ in Database
+      Edit mode) only called ‘interprogram-cut-function’ when the last
+      command was ‘db-kill-region’ (bound to ‘C-w’ Database Edit mode).
+      Now it does so in all cases.
+
+  - Changes in documentation
+
+    - New support for manual in Postscript and PDF
+
+      In the doc/ subdir, you can do "make edb.ps" and "make edb.pdf"
+      to build the manual in Postscript and PDF formats, respectively.
+
+    - Paragraphs indented for non-Info formats
+
+      Previously, the manual's paragraphs were never indented, for any
+      output format.  Now, non-indentation is limited to Info format.
+
+    - Documentation for edbibtex included
+
+      Specifically, examples/edbibtex/edbibtex.info.
+
+  - Tools used for bootstrap/maintenance
+
+    upgraded:
+
+     GNU gnulib 2016-10-22 17:17:26
+     GNU Autoconf 2.69
+     GNU Automake 1.15
+     GNU texinfo 6.3
+
+    as before:
+
+     (none)
 
 
 - 1.31 | 2008-05-26
@@ -13,32 +182,32 @@ See the end for copying conditions.
 
   - Build fix: "gmake all" now works under Windoze
 
-	No pipes there, how peculiar (BUGS #15).
+    No pipes there, how peculiar (BUGS #15).
 
-  - Bugfix: Deleting a record no longer signals `args-out-of-range'
+  - Bugfix: Deleting a record no longer signals ‘args-out-of-range’
 
-	Previously, for non-inherent databases, 9% of the deletions
-	(1/11) would result in a `args-out-of-range' error, and possibly
-	corrupt the database (BUGS #16).
+    Previously, for non-inherent databases, 9% of the deletions
+    (1/11) would result in a ‘args-out-of-range’ error, and possibly
+    corrupt the database (BUGS #16).
 
   - Changes to Database Edit commands
 
-    - `C-a' twice goes to beginning of field
-    - `C-e' twice goes to end of field
+    - ‘C-a’ twice goes to beginning of field
+    - ‘C-e’ twice goes to end of field
 
-	That is, on the first invocation, the commands behave normally,
-	going to beginning or end of line, respectively.  A successive
-	invocation goes "further".  This is useful for multi-line
-	fields, since `M-<' and `M->' are by default coopted for
-	`db-first-record' and `db-last-record', respectively.
+      That is, on the first invocation, the commands behave normally,
+      going to beginning or end of line, respectively.  A successive
+      invocation goes "further".  This is useful for multi-line
+      fields, since ‘M-<’ and ‘M->’ are by default coopted for
+      ‘db-first-record’ and ‘db-last-record’, respectively.
 
-    - `C-k' respects `kill-whole-line'
+    - ‘C-k’ respects ‘kill-whole-line’
 
   - New handling for file-not-writable on interactive save
 
-	On save, where `noninteractive' is nil, if file is not writable,
-	offer to make it writable and continue.  This uses `y-or-n-p' to
-	query and does a simple `set-file-modes' (no vc integration).
+    On save, where ‘noninteractive’ is nil, if file is not writable,
+    offer to make it writable and continue.  This uses ‘y-or-n-p’ to
+    query and does a simple ‘set-file-modes’ (no vc integration).
 
 
 - 1.29 | 2008-01-17
@@ -47,84 +216,84 @@ See the end for copying conditions.
 
   - Bugfix: Single-field records no longer trigger warning on read
 
-	Previously, a database with only a single field per record would
-	trigger some warning messages and eventually query the user:
-	"Bad file format; try reading anyway?".  Answering "yes" would
-	successfully read in the data (anyway).
+    Previously, a database with only a single field per record would
+    trigger some warning messages and eventually query the user:
+    "Bad file format; try reading anyway?".  Answering "yes" would
+    successfully read in the data (anyway).
 
-	Now, such databases are read normally (w/o incident).
+    Now, such databases are read normally (w/o incident).
 
   - Bugfix: Pre- and post- regexp-specified cruft no longer discarded
 
-	Previously, if a database's pre-first-regexp was specified, the
-	text matching that regexp (on read) was discarded (on write).
-	Likewise for post-last-regexp.  This text is now saved and later
-	used on write.
+    Previously, if a database's pre-first-regexp was specified, the
+    text matching that regexp (on read) was discarded (on write).
+    Likewise for post-last-regexp.  This text is now saved and later
+    used on write.
 
-	With this bugfix, BUGS.edb is finally able to both read and
-	write the BUGS file (bug #1 resolved).  Good-bye ostrich dayz!
+    With this bugfix, BUGS.edb is finally able to both read and
+    write the BUGS file (bug #1 resolved).  Good-bye ostrich dayz!
 
   - Emacs no longer asks about some hooks as file local variable
 
-	Specifying `db-before-read-hooks' and `db-after-read-hooks' in a
-	format file's Local Variables block makes some versions of Emacs
-	ask about whether or not the value is "safe".  EDB now arranges
-	for Emacs to consider values that satisfy `edb-hookp' to be safe
-	(thus avoiding this particular interruption).
+    Specifying ‘db-before-read-hooks’ and ‘db-after-read-hooks’ in a
+    format file's Local Variables block makes some versions of Emacs
+    ask about whether or not the value is "safe".  EDB now arranges
+    for Emacs to consider values that satisfy ‘edb-hookp’ to be safe
+    (thus avoiding this particular interruption).
 
   - Command edb-1int-to-single autoloaded
 
-	This command -- see (info "(edb) edb-1int-to-single") --
-	can now be invoked with M-x, once EDB is loaded.
+    This command -- see (info "(edb) edb-1int-to-single") --
+    can now be invoked with M-x, once EDB is loaded.
 
   - Control files can specify a "schema basis"
 
-	This is a variable that holds a plist of control properties,
-	useful for sharing common properties among many databases.
-	The values therein undergo elaboration just like normal
-	control props prior to the normal control props.
+    This is a variable that holds a plist of control properties,
+    useful for sharing common properties among many databases.
+    The values therein undergo elaboration just like normal
+    control props prior to the normal control props.
 
-	For example, in ~/.emacs:
-	(defvar foo (list :fields [a b c]
-	                  :record-defaults 'foo-new-record-plist))
+    For example, in ~/.emacs:
+    (defvar foo (list :fields [a b c]
+                      :record-defaults 'foo-new-record-plist))
 
-	In x.edb:
-	:EDB (single foo)
-	:name "x foo!"
+    In x.edb:
+    :EDB (single foo)
+    :name "x foo!"
 
-	In y.edb:
-	:EDB (single foo)
-	:name "y foo!"
+    In y.edb:
+    :EDB (single foo)
+    :name "y foo!"
 
-	In z.edb:
-	:EDB (single foo)
-	:name "z foo!"
-	:record-defaults 'foo-z-new-record-plist ;; override
+    In z.edb:
+    :EDB (single foo)
+    :name "z foo!"
+    :record-defaults 'foo-z-new-record-plist ;; override
 
-	See (info "(edb) Specifying control") for details.
+    See (info "(edb) Specifying control") for details.
 
   - Command extended: db-add-record can now append
 
-	This command now accepts an optional arg APPEND.  If non-nil,
-	add the new record after the last record in the database and
-	display "Appended" instead of "Inserted".
+    This command now accepts an optional arg APPEND.  If non-nil,
+    add the new record after the last record in the database and
+    display "Appended" instead of "Inserted".
 
 
 - 1.28 | 2007-05-29
 
   - Bugfix: C-h m (describe-mode) no longer throws error
 
-	Previously, `C-h m' in either Database View or Database Edit
-	mode would throw a "Symbol's function definition is void" error.
-	This bug was introduced in EDB 1.26.
+    Previously, ‘C-h m’ in either Database View or Database Edit
+    mode would throw a "Symbol's function definition is void" error.
+    This bug was introduced in EDB 1.26.
 
   - Bugfix: displayspec can handle multiple options
 
-	Previously, the displayspec `\id,width=5,right-justify' would
-	render the field `id' without any padding whatsoever.  This was
-	due to a bug in `right-justify' handling as well as a more
-	general (regexp-related -- surprise, surprise) problem handling
-	multiple options.  These are now fixed.
+    Previously, the displayspec ‘\id,width=5,right-justify’ would
+    render the field ‘id’ without any padding whatsoever.  This was
+    due to a bug in ‘right-justify’ handling as well as a more
+    general (regexp-related -- surprise, surprise) problem handling
+    multiple options.  These are now fixed.
 
   - Dropped items announced in EDB 1.27 NEWS (see below)
 
@@ -132,30 +301,30 @@ See the end for copying conditions.
 
     - Six functions
 
-	(internal)	database-recordfieldspec
-	(internal)	database-recordfieldspec-type
-	(internal)	database-set-recordfieldspec
-	(spurious)	db-tagged-rrfr-hooks
-	(spurious)	db-tagged-wrfr-before-hooks
-	(spurious)	db-tagged-wrfr-after-hooks
+      (internal) database-recordfieldspec
+      (internal) database-recordfieldspec-type
+      (internal) database-set-recordfieldspec
+      (spurious) db-tagged-rrfr-hooks
+      (spurious) db-tagged-wrfr-before-hooks
+      (spurious) db-tagged-wrfr-after-hooks
 
   - Control file can start w/ comments and blank lines
 
-	The text ":EDB " used to be expected at the very beginning of
-	the buffer; now, any preceding comment and blank lines are
-	skipped w/o error.  See examples/null.edb for an example.
+    The text ":EDB " used to be expected at the very beginning of
+    the buffer; now, any preceding comment and blank lines are
+    skipped w/o error.  See examples/null.edb for an example.
 
-  - New Database Summary mode keybinding: `S' now runs `db-sort'
+  - New Database Summary mode keybinding: ‘S’ now runs ‘db-sort’
 
   - New documentation: refcard
 
-	Erich Wälde contributed refcard.tex (source for refcard.ps),
-	in the doc/ subdir.
+    Erich Wälde contributed refcard.tex (source for refcard.ps),
+    in the doc/ subdir.
 
   - New command: edb-interact
 
-	Actually, this is just `edb-EXPERIMENTAL-interact' renamed; the
-	old name is a now an alias, to be removed for EDB 1.29.
+    Actually, this is just ‘edb-EXPERIMENTAL-interact’ renamed; the
+    old name is a now an alias, to be removed for EDB 1.29.
 
   - Maintenance uses GNU Autoconf 2.60
 
@@ -164,230 +333,230 @@ See the end for copying conditions.
 
   - Configuration bugfix: Emacs executable specification made consistent
 
-	Configuration and build have different methods for specifying
-	the Emacs executable -- these used to be not easily overridden.
-	Now you can override them in both contexts similarly, by
-	specifying the environment variable `EMACS'.  See README.
+    Configuration and build have different methods for specifying
+    the Emacs executable -- these used to be not easily overridden.
+    Now you can override them in both contexts similarly, by
+    specifying the environment variable ‘EMACS’.  See README.
 
   - Installation bugfix: Remember to install all relevant files!
 
-	Some files (db-lemacs.el, db-nosetf.el and db-oldnames.el)
-	are now installed (and not just distributed).  This error was
-	due to a regression in the makefile introduced in EDB 1.26.
+    Some files (db-lemacs.el, db-nosetf.el and db-oldnames.el)
+    are now installed (and not just distributed).  This error was
+    due to a regression in the makefile introduced in EDB 1.26.
 
   - Bugfix: Substitutions use literal text for replacement
 
-	Some i/o operations temporarily replace difficult-to-manage text
-	(like backslashes) w/ an easier-to-manage string.  These used to
-	use `replace-match' without specifying that the replacement be
-	literal, which caused an "Invalid use of `\\' in replacement
-	text" error in some cases.  These have been fixed.
+    Some i/o operations temporarily replace difficult-to-manage text
+    (like backslashes) w/ an easier-to-manage string.  These used to
+    use ‘replace-match’ without specifying that the replacement be
+    literal, which caused an "Invalid use of ‘\\’ in replacement
+    text" error in some cases.  These have been fixed.
 
   - Bugfixes for edb-t-timedate.el
 
-    - `edb-t-timedate1:format-date' renders "%yy" correctly
+    - ‘edb-t-timedate1:format-date’ renders "%yy" correctly
 
-	This used to render years as modulo 1900, resulting in more than
-	two characters, for year 2000 and later.  For example:
+      This used to render years as modulo 1900, resulting in more than
+      two characters, for year 2000 and later.  For example:
 
-	(defun (demo Y M D)
-	  (let ((date (edb-t-timedate1:make-date Y M D)))
-	    (edb-t-timedate1:format-date "%yy" date)))
+      (defun (demo Y M D)
+        (let ((date (edb-t-timedate1:make-date Y M D)))
+          (edb-t-timedate1:format-date "%yy" date)))
 
-	before: (demo 2006 5 31) => "106"
-	   now: (demo 2006 5 31) => "06"
+      before: (demo 2006 5 31) => "106"
+         now: (demo 2006 5 31) => "06"
 
     - Specialized formatting functions use format consistent w/ name
 
-	Certain functions edb-t-timedate1:format-date-FOO used to use
-	formatting codes inconsistent w/ their names.  Here is a table
-	showing the change and an example for each FOO, using SPC as a
-	separator between components (actual default separators vary):
+      Certain functions edb-t-timedate1:format-date-FOO used to use
+      formatting codes inconsistent w/ their names.  Here is a table
+      showing the change and an example for each FOO, using SPC as a
+      separator between components (actual default separators vary):
 
-	FOO       before (example)        now (example)
-	ddmmyy    %d %m %yy "3 5 06"      %dd %mm %yy "03 05 06"
-	ddmmmyy   %d %mon %yy "3 May 06"  %dd %mon %yy "03 May 06"
-	yyyymmdd  %year %m %d "2006 5 3"  %year %mm %dd "2006 05 03"
+      FOO       before (example)        now (example)
+      ddmmyy    %d %m %yy "3 5 06"      %dd %mm %yy "03 05 06"
+      ddmmmyy   %d %mon %yy "3 May 06"  %dd %mon %yy "03 May 06"
+      yyyymmdd  %year %m %d "2006 5 3"  %year %mm %dd "2006 05 03"
 
   - Bugfix: Last record no longer ignored for "inherent data"
 
-	For controls with inherent data (specified with the `:data'
-	control property), EDB used to silently ignore the last record
-	(off-by-one error in the implementation).  Now, all records are
-	read properly.  Also, the order of the records in memory is now
-	maintained to be the same as the order in the control.
+    For controls with inherent data (specified with the ‘:data’
+    control property), EDB used to silently ignore the last record
+    (off-by-one error in the implementation).  Now, all records are
+    read properly.  Also, the order of the records in memory is now
+    maintained to be the same as the order in the control.
 
   - Bugfix: Emacs no longer queries about "safe" local variables
 
-	Previously, `edb-EXPERIMENTAL-interact' used to cause Emacs 22
-	to query about whether or not certain file-local variables are
-	"safe".  Now, these internal details are properly hidden.
+    Previously, ‘edb-EXPERIMENTAL-interact’ used to cause Emacs 22
+    to query about whether or not certain file-local variables are
+    "safe".  Now, these internal details are properly hidden.
 
   - Bugfix: Database w/ inherent data can coexist w/ other databases
 
-	Previously, a control file w/ inherent data could not be read in
-	the presence of other databases due to a bug in the accounting
-	internals; EDB would throw an error (wrong-type-arg: stringp).
-	Now, these databases can coexist w/o this particular problem.
+    Previously, a control file w/ inherent data could not be read in
+    the presence of other databases due to a bug in the accounting
+    internals; EDB would throw an error (wrong-type-arg: stringp).
+    Now, these databases can coexist w/o this particular problem.
 
-	For example:
-	(require 'database)
-	(dired "examples")
-	(edb-EXPERIMENTAL-interact "arb-demo.edb" "arb-demo")
-	(edb-EXPERIMENTAL-interact "forms-demo2-inherent.edb" nil)
+    For example:
+    (require 'database)
+    (dired "examples")
+    (edb-EXPERIMENTAL-interact "arb-demo.edb" "arb-demo")
+    (edb-EXPERIMENTAL-interact "forms-demo2-inherent.edb" nil)
 
   - Emacs 21.x compatibility fixes
 
-    - No longer use three args with `defalias'
+    - No longer use three args with ‘defalias’
 
-    - Define `insert-buffer-substring-no-properties' if necessary
+    - Define ‘insert-buffer-substring-no-properties’ if necessary
 
   - Dropped items
 
     - Command: db-convert
 
-	This was once documented in the info page as "rudimentary", but
-	was otherwise unreferenced and unused both in EDB and elsewhere.
-	Similar functionality may return in the future, after some of
-	EDB 1.x's (excessive) dynamicism is properly reigned in.
+      This was once documented in the info page as "rudimentary", but
+      was otherwise unreferenced and unused both in EDB and elsewhere.
+      Similar functionality may return in the future, after some of
+      EDB 1.x's (excessive) dynamicism is properly reigned in.
 
     - Macro: deflocalvar
     - Function: define-displaytype-from-optstring
     - Function: define-one-char-enum-displaytype
     - Function: define-type-alias
 
-	These were either unused, unimplemented (and throwing error if
-	called), or made obsolete by internal changes.
+      These were either unused, unimplemented (and throwing error if
+      called), or made obsolete by internal changes.
 
     - Coordination with crypt++.el
 
-	EDB no longer calls `crypt-insert-file-contents' from external
-	package crypt++.el (if loaded).  Instead, you can enable Auto
-	Compression mode, which is included with Emacs.
+      EDB no longer calls ‘crypt-insert-file-contents’ from external
+      package crypt++.el (if loaded).  Instead, you can enable Auto
+      Compression mode, which is included with Emacs.
 
     - Items listed in advance notice from EDB 1.26 NEWS (see below)
 
   - Backward-incompatible change: format of :locals control more concise
 
-	Previously, the :locals vector elements could be either a symbol
-	or a pair (SYMBOL . INIT-VAL).  Now, the format for the latter
-	variant is (SYMBOL INIT-FORM).  Also, INIT-FORM is now evaluated
-	so you don't need to do that yourself.  For example:
+    Previously, the :locals vector elements could be either a symbol
+    or a pair (SYMBOL . INIT-VAL).  Now, the format for the latter
+    variant is (SYMBOL INIT-FORM).  Also, INIT-FORM is now evaluated
+    so you don't need to do that yourself.  For example:
 
-	before:  :locals `[foo (ht . ,(make-hash-table)) bar]
-	now:     :locals  [foo (ht (make-hash-table)) bar]
+    before:  :locals `[foo (ht . ,(make-hash-table)) bar]
+    now:     :locals  [foo (ht (make-hash-table)) bar]
 
-	In other words, the syntax resembles that of a `let' bindings
-	block with square braces instead of parentheses on the outside.
+    In other words, the syntax resembles that of a ‘let’ bindings
+    block with square braces instead of parentheses on the outside.
 
   - Example databases writable
 
-	The sooner you play with EDB (once it is built and loaded), the
-	sooner you can report any bugs you find.  (Thanks!)
+    The sooner you play with EDB (once it is built and loaded), the
+    sooner you can report any bugs you find.  (Thanks!)
 
   - Mode lines say "Database" as part of the mode name
 
-	before:
-	-***-Database: machine-dbase   (Edit Abbrev 42/431)---All-
+    before:
+    -***-Database: machine-dbase   (Edit Abbrev 42/431)---All-
 
-	now:
-	-***- machine-dbase   (Database Edit Abbrev 42/431)---All-
+    now:
+    -***- machine-dbase   (Database Edit Abbrev 42/431)---All-
 
-	This is more informative (and looks nicer) in buffer listings.
+    This is more informative (and looks nicer) in buffer listings.
 
   - Changes to edb-t-timedate.el
 
     - Some date formatting funcs now take optional arg SEPARATOR
 
-	These funcs (w/ default separator):
-	  edb-t-timedate1:format-date-mmddyy   "/"
-	  edb-t-timedate1:format-date-yymmdd   "" (empty string)
-	  edb-t-timedate1:format-date-ddmmyy   "."
-	  edb-t-timedate1:format-date-ddmmmyy  " " (space)
-	  edb-t-timedate1:format-date-yyyymmdd "/"
+      These funcs (w/ default separator):
+        edb-t-timedate1:format-date-mmddyy   "/"
+        edb-t-timedate1:format-date-yymmdd   "" (empty string)
+        edb-t-timedate1:format-date-ddmmyy   "."
+        edb-t-timedate1:format-date-ddmmmyy  " " (space)
+        edb-t-timedate1:format-date-yyyymmdd "/"
 
-	now take an optional second arg SEPARATOR which can be used to
-	override the default listed above.  There is presently support
-	for the (previously, and probably always to be, undocumented)
-	vars named by appending "-separator" to the functions' names,
-	but that support will be dropped for EDB 1.28.
+      now take an optional second arg SEPARATOR which can be used to
+      override the default listed above.  There is presently support
+      for the (previously, and probably always to be, undocumented)
+      vars named by appending "-separator" to the functions' names,
+      but that support will be dropped for EDB 1.28.
 
-	To convert code that uses the obsoleted vars, find fragments:
-	  (let ((FF-separator "*")) (FF date))
+      To convert code that uses the obsoleted vars, find fragments:
+        (let ((FF-separator "*")) (FF date))
 
-	and change them to look like:
-	  (FF date "*")
+      and change them to look like:
+        (FF date "*")
 
     - New formatting func: edb-t-timedate1:format-date-iso
     - New builtin displaytype: date-iso
 
-	For example:
-	(edb-t-timedate1:format-date-iso
-	 (edb-t-timedate1:make-date 2006 7 3))
-	=> "2006-07-03"
+      For example:
+      (edb-t-timedate1:format-date-iso
+       (edb-t-timedate1:make-date 2006 7 3))
+      => "2006-07-03"
 
-	See examples/eicsw.edb for an example usage.
+      See examples/eicsw.edb for an example usage.
 
   - New func: db-set-field-help
-  - New support for field-specific help in `db-field-help'
+  - New support for field-specific help in ‘db-field-help’
 
-	You can now specify a field's help info (string or form that
-	produces a string when evaluated) separately from that of the
-	field's record type; it is no longer necessary to merge the help
-	information in the record type.  Field-specific help is displayed
-	first, followed by two newlines, followed by the record type's
-	help.
+    You can now specify a field's help info (string or form that
+    produces a string when evaluated) separately from that of the
+    field's record type; it is no longer necessary to merge the help
+    information in the record type.  Field-specific help is displayed
+    first, followed by two newlines, followed by the record type's
+    help.
 
   - New attribute :index-function for tagged file layout setup
 
-	You can now specify `:index-function FUNC' as an attribute
-	override for tagged file layout setup.  FUNC is called with one
-	arg, the database object.  Relatedly, the manual now documents
-	the restriction on using `db-after-read-hooks' (you can use
-	:index-function, instead).
+    You can now specify ‘:index-function FUNC’ as an attribute
+    override for tagged file layout setup.  FUNC is called with one
+    arg, the database object.  Relatedly, the manual now documents
+    the restriction on using ‘db-after-read-hooks’ (you can use
+    :index-function, instead).
 
   - New support for writing data in a control with inherent data
 
-	See (info "(./edb.info) Control properties reference")
-	specifically entry `:data TEXT-BLOCK-SPEC'.  See also
-	examples/forms-demo2-inherent.edb (a control file).
+    See (info "(./edb.info) Control properties reference")
+    specifically entry ‘:data TEXT-BLOCK-SPEC’.  See also
+    examples/forms-demo2-inherent.edb (a control file).
 
   - New configure option: --disable-badnames (see README)
 
   - New command: edb-1int-to-single
 
-	This command helps you to migrate away from "internal file
-	layout", support for which will be dropped in EDB 2.x, by
-	translating that file into a functionally equivalent (more or
-	less) "control with inherent data".  See info node by the same
-	name in the EDB manual.
+    This command helps you to migrate away from "internal file
+    layout", support for which will be dropped in EDB 2.x, by
+    translating that file into a functionally equivalent (more or
+    less) "control with inherent data".  See info node by the same
+    name in the EDB manual.
 
   - New command: edb-meta
 
-	This command summarizes EDB state in a new buffer.  Since it
-	exposes some internals, it is useful for debugging EDB and/or
-	client programs, but probably not suited for casual users.  To
-	try it out in place, build EDB and evaluate the forms:
+    This command summarizes EDB state in a new buffer.  Since it
+    exposes some internals, it is useful for debugging EDB and/or
+    client programs, but probably not suited for casual users.  To
+    try it out in place, build EDB and evaluate the forms:
 
-	  (load-file "lisp/edb-meta.elc")
-	  (edb-meta)
+      (load-file "lisp/edb-meta.elc")
+      (edb-meta)
 
-	Once installed, `edb-meta' can be invoked automatically after
-	EDB is loaded (i.e., it is autoloaded).
+    Once installed, ‘edb-meta’ can be invoked automatically after
+    EDB is loaded (i.e., it is autoloaded).
 
   - Advance notice for to-be-dropped items in EDB 1.28
 
-	(internal)	database-recordfieldspec
-	(internal)	database-recordfieldspec-type
-	(internal)	database-set-recordfieldspec
-	(spurious)	db-tagged-rrfr-hooks
-	(spurious)	db-tagged-wrfr-before-hooks
-	(spurious)	db-tagged-wrfr-after-hooks
+    (internal) database-recordfieldspec
+    (internal) database-recordfieldspec-type
+    (internal) database-set-recordfieldspec
+    (spurious) db-tagged-rrfr-hooks
+    (spurious) db-tagged-wrfr-before-hooks
+    (spurious) db-tagged-wrfr-after-hooks
 
-	Actually "spurious" is kind of a pun: Similar facilities exist
-	for customizing the reading/writing of tagged-format data, when
-	you use control properties, so you SHOULD use them (ha ha).
-	See examples/{eicsw,geneal}.edb.
+    Actually "spurious" is kind of a pun: Similar facilities exist
+    for customizing the reading/writing of tagged-format data, when
+    you use control properties, so you SHOULD use them (ha ha).
+    See examples/{eicsw,geneal}.edb.
 
   - Maintenance uses files from GNU Automake 1.9.6
 
@@ -396,164 +565,164 @@ See the end for copying conditions.
 
   - Bugfixes
 
-    - In View mode, `M-TAB' no longer says "I was confused"
+    - In View mode, ‘M-TAB’ no longer says "I was confused"
 
-	This key runs either `db-last-field' or `db-previous-field',
-	depending on whether or Edit minor mode is in effect.  EDB used
-	to spuriously display "I was confused" in the echo area, which
-	was probably strictly correct (since it was indeed confused
-	about its state of confusion), but not correct from a user POV,
-	since behavior was as expected in all other respects (point
-	would move to the right place anyway).
+      This key runs either ‘db-last-field’ or ‘db-previous-field’,
+      depending on whether or Edit minor mode is in effect.  EDB used
+      to spuriously display "I was confused" in the echo area, which
+      was probably strictly correct (since it was indeed confused
+      about its state of confusion), but not correct from a user POV,
+      since behavior was as expected in all other respects (point
+      would move to the right place anyway).
 
-    - In Summary mode, `o' runs command `db-output-record-to-db'
+    - In Summary mode, ‘o’ runs command ‘db-output-record-to-db’
 
-	It used to be bound to a non-existent command.  Also,
-	`db-output-record-to-db' now works from the summary buffer.
+      It used to be bound to a non-existent command.  Also,
+      ‘db-output-record-to-db’ now works from the summary buffer.
 
     - Emacs Lisp mode hooks disabled for "Internal Format" read
 
-	Reading data files in this format uses Emacs Lisp mode, by
-	calling `emacs-lisp-mode', which at some point runs the normal
-	hook `emacs-lisp-mode-hook'.  This value is now arranged to be
-	nil for the duration of the read, to avoid potential problems.
+      Reading data files in this format uses Emacs Lisp mode, by
+      calling ‘emacs-lisp-mode’, which at some point runs the normal
+      hook ‘emacs-lisp-mode-hook’.  This value is now arranged to be
+      nil for the duration of the read, to avoid potential problems.
 
     - Local Variables block no longer limited
 
-	EDB looks on the last page (area beginning with form-feed, ^L)
-	of the format buffer for the Local Variables block.  It used to
-	expect the last page within 3000 characters of point-max.  Now,
-	EDB searches the entire buffer (from the end) for the ^L, using
-	point-min if that char is not found.
+      EDB looks on the last page (area beginning with form-feed, ^L)
+      of the format buffer for the Local Variables block.  It used to
+      expect the last page within 3000 characters of point-max.  Now,
+      EDB searches the entire buffer (from the end) for the ^L, using
+      point-min if that char is not found.
 
   - Dropped buffer-local variable: dbf-hidden-to-end-p
 
-	Setting/toggling of this sort option is still possible through
-	the interactive (sort) interface.  The setting can no longer be
-	saved from one session to the next.
+    Setting/toggling of this sort option is still possible through
+    the interactive (sort) interface.  The setting can no longer be
+    saved from one session to the next.
 
   - Dropped hook: db-load-hooks
 
-	To continue to use `db-load-hooks', you must arrange to run the
-	functions in `db-load-hooks' yourself, with the form:
+    To continue to use ‘db-load-hooks’, you must arrange to run the
+    functions in ‘db-load-hooks’ yourself, with the form:
 
-	(eval-after-load "database" '(run-hooks 'db-load-hooks))
+    (eval-after-load "database" '(run-hooks 'db-load-hooks))
 
-	Note that the `run-hooks' form is quoted.
+    Note that the ‘run-hooks’ form is quoted.
 
   - Better support for read-record-from-region function
 
     - Point pre-set to beginning of accessible region
 
-	This basically means that read-record-from-region functions no
-	longer need to begin with `(goto-char (point-min))'.
+      This basically means that read-record-from-region functions no
+      longer need to begin with ‘(goto-char (point-min))’.
 
     - Return value may be a plist or an alist
 
-	Previously, read-record-from-region functions had to return a
-	record object, thus requiring allocation and population of a new
-	record using funcs `make-record' and `record-set-field'.
+      Previously, read-record-from-region functions had to return a
+      record object, thus requiring allocation and population of a new
+      record using funcs ‘make-record’ and ‘record-set-field’.
 
-	While this is still supported (for EDB 1.x), these functions can
-	now opt to return either a property list, with alternating field
-	names and values; or a form `(:alist ALIST)', where ALIST is an
-	association list.  In such cases, EDB handles the allocation and
-	population of the record.  Also, new function `db-make-record'
-	combines functionality of `make-record' and `record-set-field'.
-	For example:
+      While this is still supported (for EDB 1.x), these functions can
+      now opt to return either a property list, with alternating field
+      names and values; or a form ‘(:alist ALIST)’, where ALIST is an
+      association list.  In such cases, EDB handles the allocation and
+      population of the record.  Also, new function ‘db-make-record’
+      combines functionality of ‘make-record’ and ‘record-set-field’.
+      For example:
 
-	;; Returning a record the bad old way:
-	(defun my-rrfr ()
-	  (let ((record (make-record database)))
-	    (record-set-field record 'coolsw "SWIG" database)
-	    (record-set-field record 'guilty "D.Beazley" database)
-	    record))
+      ;; Returning a record the bad old way:
+      (defun my-rrfr ()
+        (let ((record (make-record database)))
+          (record-set-field record 'coolsw "SWIG" database)
+          (record-set-field record 'guilty "D.Beazley" database)
+          record))
 
-	;; Returning a record the not-so-bad new way:
-	(defun my-rrfr ()
-	  (db-make-record database 'coolsw "SWIG" 'guilty "D.Beazley"))
+      ;; Returning a record the not-so-bad new way:
+      (defun my-rrfr ()
+        (db-make-record database 'coolsw "SWIG" 'guilty "D.Beazley"))
 
-	;; Returning a plist:
-	(defun my-rrfr ()
-	  (list 'coolsw "SWIG" 'guilty "D.Beazley"))
+      ;; Returning a plist:
+      (defun my-rrfr ()
+        (list 'coolsw "SWIG" 'guilty "D.Beazley"))
 
-	;; Returning an alist:
-	(defun my-rrfr ()
-	  (cons :alist (list (cons 'coolsw "SWIG")
-	                     (cons 'guilty "D.Beazley"))))
+      ;; Returning an alist:
+      (defun my-rrfr ()
+        (cons :alist (list (cons 'coolsw "SWIG")
+                           (cons 'guilty "D.Beazley"))))
 
-	Note that these examples do not actually parse the region.
+      Note that these examples do not actually parse the region.
 
   - Changes to the sort interface
 
     - All fields visible
 
-	There is no longer a separate "killed field" stack.  Instead,
-	when you type `C-k' on a field, it is moved to the top of the
-	list of nonsignificant fields (whether or not it was itself
-	significant to begin with).  Reciprocally, typing `C-y' moves
-	the field at the top of the list of nonsignificant fields to the
-	location under point.  `C-u C-y' does the same, but repositions
-	point to be in front of the just-inserted field.  `C-y' can only
-	be invoked within the list of significant fields.
+      There is no longer a separate "killed field" stack.  Instead,
+      when you type ‘C-k’ on a field, it is moved to the top of the
+      list of nonsignificant fields (whether or not it was itself
+      significant to begin with).  Reciprocally, typing ‘C-y’ moves
+      the field at the top of the list of nonsignificant fields to the
+      location under point.  ‘C-u C-y’ does the same, but repositions
+      point to be in front of the just-inserted field.  ‘C-y’ can only
+      be invoked within the list of significant fields.
 
-	In this way, all fields are always visible.
+      In this way, all fields are always visible.
 
     - You can "drag" a field
 
-	The default bindings of `M-n' and `M-p' are now to a pair of
-	keyboard macros that essentially arrange to move the field
-	under point "down" and "up", respectively.  These make use of
-	`C-k' and `C-y' and inherit their behaviors and restrictions;
-	in particular, dragging works for significant fields only.
-	(Ordering of non-significant fields does not make sense --
-	that's why they are non-significant!)
+      The default bindings of ‘M-n’ and ‘M-p’ are now to a pair of
+      keyboard macros that essentially arrange to move the field
+      under point "down" and "up", respectively.  These make use of
+      ‘C-k’ and ‘C-y’ and inherit their behaviors and restrictions;
+      in particular, dragging works for significant fields only.
+      (Ordering of non-significant fields does not make sense --
+      that's why they are non-significant!)
 
   - Changes to View mode
 
-    - `+' runs command `db-additional-data-display-buffer'
+    - ‘+’ runs command ‘db-additional-data-display-buffer’
 
-    - `x' runs command `db-kill-buffer'
-    - `X' runs command `db-kill-all-buffers'
+    - ‘x’ runs command ‘db-kill-buffer’
+    - ‘X’ runs command ‘db-kill-all-buffers’
 
-	These give a more consistent feel than with `db-exit', which is
-	still available for backwards compatability but not bound in any
-	keymap.  Primarily, you no longer need to type `C-u x' to
-	actually kill the buffer.  Be careful: A prefix arg now means
-	"force", which discards unsaved changes no questions asked.
+      These give a more consistent feel than with ‘db-exit’, which is
+      still available for backwards compatability but not bound in any
+      keymap.  Primarily, you no longer need to type ‘C-u x’ to
+      actually kill the buffer.  Be careful: A prefix arg now means
+      "force", which discards unsaved changes no questions asked.
 
   - "Internal Format" version now 0.7
 
-	Note, however, that "internal format" is really a misfeature --
-	originally this performance hack was worth the maintenance
-	trouble (always associated with exposing internals), but that
-	point was passed about ten years ago.
+    Note, however, that "internal format" is really a misfeature --
+    originally this performance hack was worth the maintenance
+    trouble (always associated with exposing internals), but that
+    point was passed about ten years ago.
 
   - New functions for managing mark and hide bits
 
-	The function `edb-tag' returns a database's "tag object" given a
-	name (which, for EDB 1.x, can be `:markedp' or `:hiddenp').  The
-	tag object can be passed to `edb-tagp', `edb-tagx' or `edb-tag-'
-	along with a record to be checked for the tag, set with the tag,
-	or cleared of the tag, respectively.
+    The function ‘edb-tag’ returns a database's "tag object" given a
+    name (which, for EDB 1.x, can be ‘:markedp’ or ‘:hiddenp’).  The
+    tag object can be passed to ‘edb-tagp’, ‘edb-tagx’ or ‘edb-tag-’
+    along with a record to be checked for the tag, set with the tag,
+    or cleared of the tag, respectively.
 
-	This particular interface (four functions, presently) is upward
-	compatible with EDB 2.x.  See node "Setting the mark and hide
-	bits" in the EDB manual for more info.
+    This particular interface (four functions, presently) is upward
+    compatible with EDB 2.x.  See node "Setting the mark and hide
+    bits" in the EDB manual for more info.
 
-	This change is concomitant with the removal, as described in the
-	EDB 1.25 manual, of the "link abstraction", where mark and hide
-	bits lived previously.
+    This change is concomitant with the removal, as described in the
+    EDB 1.25 manual, of the "link abstraction", where mark and hide
+    bits lived previously.
 
   - Advance notice for to-be-dropped items in EDB 1.27
 
-	(alias)		db-commit-record
-	(internal)	dbc-set-hide-p
-	(internal)	db-setup-data-display-buffer
-	(redundant)	dbf-reset-on-edit-list
-	(alias)		make-record
-	(alias)		record-field
-	(alias)		record-set-field
+    (alias)     db-commit-record
+    (internal)  dbc-set-hide-p
+    (internal)  db-setup-data-display-buffer
+    (redundant) dbf-reset-on-edit-list
+    (alias)     make-record
+    (alias)     record-field
+    (alias)     record-set-field
 
   - FSF street address updated in copyright notices
 
@@ -562,104 +731,104 @@ See the end for copying conditions.
 
   - Bugfix: Edited databases can be saved
 
-	A severe bug was introduced in EDB 1.24 whereby edited databases
-	could not be saved.  The command `db-save-database' would result
-	in the error "Wrong type argument: arrayp, nil" on the first
-	invocation.  A follow-on invocation was required to actually do
-	the save.
+    A severe bug was introduced in EDB 1.24 whereby edited databases
+    could not be saved.  The command ‘db-save-database’ would result
+    in the error "Wrong type argument: arrayp, nil" on the first
+    invocation.  A follow-on invocation was required to actually do
+    the save.
 
   - Bugfix: Computed sort function handles (eq value1 value2)
 
-	Previously, the somewhat-internal function `db-rs-sortfunc'
-	would return a function that failed to implement "reversal"
-	semantics in the cases where its args were `eq'.
+    Previously, the somewhat-internal function ‘db-rs-sortfunc’
+    would return a function that failed to implement "reversal"
+    semantics in the cases where its args were ‘eq’.
 
   - Bugfix: Canoncalization of creation methods (db-convert.el)
 
-	The function `db-canonicalize-creation-method' now returns a
-	well-formed creation-method object.
+    The function ‘db-canonicalize-creation-method’ now returns a
+    well-formed creation-method object.
 
-  - Default value for `db-inform-interval' bumped to 100
+  - Default value for ‘db-inform-interval’ bumped to 100
 
-  - In Database View and Summary modes, `t' runs `toggle-truncate-lines'
+  - In Database View and Summary modes, ‘t’ runs ‘toggle-truncate-lines’
 
   - Encoding for the data file can now be specified
 
-	You can specify the encoding of the data file by adding to the
-	Local Variables section in the format file a line of the form:
+    You can specify the encoding of the data file by adding to the
+    Local Variables section in the format file a line of the form:
 
-	edb-data-coding: CODING
+    edb-data-coding: CODING
 
-	There is one restriction: If CODING is not one that Emacs can
-	automatically recognize (e.g., `utf-16le'), and the data file is
-	in "internal layout", then both format and data file must be in
-	the same encoding, and you need to do `C-x <RET> c CODING <RET>'
-	immediately prior to `M-x db-find-file'.  `C-x <RET> c' normally
-	runs the command `universal-coding-system-argument'.
+    There is one restriction: If CODING is not one that Emacs can
+    automatically recognize (e.g., ‘utf-16le’), and the data file is
+    in "internal layout", then both format and data file must be in
+    the same encoding, and you need to do ‘C-x <RET> c CODING <RET>’
+    immediately prior to ‘M-x db-find-file’.  ‘C-x <RET> c’ normally
+    runs the command ‘universal-coding-system-argument’.
 
-	Unfortunately, this restriction is unlikely to be lifted due to
-	limitations of the `db-find-file' design that cannot be removed
-	for continuing EDB 1.x compatibility.  On the other hand, it is
-	not difficult to arrange for Emacs to automatically recognize
-	file encoding.  For more info, see file BUGS, bug #5.
+    Unfortunately, this restriction is unlikely to be lifted due to
+    limitations of the ‘db-find-file’ design that cannot be removed
+    for continuing EDB 1.x compatibility.  On the other hand, it is
+    not difficult to arrange for Emacs to automatically recognize
+    file encoding.  For more info, see file BUGS, bug #5.
 
   - More namespace cleaning
 
     - db-nosetf.el and db-oldnames.el
 
-	Cleaning for EDB 1.x function / variable namespace continues.
-	To provide backward (polluting) compatability for applications
-	built on early EDB 1.x, the distribution includes db-nosetf.el
-	and db-oldnames.el.  EDB and the examples do not use these
-	files; they will be dropped in EDB 2.x.  They can be loaded
-	"manually", like so:
+      Cleaning for EDB 1.x function / variable namespace continues.
+      To provide backward (polluting) compatability for applications
+      built on early EDB 1.x, the distribution includes db-nosetf.el
+      and db-oldnames.el.  EDB and the examples do not use these
+      files; they will be dropped in EDB 2.x.  They can be loaded
+      "manually", like so:
 
-	(require 'database)	;; Ideally this is sufficient,
-	(require 'db-oldnames)	;; ... but sometimes reality
-	(require 'db-nosetf)	;; ... is where we find ourselves.
+      (require 'database)       ;; Ideally this is sufficient,
+      (require 'db-oldnames)    ;; ... but sometimes reality
+      (require 'db-nosetf)      ;; ... is where we find ourselves.
 
-	If you find yourself using a function or variable defined in
-	db-oldnames.el, it's probably a good idea to replace it w/ the
-	newer name so as to be able to avoid loading db-oldnames.el in
-	the first place.  An alternative approach, recommended since
-	db-oldnames.el is rather monolithic, is to grep out only the
-	mappings you need into "my-edb-1-oldnames.el" and use that.
+      If you find yourself using a function or variable defined in
+      db-oldnames.el, it's probably a good idea to replace it w/ the
+      newer name so as to be able to avoid loading db-oldnames.el in
+      the first place.  An alternative approach, recommended since
+      db-oldnames.el is rather monolithic, is to grep out only the
+      mappings you need into "my-edb-1-oldnames.el" and use that.
 
-	FYI, the sk4 data file in subdir skram/ lists the interface
-	elements disregarding db-oldnames.el and db-nosetf.el.  You can
-	build it by doing "make sk4" in that directory.
+      FYI, the sk4 data file in subdir skram/ lists the interface
+      elements disregarding db-oldnames.el and db-nosetf.el.  You can
+      build it by doing "make sk4" in that directory.
 
     - new files: edb-t-GROUP.el
 
-	Functions to support various "type groups" (for lack of a better
-	term) have been moved to edb-t-GROUP.el, from db-time.el (which
-	has been deleted) and db-types.el:
+      Functions to support various "type groups" (for lack of a better
+      term) have been moved to edb-t-GROUP.el, from db-time.el (which
+      has been deleted) and db-types.el:
 
-	GROUP                         FILE
-	human names                   edb-t-human-names.el
-	US/UK places                  edb-t-places-usuk.el
-	EDB 1.x-compatible time/date  edb-t-timedate1.el (note the "1")
+      GROUP                         FILE
+      human names                   edb-t-human-names.el
+      US/UK places                  edb-t-places-usuk.el
+      EDB 1.x-compatible time/date  edb-t-timedate1.el (note the "1")
 
-	These are all covered in db-oldnames.el, described immediately
-	above, although it is probably better to load them yourself and
-	use the new names if you need them.
+      These are all covered in db-oldnames.el, described immediately
+      above, although it is probably better to load them yourself and
+      use the new names if you need them.
 
-	The naming convention is filename "edb-t-GROUP.el" and prefix
-	(for function and variable names) "edb-t-GROUP:".
+      The naming convention is filename "edb-t-GROUP.el" and prefix
+      (for function and variable names) "edb-t-GROUP:".
 
-	This change fixes a name (and functionality) conflict between
-	the defunct db-time.el function `parse-time-string' and that
-	provided by some newer versions of Emacs.  The naming convention
-	for type groups should sidestep future problems in this vein.
+      This change fixes a name (and functionality) conflict between
+      the defunct db-time.el function ‘parse-time-string’ and that
+      provided by some newer versions of Emacs.  The naming convention
+      for type groups should sidestep future problems in this vein.
 
   - Makefile supports "make edb.dvi" again (disabled EDB 1.22 through 1.24)
 
   - GNU make required to build/install EDB
 
-	Some of the makefiles are now renamed GNUmakefile, and thus
-	require GNU make (perhaps installed as "gmake" or similar) to
-	build and install EDB.  This is primarily to support "VPATH
-	builds" w/o resorting to Automake.
+    Some of the makefiles are now renamed GNUmakefile, and thus
+    require GNU make (perhaps installed as "gmake" or similar) to
+    build and install EDB.  This is primarily to support "VPATH
+    builds" w/o resorting to Automake.
 
   - Tested against GNU Emacs 21.2 and GNU Emacs from cvs (2005-01-10)
 
@@ -670,48 +839,48 @@ See the end for copying conditions.
   - Function extended: define-displaytype-from-displayspec
   - Function extended: define-recordfieldtype-from-recordfieldspec
 
-	Every invocation of `define-displaytype-from-displayspec' or
-	`define-recordfieldtype-from-recordfieldspec' used to push a new
-	name/object pair onto the respective vars `db-displaytypes' and
-	`db-recordfieldtypes', disregarding the presence of a previously
-	existing pair with the same name.  The result was that old
-	definitions could never be found again even though they still
-	took up memory.  These functions and the vars they modify have
-	now been changed to ensure that for any name (in each var), only
-	one associated definition is maintained.
+    Every invocation of ‘define-displaytype-from-displayspec’ or
+    ‘define-recordfieldtype-from-recordfieldspec’ used to push a new
+    name/object pair onto the respective vars ‘db-displaytypes’ and
+    ‘db-recordfieldtypes’, disregarding the presence of a previously
+    existing pair with the same name.  The result was that old
+    definitions could never be found again even though they still
+    took up memory.  These functions and the vars they modify have
+    now been changed to ensure that for any name (in each var), only
+    one associated definition is maintained.
 
-	Additionally, these functions have been extended in two ways:
+    Additionally, these functions have been extended in two ways:
 
-	(1) Each takes an optional &rest arg OVERRIDE, as an alternative
-	method for specifying attributes of the type.  Using OVERRIDE is
-	recommended for upward compatability and conciseness.
+    (1) Each takes an optional &rest arg OVERRIDE, as an alternative
+    method for specifying attributes of the type.  Using OVERRIDE is
+    recommended for upward compatability and conciseness.
 
-	(2) The second arg SOURCE can also be the (symbolic) name of a
-	previously defined displayspec or recordfieldspec, respectively;
-	or nil.  Together with (1), you can effect modification by
-	specifying the same name for NAME (first arg) and SOURCE, or you
-	can effect inheritence otherwise.  EDB does not remember a child
-	type's parent; later changes to a parent type do not propagate
-	to its currently-existing children.
+    (2) The second arg SOURCE can also be the (symbolic) name of a
+    previously defined displayspec or recordfieldspec, respectively;
+    or nil.  Together with (1), you can effect modification by
+    specifying the same name for NAME (first arg) and SOURCE, or you
+    can effect inheritence otherwise.  EDB does not remember a child
+    type's parent; later changes to a parent type do not propagate
+    to its currently-existing children.
 
   - Keybinding changes in Database View mode
 
-	`F' now runs `dbf-set-summary-format'.
-	`S'          `db-sort'.
+    ‘F’ now runs ‘dbf-set-summary-format’.
+    ‘S’          ‘db-sort’.
 
   - Function extended: db-tagged-setup
 
-	This func now takes additional arguments, ATTRS, which are
-	alternating keywords and values specifying attributes of the
-	"tagged database".  This method is an alternative to using
-	`database-set-local' (which is to migrate internally within a
-	release or two), and recommended for upward compatability and
-	conciseness.
+    This func now takes additional arguments, ATTRS, which are
+    alternating keywords and values specifying attributes of the
+    "tagged database".  This method is an alternative to using
+    ‘database-set-local’ (which is to migrate internally within a
+    release or two), and recommended for upward compatability and
+    conciseness.
 
   - New distributed file: PLANS
 
-	This is kind of like TODO but w/o the commitment, and more
-	vague and verbose (PLANS:TODO::courtship:marriage ;-).
+    This is kind of like TODO but w/o the commitment, and more
+    vague and verbose (PLANS:TODO::courtship:marriage ;-).
 
   - New distributed file: BUGS
 
@@ -720,98 +889,98 @@ See the end for copying conditions.
 
 - 1.23 | 2004-08-29
 
-  - Bugfix: Functions no longer switched via `fset'
+  - Bugfix: Functions no longer switched via ‘fset’
 
-	EDB used to fset `save-some-buffers' to `db-save-some-buffers',
-	storing the original version away to call later.  Even though
-	this was documented, this kind of behavior is now considered a
-	misfeature at best.  EDB no longer does this.  The command
-	`db-save-some-buffers' is still available, but you have to
-	invoke it as `M-x db-save-some-buffers', or bind a key to it.
+    EDB used to fset ‘save-some-buffers’ to ‘db-save-some-buffers’,
+    storing the original version away to call later.  Even though
+    this was documented, this kind of behavior is now considered a
+    misfeature at best.  EDB no longer does this.  The command
+    ‘db-save-some-buffers’ is still available, but you have to
+    invoke it as ‘M-x db-save-some-buffers’, or bind a key to it.
 
-	Likewise, `insert' was fset to `db-insert', an EDB-internal func.
+    Likewise, ‘insert’ was fset to ‘db-insert’, an EDB-internal func.
 
-	[Gratuitous Comment: This one blew my mind when I discovered it.
-	Perhaps all the hand-wringing about speed in the source code
-	comments would not have been necessary had such a fundamental
-	function not been toyed with so capriciously in the first place.
-	Che palle!]
+    [Gratuitous Comment: This one blew my mind when I discovered it.
+    Perhaps all the hand-wringing about speed in the source code
+    comments would not have been necessary had such a fundamental
+    function not been toyed with so capriciously in the first place.
+    Che palle!]
 
-  - Bugfix: local variable `enable-multibyte-characters' handled specially
+  - Bugfix: local variable ‘enable-multibyte-characters’ handled specially
 
-	When writing the database to an external file format, one of
-	the steps is to copy local variables from one buffer to another.
-	Previously this did not call `set-buffer-multibyte', resulting in
-	a "trying to set constant" error.
+    When writing the database to an external file format, one of
+    the steps is to copy local variables from one buffer to another.
+    Previously this did not call ‘set-buffer-multibyte’, resulting in
+    a "trying to set constant" error.
 
   - Command dropped: edb-update
 
-	Changes in distribution and build practice have rendered this
-	command obsolete.
+    Changes in distribution and build practice have rendered this
+    command obsolete.
 
   - Variable deprecated: db-default-field-type
   - Function takes optional third arg: database-set-fieldnames-to-list
 
-	This pair of changes is explained in some detail in info node
-	"(edb)The database structure".  Migration from the former to the
-	latter is encouraged but not enforced (for EDB 1.x).
+    This pair of changes is explained in some detail in info node
+    "(edb)The database structure".  Migration from the former to the
+    latter is encouraged but not enforced (for EDB 1.x).
 
-  - Command `dbf-set-summary-format' now allows editing of current value
+  - Command ‘dbf-set-summary-format’ now allows editing of current value
 
-  - Internal file format now uses `pp'
+  - Internal file format now uses ‘pp’
 
-	This is still EDB "format 0.6" but now it is written using `pp'
-	primarily for its escaping of newlines (i.e., written as "\n").
-	Before, newlines in data fields were output verbatim.
+    This is still EDB "format 0.6" but now it is written using ‘pp’
+    primarily for its escaping of newlines (i.e., written as "\n").
+    Before, newlines in data fields were output verbatim.
 
-	This should result in greater chance of identifying any data
-	corruption occuring during transmission through varying
-	eol-policy domains (email, through usloth machines, whatever).
+    This should result in greater chance of identifying any data
+    corruption occuring during transmission through varying
+    eol-policy domains (email, through usloth machines, whatever).
 
-  - Miscellaneous updates and bug fixes in `examples' subdir
+  - Miscellaneous updates and bug fixes in ‘examples’ subdir
 
-  - New reflection/testing in `skram' subdir
+  - New reflection/testing in ‘skram’ subdir
 
-	This is work-in-progress.  The idea is to use EDB to track
-	changes to EDB.  Version control is one thing, design control is
-	another...  Yes, EDB dares to venture into the dreaded land of
-	Project Manglement!
+    This is work-in-progress.  The idea is to use EDB to track
+    changes to EDB.  Version control is one thing, design control is
+    another...  Yes, EDB dares to venture into the dreaded land of
+    Project Manglement!
 
-	Actually, like all things to do w/ manglement, this demonstrates
-	two aspects of EDB having to deal w/ trust: 1/ it is trustworthy
-	enough to run scripts or participate in editing sessions where
-	its current over-reaching of namespace is tolerable; and 2/ it
-	requires manual verification, still, despite 1/.
+    Actually, like all things to do w/ manglement, this demonstrates
+    two aspects of EDB having to deal w/ trust: 1/ it is trustworthy
+    enough to run scripts or participate in editing sessions where
+    its current over-reaching of namespace is tolerable; and 2/ it
+    requires manual verification, still, despite 1/.
 
 
 - 1.22 | 2004-06-02
 
-	This is a cleanup release (perhaps one of several) following
-	maintainership transfer from Michael Ernst, the author of EDB,
-	to Thien-Thi Nguyen, the slowly-searching student of EDB (and
-	other works of codified thought).
+  This is a cleanup release (perhaps one of several) following
+  maintainership transfer from Michael Ernst, the author of EDB,
+  to Thien-Thi Nguyen, the slowly-searching student of EDB (and
+  other works of codified thought).
 
-	Cleanup means adding "./configure && make && make install"
-	support (including commonly related things like "make dist",
-	NEWS file, etc); minor upgrading of the elisp dialect and
-	style; and bundling the examples.  A request for outstanding
-	bugfixes posted to one of the newsgroups has gone unanswered
-	to date, so this release includes no bugfixes.
+  Cleanup means adding "./configure && make && make install"
+  support (including commonly related things like "make dist",
+  NEWS file, etc); minor upgrading of the elisp dialect and
+  style; and bundling the examples.  A request for outstanding
+  bugfixes posted to one of the newsgroups has gone unanswered
+  to date, so this release includes no bugfixes.
 
-	The programming interface has not changed.  Those elements
-	mentioned in the info pages are guaranteed to NOT change for
-	all 1.x versions of EDB.  If you have written an application
-	based on EDB that uses undocumented elements, you can either
-	contribute doc patches (which if accepted would result in
-	those elements being guaranteed to NOT change), or prepare
-	yourself for the necessity of rewriting that particular code
-	if/when the undocumented elements change.
+  The programming interface has not changed.  Those elements
+  mentioned in the info pages are guaranteed to NOT change for
+  all 1.x versions of EDB.  If you have written an application
+  based on EDB that uses undocumented elements, you can either
+  contribute doc patches (which if accepted would result in
+  those elements being guaranteed to NOT change), or prepare
+  yourself for the necessity of rewriting that particular code
+  if/when the undocumented elements change.
 
 
 - 1.21 AND PRIOR
 
-	Please refer to theory.lcs.mit.edu:/pub/emacs/edb/ for prior
-	releases of EDB and related information.
+  Please refer to theory.lcs.mit.edu:/pub/emacs/edb/ for prior
+  releases of EDB and related information.
 
 
 

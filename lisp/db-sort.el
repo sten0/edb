@@ -1,6 +1,6 @@
 ;;; db-sort.el --- part of EDB, the Emacs database
 
-;; Copyright (C) 2004,2005,2006,2007,2008 Thien-Thi Nguyen
+;; Copyright (C) 2004-2017 Thien-Thi Nguyeny
 
 ;; This file is part of EDB.
 ;;
@@ -15,9 +15,7 @@
 ;; for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with EDB; see the file COPYING.  If not, write to the Free
-;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-;; MA 02110-1301, USA.
+;; along with EDB.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -64,7 +62,7 @@ takes two records as arguments and returns t if r1 < r2."
   (db-message "Sorting...")
   (unless db
     (setq db dbc-database))
-  (unless (= 0 (edb--1D db :nrecords))
+  (unless (zerop (edb--1D db :nrecords))
     (let (db-converted-ofields)
 
       (unless (functionp sorter)
@@ -370,7 +368,8 @@ More specifically:
 
 ;; Insert item and trailing newline.
 (defun dbsi-format (item which)
-  (flet ((pinsert (s) (insert (propertize s :item item :which which))))
+  (cl-flet
+      ((pinsert (s) (insert (propertize s :item item :which which))))
     (pinsert (format "  %-16s    " (db-fname<-fno (car item) dbc-database)))
     (if (atom (cdr item))
         (pinsert (format "%s" (cdr item)))

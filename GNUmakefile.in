@@ -1,5 +1,5 @@
 # GNUmakefile for EDB.
-# Copyright (C) 2004,2005,2006,2007,2008 Thien-Thi Nguyen
+# Copyright (C) 2004-2017 Thien-Thi Nguyen
 #
 # This file is part of EDB.
 #
@@ -14,9 +14,7 @@
 # for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with EDB; see the file COPYING.  If not, write to the Free
-# Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-# MA 02110-1301, USA.
+# along with EDB.  If not, see <http://www.gnu.org/licenses/>.
 
 ###########################################################################
 # Type "make" to byte-compile EDB and create Info files.
@@ -24,9 +22,10 @@
 # Optional arguments to make:
 #   all       (same as no argument) make .elc and .info files
 #   install   copy edb.info to $(infodir), .el{c} files to $(sitelisp)/edb
+#   uninstall undo "make install"
 #   clean     remove all .elc and generated .el files
 #   tags      create TAGS file
-#   dist      (for maintainer) make distribution tarball
+#   dist      (for maintainer) make distribution tarballs
 
 ###########################################################################
 ### Variables
@@ -43,7 +42,6 @@ sitelisp = @sitelisp@
 
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
-mkinstalldirs = $(top_srcdir)/install-sh -d
 
 EDB-VERSION = @PACKAGE_VERSION@
 
@@ -72,17 +70,16 @@ install: recursive-install
 
 installcheck: recursive-installcheck
 
+uninstall: recursive-uninstall
+
 clean: recursive-clean
 	cd skram && $(MAKE) $@
 
-maintainerclean: clean
+maintainerclean: recursive-maintainerclean
 
 tags: TAGS
 TAGS: $(source-el-files)
 	$(ETAGS) $^
-
-cvs-state-summary:
-	ttn-do display-cvs-state-summary lisp . examples skram
 
 ###########################################################################
 ### Distribution
@@ -90,7 +87,8 @@ cvs-state-summary:
 
 dd = edb-$(EDB-VERSION)
 
-extradist = configure install-sh \
+extradist = configure build-aux/install-sh \
+ examples/edbibtex/edbibtex.info \
  doc/edb.info \
  doc/refcard.ps \
  doc/refcard.version.tex \
@@ -108,9 +106,9 @@ rw-ok = \
  $(patsubst %, examples/%.edb, \
    forms-demo2-inherent)
 
-dist:
+distdir:
 	@test -d .git || { echo ERROR: No .git subdir. ; false ; }
-	rm -rf $(dd) $(dd).tar.gz
+	$(RM) -r $(dd)
 	mkdir $(dd)
 	cp -p --parents $(wildcard $(extradist)) \
 	  $(shell git ls-files $(addprefix -x , $(wildcard $(minusdist)))) \
@@ -119,7 +117,12 @@ dist:
 	    -e 's/@''EDB-DATE''@/'`date +%Y-%m-%d`'/g' \
 	    -i $(dd)/lisp/database.el
 	cd $(dd) && chmod +w $(strip $(rw-ok))
-	GZIP=--best tar czhf $(dd).tar.gz $(dd)
+
+dist: distdir
+	$(RM) $(dd).tar.gz
+	GZIP=--best tar cf $(dd).tar.gz --auto $(dd)
+	$(RM) $(dd).tar.lz
+	tar cf $(dd).tar.lz --auto $(dd)
 	$(RM) -r $(dd)
 
 # GNUmakefile.in ends here

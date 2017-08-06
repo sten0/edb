@@ -1,6 +1,6 @@
 :EDB (single) ;;; -*- emacs-lisp -*-
 
-;; Copyright (C) 2005-2017 Thien-Thi Nguyen
+;; Copyright (C) 2017 Thien-Thi Nguyen
 ;;
 ;; This file is part of EDB.
 ;;
@@ -17,26 +17,22 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with EDB.  If not, see <http://www.gnu.org/licenses/>.
 
-:name "Password database"
-:field-separator ":"
-:fields [username
-         password
-         (uid . integer)
-         (gid . integer)
-         gcos-field
-         home-dir
-         login-shell]
+;;; Commentary:
+
+;; To create data useful w/ this control file:
+;;
+;;   make examples-syms.data
+;;
+;; This data shows which EDB API elements are used in practice
+;; (at least, in the example databases distributed with EDB).
+
+;;; Code:
+
+:name "Examples Symbols"
+:fields [count name]
 
 :display t
-====== Visiting /etc/passwd ======
-
-User : \username,width=20   Uid: \uid,width=5   Gid: \gid
-
-Name : \gcos-field
-
-Home : \home-dir
-
-Shell: \login-shell
+\count,width=5  \name
 :EOTB
 
-;;; passwd.edb ends here
+;;; examples-syms.edb ends here

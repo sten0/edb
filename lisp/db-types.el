@@ -1,6 +1,6 @@
 ;;; db-types.el --- part of EDB, the Emacs database
 
-;; Copyright (C) 2004,2005,2006,2007,2008 Thien-Thi Nguyen
+;; Copyright (C) 2004-2017 Thien-Thi Nguyen
 
 ;; This file is part of EDB.
 ;;
@@ -15,9 +15,7 @@
 ;; for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with EDB; see the file COPYING.  If not, write to the Free
-;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-;; MA 02110-1301, USA.
+;; along with EDB.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -201,53 +199,54 @@ Optional argument OPTSTRING is a displayspec option string."
           a->d (nreverse a->d)
           a->s (and a-s-differ (nreverse a->s)))
 
-    (flet ((enum-do-completions
-            (rep type d->a)
-            ;; Given a string REP and an enum TYPE, return REP if it is a
-            ;; valid input representation, otherwise see if it completes to a
-            ;; valid one, and show the possible completions.
-            (let ((hit (assoc rep d->a)))
-              (if hit
-                  (cdr hit)
-                (let* ((completion-ignore-case db-enum-ignore-case)
-                       (try (try-completion rep d->a)))
-                  (if (and try (setq hit (assoc try d->a)))
-                      (cdr hit)
-                    (dbf-set-this-field-text (or try ""))
-                    (setq rep
-                          (completing-read
-                           (format "Enter \"%s\" enum value (? for list): "
-                                   type)
-                           d->a nil t (or try "")))
-                    (cdr (assoc rep d->a)))))))
-           (make-enum-member-orderer
-            (type a->d v< v= v>)
-            ;; Given an enum type TYPE, create an ordering function which
-            ;; compares two items in the enum type's alternatives list.  The
-            ;; resulting function returns V< if its first argument precedes
-            ;; its second argument in the alternative list, V= if they're
-            ;; equal or neither appears, and V> if the first follows the
-            ;; second.
-            ;;
-            ;; If one of the arguments doesn't appear in the alternatives
-            ;; list, the other is considered to precede it.
-            `(lambda (o1 o2)
-               (if (equal o1 o2)
-                   ,v=
-                 (let ((ls ',a->d)
-                       (rv ,v=)
-                       alt-o)
-                   (while ls
-                     (setq alt-o (car ls))
-                     (cond ((equal (car alt-o) o1)
-                            (setq rv ,v<
-                                  ls nil))
-                           ((equal (car alt-o) o2)
-                            (setq rv ,v>
-                                  ls nil))
-                           (t
-                            (setq ls (cdr ls)))))
-                   rv)))))
+    (cl-flet
+        ((enum-do-completions
+          (rep type d->a)
+          ;; Given a string REP and an enum TYPE, return REP if it is a
+          ;; valid input representation, otherwise see if it completes to a
+          ;; valid one, and show the possible completions.
+          (let ((hit (assoc rep d->a)))
+            (if hit
+                (cdr hit)
+              (let* ((completion-ignore-case db-enum-ignore-case)
+                     (try (try-completion rep d->a)))
+                (if (and try (setq hit (assoc try d->a)))
+                    (cdr hit)
+                  (dbf-set-this-field-text (or try ""))
+                  (setq rep
+                        (completing-read
+                         (format "Enter \"%s\" enum value (? for list): "
+                                 type)
+                         d->a nil t (or try "")))
+                  (cdr (assoc rep d->a)))))))
+         (make-enum-member-orderer
+          (type a->d v< v= v>)
+          ;; Given an enum type TYPE, create an ordering function which
+          ;; compares two items in the enum type's alternatives list.  The
+          ;; resulting function returns V< if its first argument precedes
+          ;; its second argument in the alternative list, V= if they're
+          ;; equal or neither appears, and V> if the first follows the
+          ;; second.
+          ;;
+          ;; If one of the arguments doesn't appear in the alternatives
+          ;; list, the other is considered to precede it.
+          `(lambda (o1 o2)
+             (if (equal o1 o2)
+                 ,v=
+               (let ((ls ',a->d)
+                     (rv ,v=)
+                     alt-o)
+                 (while ls
+                   (setq alt-o (car ls))
+                   (cond ((equal (car alt-o) o1)
+                          (setq rv ,v<
+                                ls nil))
+                         ((equal (car alt-o) o2)
+                          (setq rv ,v>
+                                ls nil))
+                         (t
+                          (setq ls (cdr ls)))))
+                 rv)))))
 
       (edb-define-displaytype type
         (db-dspec<-type/opts nil (when optstring
@@ -291,13 +290,13 @@ Optional argument OPTSTRING is a displayspec option string."
 (edb-define-displaytype 'integer nil
   :indent           nil
   :actual->display 'int-to-string
-  :display->actual 'string-to-int)
+  :display->actual 'string-to-number)
 
 (edb-define-recordfieldtype 'integer nil
   :type           'integer
   :default-value   0
   :actual->stored 'int-to-string
-  :stored->actual 'string-to-int
+  :stored->actual 'string-to-number
   :order-fn       'db-number-order
   :sort-fn        '<
   :match-function '=
