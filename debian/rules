@@ -61,6 +61,6 @@ override_dh_compress:
 	dh_compress -X.edb -X.dba -X.fmt -X.dat
 
 %:
-	dh $@
+	dh $@ --with elpa
 
 # End of file
