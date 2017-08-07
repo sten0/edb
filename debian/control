@@ -13,7 +13,10 @@ Homepage: https://www.gnuvola.org/software/edb
 
 Package: edb
 Architecture: all
-Depends: ${misc:Depends}, emacs | emacs25 | emacs-snapshot, make
+Depends: ${elpa:Depends}
+       , ${misc:Depends}
+       , emacs | emacs25 | emacs-snapshot
+       , make
 Description: database program for GNU Emacs
  EDB is a database program for GNU Emacs. It permits you to
  manipulate structured (or not-so-structured) data within
