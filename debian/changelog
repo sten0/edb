@@ -1,17 +1,32 @@
-edb (1.31-4) UNRELEASED; urgency=low
+edb (1.33-1) UNRELEASED; urgency=medium
 
+  [ Jari Aalto ]
   * debian/copyright
     - Update URLs.
   * debian/control
     - (Homepage): Update.
     - (Standards-Version): Update to 3.9.8.
     - (Vcs-*): Update to anonscm.debian.org. 
-  * debian/patches
-    - (20): Refresh. Use cl-flet* to fix bug in edbcore.el.
-  * debian/rules
-    - (override_dh_clean): rm *.elc.
 
- -- Jari Aalto <jari.aalto@cante.net>  Wed, 02 Nov 2016 20:33:45 +0200
+  [ Nicholas D Steeves ]
+  * New upstream version 1.33
+  * Drop 22-interactive-p.patch -- applied upstream
+  * Drop 20-cl-letf.patch -- applied upstream
+  * Drop 10-makefile.patch
+  * rm debian/{emacsen-install,emacsen-remove,emacsen-startup}
+  * Bump debhelper version; add dh-elpa to depends; emacs24 to emacs25; drop dpkg (>= 1.15.4) | install-info
+  * add debian/elpa
+  * fixup! add debian/elpa
+  * Add ${elpa:Depends} to Depends
+  * Add --with elpa to d/rules
+  * Start with simple d/rules
+  * d/control: +Standards-Version: 4.0.0 ; -emacs-snapshot
+  * override autobuild
+  * disable autoreconf
+  * add more overrides
+  * Add debian/edb-pkg.el
+
+ -- Nicholas D Steeves <nsteeves@gmail.com>  Tue, 08 Aug 2017 02:55:44 -0400
 
 edb (1.31-3) unstable; urgency=low
 
