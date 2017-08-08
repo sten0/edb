@@ -7,11 +7,11 @@ Subject: Add edb-pkg.el for elpa
  1 file changed, 2 insertions(+)
  create mode 100644 edb-pkg.el
 
-diff --git a/edb-pkg.el b/edb-pkg.el
+diff --git a/lisp/edb-pkg.el b/lisp/edb-pkg.el
 new file mode 100644
 index 0000000..9f1ff8f
 --- /dev/null
-+++ b/edb-pkg.el
++++ b/lisp/edb-pkg.el
 @@ -0,0 +1,2 @@
 +;;; -*- no-byte-compile: t -*-
 +(define-package "edb" "1.33" "database program for GNU Emacs" 'nil :url "https://www.gnuvola.org/software/edb")
