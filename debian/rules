@@ -1,6 +1,8 @@
 #!/usr/bin/make -f
 
 %:
-	dh $@ --with elpa
+	dh $@ --with elpa --without autoreconf
+#                                   uneeded for dh_elpa
 
 override_dh_auto_build:
+
