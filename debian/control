@@ -3,8 +3,8 @@ Section: lisp
 Priority: optional
 Maintainer: Jari Aalto <jari.aalto@cante.net>
 Uploaders: Tatsuya Kinoshita <tats@debian.org>
-Build-Depends: debhelper (>= 9)
-Build-Depends-Indep: texinfo, emacs24 | emacs-snapshot
+Build-Depends: debhelper (>= 10)
+Build-Depends-Indep: texinfo, emacs25-nox | emacs-snapshot
 Standards-Version: 3.9.8
 Vcs-Browser: https://anonscm.debian.org/gitweb/?p=collab-maint/edb.git
 Vcs-Git: https://anonscm.debian.org/git/collab-maint/edb.git
@@ -12,7 +12,7 @@ Homepage: https://www.gnuvola.org/software/edb
 
 Package: edb
 Architecture: all
-Depends: ${misc:Depends}, emacs | emacs24 | emacs-snapshot, make, dpkg (>= 1.15.4) | install-info
+Depends: ${misc:Depends}, emacs | emacs25 | emacs-snapshot, make, dpkg (>= 1.15.4) | install-info
 Description: database program for GNU Emacs
  EDB is a database program for GNU Emacs. It permits you to
  manipulate structured (or not-so-structured) data within
