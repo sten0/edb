@@ -1,0 +1,35 @@
+From: Nicholas D Steeves <nsteeves@gmail.com>
+Date: Wed, 9 Aug 2017 15:25:45 -0400
+Subject: Recreate makefile.patch
+
+---
+ doc/GNUmakefile.in  | 2 +-
+ lisp/GNUmakefile.in | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/doc/GNUmakefile.in b/doc/GNUmakefile.in
+index 20883c6..d3df5ce 100644
+--- a/doc/GNUmakefile.in
++++ b/doc/GNUmakefile.in
+@@ -22,7 +22,7 @@ top_srcdir = @top_srcdir@
+ prefix = @prefix@
+ datarootdir = @datarootdir@
+ datadir = @datadir@
+-infodir = @infodir@
++infodir = $(DESTDIR)@infodir@
+ 
+ INSTALL = @INSTALL@
+ INSTALL_DATA = @INSTALL_DATA@
+diff --git a/lisp/GNUmakefile.in b/lisp/GNUmakefile.in
+index ffbcb9c..86c3e70 100644
+--- a/lisp/GNUmakefile.in
++++ b/lisp/GNUmakefile.in
+@@ -24,7 +24,7 @@ prefix = @prefix@
+ datarootdir = @datarootdir@
+ datadir = @datadir@
+ infodir = @infodir@
+-sitelisp = @sitelisp@
++sitelisp = $(DESTDIR)@sitelisp@
+ 
+ INSTALL = @INSTALL@
+ INSTALL_DATA = @INSTALL_DATA@
