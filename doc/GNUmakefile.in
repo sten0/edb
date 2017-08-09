@@ -22,7 +22,7 @@ top_srcdir = @top_srcdir@
 prefix = @prefix@
 datarootdir = @datarootdir@
 datadir = @datadir@
-infodir = @infodir@
+infodir = $(DESTDIR)@infodir@
 
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
