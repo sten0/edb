@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Jari Aalto <jari.aalto@cante.net>
 Uploaders: Tatsuya Kinoshita <tats@debian.org>
 Build-Depends: debhelper (>= 10)
-Build-Depends-Indep: texinfo, emacs25-nox | emacs-snapshot
+Build-Depends-Indep: texinfo, texlive-latex-base, emacs25-nox | emacs-snapshot
 Standards-Version: 3.9.8
 Vcs-Browser: https://anonscm.debian.org/gitweb/?p=collab-maint/edb.git
 Vcs-Git: https://anonscm.debian.org/git/collab-maint/edb.git
