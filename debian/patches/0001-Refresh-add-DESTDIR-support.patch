@@ -1,0 +1,21 @@
+From: Nicholas D Steeves <nsteeves@gmail.com>
+Date: Fri, 11 Aug 2017 15:12:49 -0400
+Subject: Refresh add DESTDIR support
+
+---
+ lisp/GNUmakefile.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lisp/GNUmakefile.in b/lisp/GNUmakefile.in
+index ffbcb9c..86c3e70 100644
+--- a/lisp/GNUmakefile.in
++++ b/lisp/GNUmakefile.in
+@@ -24,7 +24,7 @@ prefix = @prefix@
+ datarootdir = @datarootdir@
+ datadir = @datadir@
+ infodir = @infodir@
+-sitelisp = @sitelisp@
++sitelisp = $(DESTDIR)@sitelisp@
+ 
+ INSTALL = @INSTALL@
+ INSTALL_DATA = @INSTALL_DATA@
