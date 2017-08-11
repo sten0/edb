@@ -3,9 +3,9 @@
 
 set -e
 
-if [ "$DEBIAN_EL_DEBUG" ]; then
-    set -x
-fi
+#if [ "$DEBIAN_EL_DEBUG" ]; then
+set -x
+#fi
 
 PACKAGE=edb
 MESSAGE="install/$PACKAGE:"
@@ -31,43 +31,43 @@ Install ()
     echo "install/$PACKAGE: Handling install of emacsen flavor $FLAVOR"
 
     case "$FLAVOR" in
-	xemacs*|emacs23|emacs22|emacs21|emacs20|emacs19|mule2)
-	    echo "$MESSAGE [$FLAVOR] ignored."
-	    ;;
+        xemacs*|emacs23|emacs22|emacs21|emacs20|emacs19|mule2)
+            echo "$MESSAGE [$FLAVOR] ignored."
+            ;;
 
-	*)
-	    echo "$MESSAGE Byte-Compiling in dir $ELDIR/ ..."
+        *)
+            echo "$MESSAGE Byte-Compiling in dir $ELDIR/ ..."
 
-	    Run install -m 755 -d $ELCDIR
-	    Run rm -f $ELCDIR/*.el $ELCDIR/*.elc
+            Run install -m 755 -d $ELCDIR
+            Run rm -f $ELCDIR/*.el $ELCDIR/*.elc
 
-	    Run cd $ELDIR
+            Run cd $ELDIR
 
-	    cat << EOF > $BYTECOMP
+            cat << EOF > $BYTECOMP
 (setq load-path (cons "." load-path))
 (setq edb-directory ".")
 EOF
 
-	    Run $EMACS \
-		-f edb-bfunc-make-all \
-		-f batch-byte-compile \
-		   database.el
+            Run $EMACS \
+                -f edb-bfunc-make-all \
+                -f batch-byte-compile \
+                database.el
 
-	    rm -f $BYTECOMP
-	    Run mv -f *.elc $ELCDIR/
+            rm -f $BYTECOMP
+            Run mv -f *.elc $ELCDIR/
 
-	    for file in $ELDIR/*.el
-	    do
-		if [ ! -f $file ]; then
-		    echo "$MESSAGE [ERROR] No $file in $(pwd)"
-		    exit 1
-		fi
+            for file in $ELDIR/*.el
+            do
+                if [ ! -f $file ]; then
+                    echo "$MESSAGE [ERROR] No $file in $(pwd)"
+                    exit 1
+                fi
 
-		Run ln -sf $file $ELCDIR
-	    done
+                Run ln -sf $file $ELCDIR
+            done
 
-	    echo "$MESSAGE Byte-Compiling... done."
-	    ;;
+            echo "$MESSAGE Byte-Compiling... done."
+            ;;
     esac
 }
 
@@ -76,16 +76,16 @@ Main ()
     ARGS="$*"
 
     if [ "$1" = "--test" ]; then
-	test="test-mode"
-	echo "$MESSAGE [TEST MODE $1] No real commands run"
-	shift
+        test="test-mode"
+        echo "$MESSAGE [TEST MODE $1] No real commands run"
+        shift
     fi
 
     FLAVOR=$1
     [ ! "$1" ] || shift
 
     if [ "$FLAVOR" = emacs ]; then
-	return 0
+        return 0
     fi
 
     Install $FLAVOR
