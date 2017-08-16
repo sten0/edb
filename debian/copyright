@@ -13,6 +13,7 @@ License: GPL-2+
 
 Files: debian/*
 Copyright:
+  2017 Nicholas D Steeves <nsteeves@gmail.com>
   2006-2016 Jari Aalto <jari.aalto@cante.net>
   2009 Tatsuya Kinoshita <tats@debian.org>
   1998-2004 Takao KAWAMURA <kawamura@debian.org>
